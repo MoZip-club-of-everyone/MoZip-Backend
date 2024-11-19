@@ -1,6 +1,7 @@
 package com.mozip.mozip.domain.user.service;
 
 import com.mozip.mozip.domain.user.dto.SignupRequest;
+import com.mozip.mozip.domain.user.entity.Role;
 import com.mozip.mozip.domain.user.entity.User;
 import com.mozip.mozip.domain.user.repository.UserRepository;
 import com.sun.jdi.request.DuplicateRequestException;
@@ -23,7 +24,7 @@ public class UserService {
         User newUser = User.builder()
                 .username(signupRequest.getUsername())
                 .password(bCryptPasswordEncoder.encode(signupRequest.getPassword()))
-                .role(User.RoleType.ROLE_USER)
+                .role(Role.ROLE_USER)
                 .realname(signupRequest.getRealname())
                 .email(signupRequest.getEmail())
                 .phone(signupRequest.getPhone())
