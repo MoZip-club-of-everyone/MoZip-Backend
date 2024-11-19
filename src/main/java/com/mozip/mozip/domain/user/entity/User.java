@@ -2,12 +2,10 @@ package com.mozip.mozip.domain.user.entity;
 
 import com.mozip.mozip.global.entity.BaseTime;
 import de.huxhorn.sulky.ulid.ULID;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
-import javax.management.relation.Role;
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,8 +22,6 @@ public class User extends BaseTime {
 
     private String password;
 
-    private Role role;
-
     private String realname;
 
     private String image;
@@ -34,5 +30,23 @@ public class User extends BaseTime {
 
     private String phone;
 
+    public enum RoleType {
+        ROLE_ADMIN("ROLE_ADMIN"),
+        ROLE_USER("ROLE_USER");
+        private final String roleName;
+        RoleType(String roleName) {
+            this.roleName = roleName;
+        }
+        public String getRoleName() {
+            return roleName;
+        }
+    }
+
+    @Enumerated(EnumType.STRING)
+    private RoleType role;
+
     private boolean isJoin;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Position> position;
 }
