@@ -30,20 +30,9 @@ public class User extends BaseTime {
 
     private String phone;
 
-    public enum RoleType {
-        ROLE_ADMIN("ROLE_ADMIN"),
-        ROLE_USER("ROLE_USER");
-        private final String roleName;
-        RoleType(String roleName) {
-            this.roleName = roleName;
-        }
-        public String getRoleName() {
-            return roleName;
-        }
-    }
 
     @Enumerated(EnumType.STRING)
-    private RoleType role;
+    private Role role;
 
     private boolean isJoin;
 
