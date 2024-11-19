@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import javax.management.relation.Role;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
