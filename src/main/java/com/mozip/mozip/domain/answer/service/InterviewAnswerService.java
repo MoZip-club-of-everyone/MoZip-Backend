@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AnswerService {
+public class InterviewAnswerService {
     private final InterviewAnswerRepository interviewAnswerRepository;
     private final PaperAnswerRepository paperAnswerRepository;
 }
