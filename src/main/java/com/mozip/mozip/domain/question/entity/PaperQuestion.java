@@ -30,6 +30,8 @@ public class PaperQuestion extends BaseTime {
     @Column(nullable = false)
     private String question;
 
+    private Long questionNo; // 질문지 내에서의 질문 번호
+
     @Lob
     private String details;
 
