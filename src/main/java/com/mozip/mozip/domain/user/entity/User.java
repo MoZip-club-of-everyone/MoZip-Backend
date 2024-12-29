@@ -18,15 +18,13 @@ public class User extends BaseTime {
     @Builder.Default
     private final String id = new ULID().nextULID();
 
-    private String username;
+    private String email;
 
     private String password;
 
     private String realname;
 
     private String image;
-
-    private String email;
 
     private String phone;
 

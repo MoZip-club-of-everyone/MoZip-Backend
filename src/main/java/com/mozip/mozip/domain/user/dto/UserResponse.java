@@ -11,14 +11,14 @@ import lombok.Getter;
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class UserResponse {
     private String userId;
-    private String username;
+    private String email;
     private String nickname;
     private String message;
 
     public static UserResponse from(User user, String message) {
         return UserResponse.builder()
                 .userId(user.getId())
-                .username(user.getUsername())
+                .email(user.getEmail())
                 .message(message)
                 .build();
     }

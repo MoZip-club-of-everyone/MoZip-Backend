@@ -18,15 +18,14 @@ public class UserService {
 
     // 회원가입 처리
     public void joinProcess(SignupRequest signupRequest) {
-        if (userRepository.findByUsername(signupRequest.getUsername()).isPresent()) {
-            throw new DuplicateRequestException("이미 존재하는 아이디입니다.");
+        if (userRepository.findByEmail(signupRequest.getEmail()).isPresent()) {
+            throw new DuplicateRequestException("이미 존재하는 이메일입니다.");
         }
         User newUser = User.builder()
-                .username(signupRequest.getUsername())
+                .email(signupRequest.getEmail())
                 .password(bCryptPasswordEncoder.encode(signupRequest.getPassword()))
                 .role(Role.ROLE_USER)
                 .realname(signupRequest.getRealname())
-                .email(signupRequest.getEmail())
                 .phone(signupRequest.getPhone())
                 .isJoin(true)
                 .build();

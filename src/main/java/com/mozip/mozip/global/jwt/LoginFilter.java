@@ -34,12 +34,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
             ObjectMapper objectMapper = new ObjectMapper();
             LoginRequest loginRequest = objectMapper.readValue(request.getInputStream(), LoginRequest.class);
 
-            String username = loginRequest.getUsername();
+            String email = loginRequest.getEmail();
             String password = loginRequest.getPassword();
 
-            log.info("username: {}, password: {}", username, password);
+            log.info("email: {}, password: {}", email, password);
 
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password, null);
             log.info("인증성공: {}", authenticationManager.authenticate(authToken));
             return authenticationManager.authenticate(authToken);
         } catch (IOException e) {
@@ -52,13 +52,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
         User user = customUserDetails.user();
-        String username = customUserDetails.getUsername();
+        String email = customUserDetails.getUsername();
         String role = user.getRole().getRoleName();
 //        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 //        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
 //        GrantedAuthority auth = iterator.next();
 //        String role = auth.getAuthority();
-        String token = jwtUtil.createJwt(username, role);
+        String token = jwtUtil.createJwt(email, role);
 
 //        response.addHeader("Authorization", "Bearer " + token);
         response.setContentType("application/json; charset=UTF-8");
