@@ -1,5 +1,6 @@
 package com.mozip.mozip.domain.user.entity;
 
+import com.mozip.mozip.domain.user.entity.enums.Role;
 import com.mozip.mozip.global.entity.BaseTime;
 import de.huxhorn.sulky.ulid.ULID;
 import jakarta.persistence.*;

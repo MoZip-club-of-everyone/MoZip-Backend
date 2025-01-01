@@ -1,7 +1,7 @@
 package com.mozip.mozip.domain.user.service;
 
 import com.mozip.mozip.domain.user.dto.SignupRequest;
-import com.mozip.mozip.domain.user.entity.Role;
+import com.mozip.mozip.domain.user.entity.enums.Role;
 import com.mozip.mozip.domain.user.entity.User;
 import com.mozip.mozip.domain.user.repository.UserRepository;
 import com.sun.jdi.request.DuplicateRequestException;

@@ -1,6 +1,6 @@
 package com.mozip.mozip.global.dto;
 
-import com.mozip.mozip.domain.user.entity.Role;
+import com.mozip.mozip.domain.user.entity.enums.Role;
 import com.mozip.mozip.domain.user.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
