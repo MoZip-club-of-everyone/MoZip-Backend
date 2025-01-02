@@ -25,7 +25,7 @@ jobs:
             cd /home/ubuntu/MoZip-Backend
             rm -rf src/main/resources/application.yaml
             git reset --hard origin/main
-            git pull origin develop --rebase
+            git pull origin main --rebase
             echo "$APPLICATION_PROPERTIES" > src/main/resources/application.yaml
             ./gradlew clean build -x test
             sudo fuser -k -n tcp 8080 || true
