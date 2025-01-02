@@ -3,15 +3,15 @@ package com.mozip.mozip.domain.question.service;
 import com.mozip.mozip.domain.club.entity.Mozip;
 import com.mozip.mozip.domain.club.repository.MozipRepository;
 import com.mozip.mozip.domain.question.dto.PaperQuestionCreateReqDto;
-import com.mozip.mozip.domain.question.dto.PaperQuestionRequestDto;
 import com.mozip.mozip.domain.question.dto.PaperQuestionUpdateReqDto;
 import com.mozip.mozip.domain.question.entity.PaperQuestion;
 import com.mozip.mozip.domain.question.repository.PaperQuestionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
