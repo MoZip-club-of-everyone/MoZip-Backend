@@ -1,31 +1,92 @@
 package com.mozip.mozip.domain.applicant.service;
 
+import com.mozip.mozip.domain.answer.dto.PaperAnswerDto;
+import com.mozip.mozip.domain.answer.dto.PaperAnswersResDto;
+import com.mozip.mozip.domain.answer.entity.PaperAnswer;
+import com.mozip.mozip.domain.answer.repository.PaperAnswerRepository;
 import com.mozip.mozip.domain.applicant.dto.ApplicantListResponse;
 import com.mozip.mozip.domain.applicant.entity.Applicant;
 import com.mozip.mozip.domain.applicant.repository.ApplicantRepository;
-import com.mozip.mozip.domain.applicant.entity.enums.ApplicationStatus;
 import com.mozip.mozip.domain.club.entity.Mozip;
+import com.mozip.mozip.domain.club.exception.MozipNotFoundException;
 import com.mozip.mozip.domain.club.repository.MozipRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.mozip.mozip.domain.evaluation.entity.Evaluation;
+import com.mozip.mozip.domain.evaluation.entity.PaperEvaluation;
+import com.mozip.mozip.domain.evaluation.exception.EvaluationNotFoundException;
+import com.mozip.mozip.domain.evaluation.exception.PaperEvaluationNotFoundException;
+import com.mozip.mozip.domain.evaluation.repository.EvaluationRepository;
+import com.mozip.mozip.domain.evaluation.repository.PaperEvaluationRepository;
+import com.mozip.mozip.domain.question.dto.PaperQuestionWithAnswersDto;
+import com.mozip.mozip.domain.question.entity.PaperQuestion;
+import com.mozip.mozip.domain.question.repository.PaperQuestionRepository;
+import com.mozip.mozip.domain.user.entity.User;
+import com.mozip.mozip.domain.user.exception.UserNotFoundException;
+import com.mozip.mozip.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ApplicantService {
+    private final UserRepository userRepository;
     private final ApplicantRepository applicantRepository;
     private final MozipRepository mozipRepository;
+    private final PaperQuestionRepository paperQuestionRepository;
+    private final PaperAnswerRepository paperAnswerRepository;
+    private final EvaluationRepository evaluationRepository;
+    private final PaperEvaluationRepository paperEvaluationRepository;
 
     public ApplicantListResponse getApplicantListByMozipId(String mozipId, String sortBy, String order) {
         Mozip mozip = mozipRepository.findById(mozipId)
-                .orElseThrow(() -> new EntityNotFoundException("Mozip이 없습니다 : " + mozipId));
+                .orElseThrow(() -> new MozipNotFoundException(mozipId));
 
-        List<Applicant> applicants = applicantRepository.findByMozip(mozip, sortBy, order);
+        List<Applicant> applicants = applicantRepository.findApplicantsByMozipWithSorting(mozip, sortBy, order);
 
         return ApplicantListResponse.from(applicants, mozip);
+    }
+
+    public PaperAnswersResDto getPaperAnswersByMozipId(String userId, String mozipId, String applicantId, String questionId) {
+        Mozip mozip = mozipRepository.findById(mozipId)
+                .orElseThrow(() -> new MozipNotFoundException(mozipId));
+
+        User evaluator = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+
+        List<PaperQuestion> paperQuestions = paperQuestionRepository.findByMozip(mozip)
+                .stream()
+                .filter(question -> questionId == null || Arrays.asList(questionId.split(",")).contains(question.getId()))
+                .toList();
+
+        List<PaperQuestionWithAnswersDto> questionWithAnswersDtos = paperQuestions.stream()
+                .map(question -> {
+                    List<PaperAnswer> paperAnswers = paperAnswerRepository.findByPaperQuestion(question)
+                            .stream()
+                            .filter(answer -> applicantId == null || Arrays.asList(applicantId.split(",")).contains(answer.getApplicant().getId()))
+                            .toList();
+
+                    List<PaperAnswerDto> paperAnswerDtos = paperAnswers.stream()
+                            .map(answer -> {
+                                Evaluation evaluation = evaluationRepository.findByEvaluatorAndApplicant(
+                                        evaluator,
+                                        answer.getApplicant()
+                                ).orElseThrow(() -> new EvaluationNotFoundException(evaluator.getId(), answer.getApplicant().getId()));
+
+                                PaperEvaluation paperEvaluation = paperEvaluationRepository.findByPaperAnswerAndEvaluation(
+                                        answer,
+                                        evaluation
+                                ).orElseThrow(() -> new PaperEvaluationNotFoundException(evaluation.getId(), answer.getId()));
+
+                                return PaperAnswerDto.from(answer, paperEvaluation.getScore());
+                            })
+                            .toList();
+
+                    return PaperQuestionWithAnswersDto.from(question, paperAnswerDtos);
+                })
+                .toList();
+
+        return PaperAnswersResDto.from(questionWithAnswersDtos);
     }
 }

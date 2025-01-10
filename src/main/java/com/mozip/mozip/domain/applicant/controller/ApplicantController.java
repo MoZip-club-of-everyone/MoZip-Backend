@@ -1,9 +1,12 @@
 package com.mozip.mozip.domain.applicant.controller;
 
+import com.mozip.mozip.domain.answer.dto.PaperAnswersResDto;
 import com.mozip.mozip.domain.applicant.dto.*;
 import com.mozip.mozip.domain.applicant.service.ApplicantService;
+import com.mozip.mozip.global.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,14 +24,16 @@ public class ApplicantController {
         return ResponseEntity.ok(applicantService.getApplicantListByMozipId(mozipId, sortBy, order));
     }
 
-//    // 서류 지원서 목록 조회
-//    @GetMapping("/paper-answers")
-//    public ResponseEntity<PaperAnswerListResponse> getPaperAnswers(
-//            @PathVariable("mozip_id") String mozipId,
-//            @RequestParam(value = "applicant-id", required = false) String applicantId,
-//            @RequestParam(value = "question-id", required = false) String questionId) {
-//        return ResponseEntity.ok(applicantService.getPaperAnswersByMozipId(mozipId, applicantId, questionId));
-//    }
+    // 서류 지원서 목록 조회
+    @GetMapping("/paper-answers")
+    public ResponseEntity<PaperAnswersResDto> getPaperAnswers(
+            Authentication authentication,
+            @PathVariable("mozip_id") String mozipId,
+            @RequestParam(value = "applicant-id", required = false) String applicantId,
+            @RequestParam(value = "question-id", required = false) String questionId) {
+        String userId = ((CustomUserDetails) authentication.getPrincipal()).getId();
+        return ResponseEntity.ok(applicantService.getPaperAnswersByMozipId(userId, mozipId, applicantId, questionId));
+    }
 //
 //    // 서류 평가 점수 목록 조회
 //    @GetMapping("/paper-evaluations")

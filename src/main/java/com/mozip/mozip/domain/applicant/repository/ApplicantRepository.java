@@ -2,12 +2,13 @@ package com.mozip.mozip.domain.applicant.repository;
 
 import com.mozip.mozip.domain.applicant.entity.Applicant;
 import com.mozip.mozip.domain.club.entity.Mozip;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface ApplicantRepository {
+public interface ApplicantRepository extends JpaRepository<Applicant, String> {
 
     @Query("SELECT a FROM Applicant a " +
             "JOIN a.evaluations e " +
@@ -19,5 +20,7 @@ public interface ApplicantRepository {
             "     ELSE a.applicationNumber END " +
             "ASC " +
             "CASE WHEN :order = 'desc' THEN DESC ELSE ASC END")
-    List<Applicant> findByMozip(Mozip mozip, String sortBy, String order);
+    List<Applicant> findApplicantsByMozipWithSorting(Mozip mozip, String sortBy, String order);
+
+    Optional<Applicant> findByMozip(Mozip mozip);
 }

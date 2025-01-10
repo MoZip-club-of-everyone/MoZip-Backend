@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public record CustomUserDetails(User user) implements UserDetails {
+    public String getId() {
+        return user.getId();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
