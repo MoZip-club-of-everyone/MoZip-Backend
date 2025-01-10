@@ -10,17 +10,20 @@ import java.util.Optional;
 
 public interface ApplicantRepository extends JpaRepository<Applicant, String> {
 
-    @Query("SELECT a FROM Applicant a " +
-            "JOIN a.evaluations e " +
-            "WHERE a.mozip = :mozip " +
-            "ORDER BY " +
-            "CASE WHEN :sortBy = 'realname' THEN a.user.realname " +
-            "     WHEN :sortBy = 'applied_at' THEN a.createdAt " +
-            "     WHEN :sortBy = 'paper_score' THEN e.paperScore " +
-            "     ELSE a.applicationNumber END " +
-            "ASC " +
-            "CASE WHEN :order = 'desc' THEN DESC ELSE ASC END")
-    List<Applicant> findApplicantsByMozipWithSorting(Mozip mozip, String sortBy, String order);
+//    정렬 로직 추후 도입
+//    @Query("SELECT a FROM Applicant a " +
+//            "JOIN a.evaluations e " +
+//            "WHERE a.mozip = :mozip " +
+//            "ORDER BY " +
+//            "CASE WHEN :sortBy = 'realname' THEN a.user.realname " +
+//            "     WHEN :sortBy = 'applied_at' THEN a.createdAt " +
+//            "     WHEN :sortBy = 'paper_score' THEN e.paperScore " +
+//            "     ELSE a.applicationNumber END " +
+//            "ASC " +
+//            "CASE WHEN :order = 'desc' THEN DESC ELSE ASC END")
+//    List<Applicant> findApplicantsByMozipWithSorting(Mozip mozip, String sortBy, String order);
+
+    List<Applicant> findApplicantsByMozip(Mozip mozip);
 
     Optional<Applicant> findByMozip(Mozip mozip);
 }

@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PaperAnswerRepository extends JpaRepository<PaperAnswer, String> {
     List<PaperAnswer> findByApplicantId(String applicantId);
-    List<PaperAnswer> findByPaperQuestion(PaperQuestion paperQuestion);
+    List<PaperAnswer> findByQuestion(PaperQuestion question);
 }

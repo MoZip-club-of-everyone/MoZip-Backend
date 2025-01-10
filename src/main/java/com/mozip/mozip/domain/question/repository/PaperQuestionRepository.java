@@ -7,5 +7,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PaperQuestionRepository extends JpaRepository<PaperQuestion, String> {
     List<PaperQuestion> findByMozipId(String mozipId);
-    List<PaperQuestion> findByMozip(Mozip mozip);
 }
