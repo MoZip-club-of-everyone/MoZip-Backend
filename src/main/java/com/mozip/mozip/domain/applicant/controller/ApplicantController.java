@@ -34,6 +34,7 @@ public class ApplicantController {
         String userId = ((CustomUserDetails) authentication.getPrincipal()).getId();
         return ResponseEntity.ok(applicantService.getPaperAnswersByMozipId(userId, mozipId, applicantId, questionId));
     }
+
 //
 //    // 서류 평가 점수 목록 조회
 //    @GetMapping("/paper-evaluations")

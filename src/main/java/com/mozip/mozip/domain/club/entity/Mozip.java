@@ -1,14 +1,10 @@
 package com.mozip.mozip.domain.club.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mozip.mozip.domain.question.entity.PaperQuestion;
 import com.mozip.mozip.global.entity.BaseTime;
 import de.huxhorn.sulky.ulid.ULID;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -45,5 +41,7 @@ public class Mozip extends BaseTime {
     @Column(nullable = false)
     private String description;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "mozip", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PaperQuestion> paperQuestions;
 }

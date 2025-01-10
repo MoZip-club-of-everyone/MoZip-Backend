@@ -18,6 +18,7 @@ public class PaperComment extends BaseTime {
     @Builder.Default
     private final String id = new ULID().nextULID();
 
+    @Lob
     private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)

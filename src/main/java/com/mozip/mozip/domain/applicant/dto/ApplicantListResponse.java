@@ -21,25 +21,21 @@ public class ApplicantListResponse {
     private int failedCnt;
     private List<ApplicationDto> applicants;
 
-    public static ApplicantListResponse from(List<Applicant> applicants, Mozip mozip) {
-        long totalCount = applicants.size();
-        long passedCount = applicants.stream()
-                .filter(applicant -> applicant.getTotalStatus() == ApplicationStatus.PASSED)
+    public static ApplicantListResponse from(List<ApplicationDto> applicants, Mozip mozip) {
+        int totalCount = applicants.size();
+        int passedCount = (int) applicants.stream()
+                .filter(applicant -> applicant.getStatus() == ApplicationStatus.PASSED)
                 .count();
-        long failedCount = applicants.stream()
-                .filter(applicant -> applicant.getTotalStatus() == ApplicationStatus.FAILED)
+        int failedCount = (int) applicants.stream()
+                .filter(applicant -> applicant.getStatus() == ApplicationStatus.FAILED)
                 .count();
-
-        List<ApplicationDto> applicantDtos = applicants.stream()
-                .map(ApplicationDto::from)
-                .collect(Collectors.toList());
 
         return ApplicantListResponse.builder()
                 .mozipId(mozip.getId())
-                .totalCnt((int) totalCount)
-                .passedCnt((int) passedCount)
-                .failedCnt((int) failedCount)
-                .applicants(applicantDtos)
+                .totalCnt(totalCount)
+                .passedCnt(passedCount)
+                .failedCnt(failedCount)
+                .applicants(applicants)
                 .build();
     }
 }

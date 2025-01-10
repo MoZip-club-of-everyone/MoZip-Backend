@@ -5,6 +5,7 @@ import com.mozip.mozip.domain.answer.dto.PaperAnswersResDto;
 import com.mozip.mozip.domain.answer.entity.PaperAnswer;
 import com.mozip.mozip.domain.answer.repository.PaperAnswerRepository;
 import com.mozip.mozip.domain.applicant.dto.ApplicantListResponse;
+import com.mozip.mozip.domain.applicant.dto.ApplicationDto;
 import com.mozip.mozip.domain.applicant.entity.Applicant;
 import com.mozip.mozip.domain.applicant.repository.ApplicantRepository;
 import com.mozip.mozip.domain.club.entity.Mozip;
@@ -43,26 +44,32 @@ public class ApplicantService {
         Mozip mozip = mozipRepository.findById(mozipId)
                 .orElseThrow(() -> new MozipNotFoundException(mozipId));
 
-        List<Applicant> applicants = applicantRepository.findApplicantsByMozipWithSorting(mozip, sortBy, order);
+        List<Applicant> applicants = applicantRepository.findApplicantsByMozip(mozip);
 
-        return ApplicantListResponse.from(applicants, mozip);
+        List<ApplicationDto> applicationDtos = applicants.stream()
+                .map(applicant -> {
+                    List<Evaluation> evaluations = evaluationRepository.findByApplicant(applicant);
+                    int totalPaperScore = evaluations.stream()
+                            .mapToInt(Evaluation::getPaperScore)
+                            .sum();
+                    return ApplicationDto.from(applicant, totalPaperScore);
+                })
+                .toList();
+
+        return ApplicantListResponse.from(applicationDtos, mozip);
     }
 
     public PaperAnswersResDto getPaperAnswersByMozipId(String userId, String mozipId, String applicantId, String questionId) {
-        Mozip mozip = mozipRepository.findById(mozipId)
-                .orElseThrow(() -> new MozipNotFoundException(mozipId));
-
         User evaluator = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
-        List<PaperQuestion> paperQuestions = paperQuestionRepository.findByMozip(mozip)
-                .stream()
+        List<PaperQuestion> paperQuestions = paperQuestionRepository.findByMozipId(mozipId).stream()
                 .filter(question -> questionId == null || Arrays.asList(questionId.split(",")).contains(question.getId()))
                 .toList();
 
         List<PaperQuestionWithAnswersDto> questionWithAnswersDtos = paperQuestions.stream()
                 .map(question -> {
-                    List<PaperAnswer> paperAnswers = paperAnswerRepository.findByPaperQuestion(question)
+                    List<PaperAnswer> paperAnswers = paperAnswerRepository.findByQuestion(question)
                             .stream()
                             .filter(answer -> applicantId == null || Arrays.asList(applicantId.split(",")).contains(answer.getApplicant().getId()))
                             .toList();

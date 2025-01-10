@@ -5,26 +5,30 @@ import com.mozip.mozip.domain.applicant.entity.enums.ApplicationStatus;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 public class ApplicationDto {
     private String applicantId;
-    private String username;
-    private String realname;
     private int applicationNumber;
-    private ApplicationStatus paperStatus;
-    private ApplicationStatus interviewStatus;
-    private ApplicationStatus totalStatus;
+    private String realname;
+    private LocalDateTime appliedAt;
+    private Integer paperScore;
+    private String email;
+    private String phone;
+    private ApplicationStatus status;
 
-    public static ApplicationDto from(Applicant applicant) {
+    public static ApplicationDto from(Applicant applicant, Integer paperScore) {
         return ApplicationDto.builder()
                 .applicantId(applicant.getId())
-                .username(applicant.getUser().getUsername())
-                .realname(applicant.getUser().getRealname())
                 .applicationNumber(applicant.getApplicationNumber())
-                .paperStatus(applicant.getPaperStatus())
-                .interviewStatus(applicant.getInterviewStatus())
-                .totalStatus(applicant.getTotalStatus())
+                .realname(applicant.getUser().getRealname())
+                .appliedAt(applicant.getCreatedAt())
+                .paperScore(paperScore)
+                .email(applicant.getUser().getEmail())
+                .phone(applicant.getUser().getPhone())
+                .status(applicant.getTotalStatus())
                 .build();
     }
 }
