@@ -9,4 +9,6 @@ import java.util.List;
 public interface ClubRepository extends JpaRepository<Club, String> {
     @EntityGraph(attributePaths = {"position", "mozip"})
     List<Club> findAll();
+
+    boolean existsByName(String name);
 }

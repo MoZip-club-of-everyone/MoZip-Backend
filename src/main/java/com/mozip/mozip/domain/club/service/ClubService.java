@@ -55,6 +55,9 @@ public class ClubService {
 
     @Transactional
     public Club createClub(String name, String image) {
+        if (clubRepository.existsByName(name)) {
+            throw new IllegalArgumentException("이미 존재하는 동아리입니다.");
+        }
         Club club = Club.builder()
                 .name(name)
                 .image(image)
