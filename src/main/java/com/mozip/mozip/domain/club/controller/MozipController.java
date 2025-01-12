@@ -3,19 +3,12 @@ package com.mozip.mozip.domain.club.controller;
 import com.mozip.mozip.domain.club.dto.MozipRequestDto;
 import com.mozip.mozip.domain.club.entity.Mozip;
 import com.mozip.mozip.domain.club.service.MozipService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/mozip")
@@ -38,7 +31,7 @@ public class MozipController {
     public ResponseEntity<Mozip> createMozip(
             @RequestParam("club_id") String clubId,
             @RequestBody MozipRequestDto requestDto) {
-        Mozip createdMozip = mozipService.createMozip(clubId, requestDto.getTitle(), requestDto.getDescription());
+        Mozip createdMozip = mozipService.createMozip(clubId, requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdMozip);
     }
 
