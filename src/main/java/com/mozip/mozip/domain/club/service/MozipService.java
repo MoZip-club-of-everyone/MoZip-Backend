@@ -1,11 +1,16 @@
 package com.mozip.mozip.domain.club.service;
 
+import com.mozip.mozip.domain.club.dto.MozipRequestDto;
 import com.mozip.mozip.domain.club.entity.Club;
 import com.mozip.mozip.domain.club.entity.Mozip;
 import com.mozip.mozip.domain.club.repository.ClubRepository;
 import com.mozip.mozip.domain.club.repository.MozipRepository;
+import com.mozip.mozip.domain.question.dto.PaperQuestionCreateReqDto;
+import com.mozip.mozip.domain.question.service.PaperQuestionService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +21,7 @@ public class MozipService {
 
     private final MozipRepository mozipRepository;
     private final ClubRepository clubRepository;
+    private final PaperQuestionService paperQuestionService;
 
     public List<Mozip> getMozipsByClubId(String clubId) {
         return mozipRepository.findByClubId(clubId);
@@ -27,13 +33,16 @@ public class MozipService {
     }
 
     @Transactional
-    public Mozip createMozip(String clubId, String title, String description) {
+    public Mozip createMozip(String clubId, MozipRequestDto dto) {
         Club club = clubRepository.findById(clubId)
                 .orElseThrow(() -> new EntityNotFoundException("Club이 없습니다 : " + clubId));
         Mozip mozip = Mozip.builder()
                 .club(club)
-                .title(title)
-                .description(description)
+                .title(dto.getTitle())
+                .description(dto.getDescription())
+                .startDate(dto.getStartDate())
+                .endDate(dto.getEndDate())
+                .paperQuestions(dto.getPaperQuestions().stream().map(paperQuestionService::dtoToEntity).toList())
                 .build();
         return mozipRepository.save(mozip);
     }

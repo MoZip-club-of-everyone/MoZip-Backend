@@ -31,15 +31,7 @@ public class PaperQuestionService {
 
     @Transactional
     public PaperQuestion createPaperQuestion(PaperQuestionCreateReqDto requestDto) {
-        Mozip mozip = mozipRepository.findById(requestDto.getMozipId())
-                .orElseThrow(() -> new EntityNotFoundException("Mozip이 없습니다 : " + requestDto.getMozipId()));
-
-        PaperQuestion paperQuestion = PaperQuestion.builder()
-                .mozip(mozip)
-                .question(requestDto.getQuestion())
-                .details(requestDto.getDetails())
-                .isRequired(requestDto.isRequired())
-                .build();
+        PaperQuestion paperQuestion = this.dtoToEntity(requestDto);
         return questionRepository.save(paperQuestion);
     }
 
@@ -54,5 +46,16 @@ public class PaperQuestionService {
     public void deletePaperQuestion(String questionId) {
         PaperQuestion existingQuestion = getPaperQuestionById(questionId);
         questionRepository.delete(existingQuestion);
+    }
+
+    public PaperQuestion dtoToEntity(PaperQuestionCreateReqDto requestDto){
+        Mozip mozip = mozipRepository.findById(requestDto.getMozipId())
+                .orElseThrow(() -> new EntityNotFoundException("Mozip이 없습니다 : " + requestDto.getMozipId()));
+        return PaperQuestion.builder()
+                .mozip(mozip)
+                .question(requestDto.getQuestion())
+                .details(requestDto.getDetails())
+                .isRequired(requestDto.isRequired())
+                .build();
     }
 }

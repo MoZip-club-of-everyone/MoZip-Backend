@@ -31,7 +31,7 @@ public class MozipController {
     public ResponseEntity<Mozip> createMozip(
             @RequestParam("club_id") String clubId,
             @RequestBody MozipRequestDto requestDto) {
-        Mozip createdMozip = mozipService.createMozip(clubId, requestDto.getTitle(), requestDto.getDescription());
+        Mozip createdMozip = mozipService.createMozip(clubId, requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdMozip);
     }
 
