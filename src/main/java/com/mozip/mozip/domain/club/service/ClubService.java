@@ -1,10 +1,11 @@
 package com.mozip.mozip.domain.club.service;
 
 import com.mozip.mozip.domain.club.dto.ClubHomeResDto;
+import com.mozip.mozip.domain.club.dto.ClubResponseDto;
 import com.mozip.mozip.domain.club.entity.Club;
 import com.mozip.mozip.domain.club.repository.ClubRepository;
 import com.mozip.mozip.domain.club.repository.MozipRepository;
-import com.mozip.mozip.domain.user.entity.Position;
+import com.mozip.mozip.domain.user.entity.enums.PositionType;
 import com.mozip.mozip.domain.user.repository.PositionRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -30,7 +31,7 @@ public class ClubService {
 
     private ClubHomeResDto clubHomeResDto(Club club) {
         String leaderName = club.getPosition().stream()
-                .filter(position -> position.getPositionName() == Position.PositionType.leader)
+                .filter(position -> position.getPositionName() == PositionType.LEADER)
                 .map(position -> position.getUser().getRealname())
                 .findFirst()
                 .orElse(null);
@@ -62,11 +63,12 @@ public class ClubService {
     }
 
     @Transactional
-    public Club updateClub(String clubId, String name, String image) {
+    public ClubResponseDto updateClub(String clubId, String name, String image) {
         Club club = getClubById(clubId);
         club.setName(name);
         club.setImage(image);
-        return clubRepository.save(club);
+        Club savedClub = clubRepository.save(club);
+        return ClubResponseDto.fromEntity(savedClub);
     }
 
     @Transactional
