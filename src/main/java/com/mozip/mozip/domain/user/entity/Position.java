@@ -22,11 +22,11 @@ public class Position extends BaseTime {
     @Enumerated(EnumType.STRING)
     private PositionType positionName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id")
     private Club club;
 }

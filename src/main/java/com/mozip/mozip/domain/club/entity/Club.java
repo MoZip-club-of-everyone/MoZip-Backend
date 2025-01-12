@@ -19,12 +19,15 @@ public class Club extends BaseTime {
     @Builder.Default
     private final String id = new ULID().nextULID();
 
+    @Setter
     private String name;
 
-    private String description;
-
+    @Setter
     private String image;
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Position> position;
+
+    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Mozip> mozip;
 }
