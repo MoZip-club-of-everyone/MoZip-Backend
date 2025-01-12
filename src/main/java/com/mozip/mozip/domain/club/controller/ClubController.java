@@ -29,10 +29,15 @@ public class ClubController {
     }
 
     @PostMapping
-    public ResponseEntity<Club> createClub(
+    public ResponseEntity<?> createClub(
             @RequestBody ClubCreateReqDto requestDto) {
-        Club createdClub = clubService.createClub(requestDto.getName(), requestDto.getImage());
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdClub);
+        try {
+            Club createdClub = clubService.createClub(requestDto.getName(), requestDto.getImage());
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdClub);
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @PutMapping("/{club_id}")
