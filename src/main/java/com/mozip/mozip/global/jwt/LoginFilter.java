@@ -62,7 +62,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 //        response.addHeader("Authorization", "Bearer " + token);
         response.setContentType("application/json; charset=UTF-8");
-        LoginResponse responseMessage = LoginResponse.from("로그인에 성공하였습니다.", "Bearer " + token);
+        LoginResponse responseMessage = LoginResponse.from(user.getId(), "로그인에 성공하였습니다.", "Bearer " + token);
         new ObjectMapper().writeValue(response.getWriter(), responseMessage);
         log.info("login success");
     }
