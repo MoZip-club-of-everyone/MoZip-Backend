@@ -7,12 +7,15 @@ import com.mozip.mozip.domain.club.repository.ClubRepository;
 import com.mozip.mozip.domain.club.repository.MozipRepository;
 import com.mozip.mozip.domain.user.entity.enums.PositionType;
 import com.mozip.mozip.domain.user.repository.PositionRepository;
+import com.mozip.mozip.global.service.S3Service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -22,6 +25,7 @@ public class ClubService {
     private final ClubRepository clubRepository;
     private final MozipRepository mozipRepository;
     private final PositionRepository positionRepository;
+    private final S3Service s3Service;
 
     public List<ClubHomeResDto> getClubsByUserId(String userId) {
         List<Club> clubs = positionRepository.findClubsByUserId(userId);
@@ -54,24 +58,51 @@ public class ClubService {
     }
 
     @Transactional
-    public Club createClub(String name, String image) {
+    public ClubResponseDto createClub(String name, MultipartFile image) {
         if (clubRepository.existsByName(name)) {
             throw new IllegalArgumentException("이미 존재하는 동아리입니다.");
         }
-        Club club = Club.builder()
-                .name(name)
-                .image(image)
-                .build();
-        return clubRepository.save(club);
+        try {
+            String fileName = s3Service.createFileName(image);
+            String imageURI = s3Service.upload(image, fileName);
+            Club club = Club.builder()
+                    .name(name)
+                    .image(fileName)
+                    .build();
+            clubRepository.save(club);
+            Club responseClub = Club.builder()
+                    .id(club.getId())
+                    .name(club.getName())
+                    .image(imageURI)
+                    .build();
+            return ClubResponseDto.fromEntity(responseClub);
+        } catch (IOException e) {
+            throw new RuntimeException("파일 업로드 중 문제가 발생했습니다.");
+        }
     }
 
     @Transactional
-    public ClubResponseDto updateClub(String clubId, String name, String image) {
-        Club club = getClubById(clubId);
-        club.setName(name);
-        club.setImage(image);
-        Club savedClub = clubRepository.save(club);
-        return ClubResponseDto.fromEntity(savedClub);
+    public ClubResponseDto updateClub(String clubId, String name, MultipartFile image) {
+        try {
+            Club club = getClubById(clubId);
+            club.setName(name);
+            log.info(club.getImage());
+            if (club.getImage() != null) {
+                s3Service.delete(club.getImage());
+            }
+            String fileName = s3Service.createFileName(image);
+            String imageURI = s3Service.upload(image, fileName);
+            club.setImage(fileName);
+            clubRepository.save(club);
+            Club responseClub = Club.builder()
+                    .id(club.getId())
+                    .name(club.getName())
+                    .image(imageURI)
+                    .build();
+            return ClubResponseDto.fromEntity(responseClub);
+        } catch (IOException e) {
+            throw new RuntimeException("파일 업로드 중 문제가 발생했습니다.");
+        }
     }
 
     @Transactional
