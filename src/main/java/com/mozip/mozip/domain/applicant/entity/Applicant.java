@@ -29,12 +29,15 @@ public class Applicant extends BaseTime {
 
     private int applicationNumber;
 
+    @Setter
     @Builder.Default
     private ApplicationStatus paperStatus = ApplicationStatus.UNEVALUATED;
 
+    @Setter
     @Builder.Default
     private ApplicationStatus interviewStatus = ApplicationStatus.UNEVALUATED;
 
+    @Setter
     @Builder.Default
     private ApplicationStatus totalStatus = ApplicationStatus.UNEVALUATED;
 }

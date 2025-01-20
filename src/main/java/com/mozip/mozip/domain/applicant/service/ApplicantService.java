@@ -4,9 +4,10 @@ import com.mozip.mozip.domain.answer.dto.PaperAnswerDto;
 import com.mozip.mozip.domain.answer.dto.PaperAnswersResDto;
 import com.mozip.mozip.domain.answer.entity.PaperAnswer;
 import com.mozip.mozip.domain.answer.repository.PaperAnswerRepository;
-import com.mozip.mozip.domain.applicant.dto.ApplicantListResponse;
-import com.mozip.mozip.domain.applicant.dto.ApplicationDto;
+import com.mozip.mozip.domain.applicant.dto.*;
 import com.mozip.mozip.domain.applicant.entity.Applicant;
+import com.mozip.mozip.domain.applicant.entity.enums.ApplicationStatus;
+import com.mozip.mozip.domain.applicant.exception.ApplicantNotFoundException;
 import com.mozip.mozip.domain.applicant.repository.ApplicantRepository;
 import com.mozip.mozip.domain.club.entity.Mozip;
 import com.mozip.mozip.domain.club.exception.MozipNotFoundException;
@@ -26,6 +27,8 @@ import com.mozip.mozip.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -95,5 +98,22 @@ public class ApplicantService {
                 .toList();
 
         return PaperAnswersResDto.from(questionWithAnswersDtos);
+    }
+
+    public UpdateApplicantStatusResponse updateApplicantPaperStatuses(String mozipId, UpdateApplicantStatusRequest request) {
+        Mozip mozip = mozipRepository.findById(mozipId)
+                .orElseThrow(() -> new MozipNotFoundException(mozipId));
+
+        request.getApplicants().forEach(each -> {
+            Applicant applicant = applicantRepository.findByIdAndMozip(each.getApplicantId(), mozip)
+                    .orElseThrow(() -> new ApplicantNotFoundException(each.getApplicantId()));
+
+            applicant.setPaperStatus(each.getStatus());
+            applicantRepository.save(applicant);
+        });
+
+        return UpdateApplicantStatusResponse.builder()
+                .timestamp(Instant.now().toString())
+                .build();
     }
 }

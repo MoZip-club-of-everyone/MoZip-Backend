@@ -10,8 +10,8 @@ import java.util.Arrays;
 @Getter
 @RequiredArgsConstructor
 public enum ApplicationStatus {
-    UNEVALUATED("미평가"), // 평가 중
-    EVALUATED("평가 완료"),
+    UNEVALUATED("평가 중"), // 평가 중
+    EVALUATED("평가 완료"), // 평가 완료
     PASSED("합격"), // 합격
     FAILED("불합격"), // 불합격
     HOLD("보류"), // 보류
