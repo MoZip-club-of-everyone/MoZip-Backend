@@ -25,5 +25,5 @@ public interface ApplicantRepository extends JpaRepository<Applicant, String> {
 
     List<Applicant> findApplicantsByMozip(Mozip mozip);
 
-    Optional<Applicant> findByMozip(Mozip mozip);
+    Optional<Applicant> findByIdAndMozip(String id, Mozip mozip);
 }

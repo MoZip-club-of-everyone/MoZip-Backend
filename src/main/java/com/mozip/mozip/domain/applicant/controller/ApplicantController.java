@@ -35,6 +35,14 @@ public class ApplicantController {
         return ResponseEntity.ok(applicantService.getPaperAnswersByMozipId(userId, mozipId, applicantId, questionId));
     }
 
+    // 서류 합불 상태 수정
+    @PatchMapping("/paper-answers/status")
+    public ResponseEntity<UpdateApplicantStatusResponse> updateApplicantPaperStatuses(
+            @PathVariable("mozip_id") String mozipId,
+            @RequestBody UpdateApplicantStatusRequest request) {
+        return ResponseEntity.ok(applicantService.updateApplicantPaperStatuses(mozipId, request));
+    }
+
 //
 //    // 서류 평가 점수 목록 조회
 //    @GetMapping("/paper-evaluations")
