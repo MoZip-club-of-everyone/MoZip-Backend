@@ -1,6 +1,6 @@
-package com.mozip.mozip.domain.club.dto;
+package com.mozip.mozip.domain.mozip.dto;
 
-import com.mozip.mozip.domain.question.dto.PaperQuestionCreateReqDto;
+import com.mozip.mozip.domain.PaperQuestion.dto.PaperQuestionCreateReqDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,5 +14,9 @@ public class MozipRequestDto {
     private String description;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    private boolean isLoginRequired;
+    private boolean isEditAvailable;
+    private String descriptionBeforeMozip;
+    private String descriptionAfterMozip;
     private List<PaperQuestionCreateReqDto> paperQuestions;
 }

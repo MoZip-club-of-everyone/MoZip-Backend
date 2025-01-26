@@ -4,7 +4,7 @@ import com.mozip.mozip.domain.club.dto.ClubHomeResDto;
 import com.mozip.mozip.domain.club.dto.ClubResponseDto;
 import com.mozip.mozip.domain.club.entity.Club;
 import com.mozip.mozip.domain.club.repository.ClubRepository;
-import com.mozip.mozip.domain.club.repository.MozipRepository;
+import com.mozip.mozip.domain.mozip.repository.MozipRepository;
 import com.mozip.mozip.domain.user.entity.enums.PositionType;
 import com.mozip.mozip.domain.user.repository.PositionRepository;
 import com.mozip.mozip.global.service.S3Service;

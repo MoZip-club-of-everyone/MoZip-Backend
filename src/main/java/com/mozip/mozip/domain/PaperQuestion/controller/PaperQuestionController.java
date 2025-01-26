@@ -1,9 +1,9 @@
-package com.mozip.mozip.domain.question.controller;
+package com.mozip.mozip.domain.PaperQuestion.controller;
 
-import com.mozip.mozip.domain.question.dto.PaperQuestionCreateReqDto;
-import com.mozip.mozip.domain.question.dto.PaperQuestionUpdateReqDto;
-import com.mozip.mozip.domain.question.entity.PaperQuestion;
-import com.mozip.mozip.domain.question.service.PaperQuestionService;
+import com.mozip.mozip.domain.PaperQuestion.dto.PaperQuestionCreateReqDto;
+import com.mozip.mozip.domain.PaperQuestion.dto.PaperQuestionUpdateReqDto;
+import com.mozip.mozip.domain.PaperQuestion.entity.PaperQuestion;
+import com.mozip.mozip.domain.PaperQuestion.service.PaperQuestionService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

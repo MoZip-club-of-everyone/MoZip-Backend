@@ -1,4 +1,4 @@
-package com.mozip.mozip.domain.question.dto;
+package com.mozip.mozip.domain.PaperQuestion.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
