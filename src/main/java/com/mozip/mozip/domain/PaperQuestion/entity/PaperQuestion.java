@@ -1,6 +1,6 @@
-package com.mozip.mozip.domain.question.entity;
+package com.mozip.mozip.domain.PaperQuestion.entity;
 
-import com.mozip.mozip.domain.club.entity.Mozip;
+import com.mozip.mozip.domain.mozip.entity.Mozip;
 import com.mozip.mozip.global.entity.BaseTime;
 import de.huxhorn.sulky.ulid.ULID;
 import jakarta.persistence.Column;

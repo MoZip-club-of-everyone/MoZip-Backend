@@ -1,9 +1,8 @@
 package com.mozip.mozip.domain.applicant.repository;
 
 import com.mozip.mozip.domain.applicant.entity.Applicant;
-import com.mozip.mozip.domain.club.entity.Mozip;
+import com.mozip.mozip.domain.mozip.entity.Mozip;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;

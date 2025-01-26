@@ -1,16 +1,14 @@
-package com.mozip.mozip.domain.club.service;
+package com.mozip.mozip.domain.mozip.service;
 
-import com.mozip.mozip.domain.club.dto.MozipRequestDto;
+import com.mozip.mozip.domain.mozip.dto.MozipRequestDto;
 import com.mozip.mozip.domain.club.entity.Club;
-import com.mozip.mozip.domain.club.entity.Mozip;
-import com.mozip.mozip.domain.club.repository.ClubRepository;
-import com.mozip.mozip.domain.club.repository.MozipRepository;
-import com.mozip.mozip.domain.question.dto.PaperQuestionCreateReqDto;
-import com.mozip.mozip.domain.question.service.PaperQuestionService;
+import com.mozip.mozip.domain.mozip.entity.Mozip;
+import com.mozip.mozip.domain.mozip.repository.MozipRepository;
+import com.mozip.mozip.domain.PaperQuestion.entity.PaperQuestion;
+import com.mozip.mozip.domain.PaperQuestion.service.PaperQuestionService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,8 +18,6 @@ import org.springframework.stereotype.Service;
 public class MozipService {
 
     private final MozipRepository mozipRepository;
-    private final ClubRepository clubRepository;
-    private final PaperQuestionService paperQuestionService;
 
     public List<Mozip> getMozipsByClubId(String clubId) {
         return mozipRepository.findByClubId(clubId);
@@ -33,16 +29,18 @@ public class MozipService {
     }
 
     @Transactional
-    public Mozip createMozip(String clubId, MozipRequestDto dto) {
-        Club club = clubRepository.findById(clubId)
-                .orElseThrow(() -> new EntityNotFoundException("Club이 없습니다 : " + clubId));
+    public Mozip createMozip(Club club, MozipRequestDto dto, List<PaperQuestion> paperQuestions) {
         Mozip mozip = Mozip.builder()
                 .club(club)
                 .title(dto.getTitle())
                 .description(dto.getDescription())
                 .startDate(dto.getStartDate())
                 .endDate(dto.getEndDate())
-                .paperQuestions(dto.getPaperQuestions().stream().map(paperQuestionService::dtoToEntity).toList())
+                .isLoginRequired(dto.isLoginRequired())
+                .isEditAvailable(dto.isEditAvailable())
+                .descriptionBeforeMozip(dto.getDescriptionBeforeMozip())
+                .descriptionAfterMozip(dto.getDescriptionAfterMozip())
+                .paperQuestions(paperQuestions)
                 .build();
         return mozipRepository.save(mozip);
     }

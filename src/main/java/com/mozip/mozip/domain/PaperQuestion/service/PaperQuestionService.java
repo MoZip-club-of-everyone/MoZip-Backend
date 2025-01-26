@@ -1,11 +1,11 @@
-package com.mozip.mozip.domain.question.service;
+package com.mozip.mozip.domain.PaperQuestion.service;
 
-import com.mozip.mozip.domain.club.entity.Mozip;
-import com.mozip.mozip.domain.club.repository.MozipRepository;
-import com.mozip.mozip.domain.question.dto.PaperQuestionCreateReqDto;
-import com.mozip.mozip.domain.question.dto.PaperQuestionUpdateReqDto;
-import com.mozip.mozip.domain.question.entity.PaperQuestion;
-import com.mozip.mozip.domain.question.repository.PaperQuestionRepository;
+import com.mozip.mozip.domain.PaperQuestion.dto.PaperQuestionCreateReqDto;
+import com.mozip.mozip.domain.PaperQuestion.dto.PaperQuestionUpdateReqDto;
+import com.mozip.mozip.domain.PaperQuestion.entity.PaperQuestion;
+import com.mozip.mozip.domain.PaperQuestion.repository.PaperQuestionRepository;
+import com.mozip.mozip.domain.mozip.entity.Mozip;
+import com.mozip.mozip.domain.mozip.repository.MozipRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

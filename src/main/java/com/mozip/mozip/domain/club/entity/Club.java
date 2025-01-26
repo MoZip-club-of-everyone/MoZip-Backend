@@ -1,5 +1,6 @@
 package com.mozip.mozip.domain.club.entity;
 
+import com.mozip.mozip.domain.mozip.entity.Mozip;
 import com.mozip.mozip.domain.user.entity.Position;
 import com.mozip.mozip.global.entity.BaseTime;
 import de.huxhorn.sulky.ulid.ULID;

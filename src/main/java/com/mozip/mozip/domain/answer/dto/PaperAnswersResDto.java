@@ -2,7 +2,7 @@ package com.mozip.mozip.domain.answer.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.mozip.mozip.domain.question.dto.PaperQuestionWithAnswersDto;
+import com.mozip.mozip.domain.PaperQuestion.dto.PaperQuestionWithAnswersDto;
 import lombok.Builder;
 import lombok.Getter;
 

@@ -2,14 +2,12 @@ package com.mozip.mozip.domain.applicant.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.mozip.mozip.domain.applicant.entity.Applicant;
 import com.mozip.mozip.domain.applicant.entity.enums.ApplicationStatus;
-import com.mozip.mozip.domain.club.entity.Mozip;
+import com.mozip.mozip.domain.mozip.entity.Mozip;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Builder
