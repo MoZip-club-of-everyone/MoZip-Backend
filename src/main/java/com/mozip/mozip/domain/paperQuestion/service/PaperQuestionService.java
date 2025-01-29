@@ -32,6 +32,7 @@ public class PaperQuestionService {
         PaperQuestion paperQuestion = PaperQuestion.builder()
                 .mozip(mozip)
                 .question(requestDto.getQuestion())
+                .type(requestDto.getType())
                 .details(requestDto.getDetails())
                 .isRequired(requestDto.isRequired())
                 .build();
@@ -41,7 +42,7 @@ public class PaperQuestionService {
     @Transactional
     public PaperQuestion updatePaperQuestion(String questionId, PaperQuestionUpdateReqDto requestDto) {
         PaperQuestion question = getPaperQuestionById(questionId);
-        question.updateQuestion(requestDto.getQuestion(), requestDto.getDetails(), requestDto.isRequired());
+        question.updateQuestion(requestDto.getQuestion(), requestDto.getDetails(), requestDto.getType(), requestDto.isRequired());
         return questionRepository.save(question);
     }
 

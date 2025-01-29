@@ -32,15 +32,18 @@ public class PaperQuestion extends BaseTime {
 
     private Long questionNo; // 질문지 내에서의 질문 번호
 
+    private PaperQuestionType type;
+
     @Lob
     private String details;
 
     @Column(nullable = false)
     private boolean isRequired;
 
-    public void updateQuestion(String question, String details, boolean isRequired) {
+    public void updateQuestion(String question, String details, PaperQuestionType type, boolean isRequired) {
         this.question = question;
         this.details = details;
+        this.type = type;
         this.isRequired = isRequired;
     }
 }
