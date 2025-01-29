@@ -5,7 +5,6 @@ import com.mozip.mozip.domain.paperQuestion.dto.PaperQuestionUpdateReqDto;
 import com.mozip.mozip.domain.paperQuestion.entity.PaperQuestion;
 import com.mozip.mozip.domain.paperQuestion.repository.PaperQuestionRepository;
 import com.mozip.mozip.domain.mozip.entity.Mozip;
-import com.mozip.mozip.domain.mozip.repository.MozipRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
