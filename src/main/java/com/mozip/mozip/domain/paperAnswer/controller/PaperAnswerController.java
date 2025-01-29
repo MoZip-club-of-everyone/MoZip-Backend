@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/papers/answers")
+@RequestMapping("/api/papers/answers")
 @RequiredArgsConstructor
 public class PaperAnswerController {
 

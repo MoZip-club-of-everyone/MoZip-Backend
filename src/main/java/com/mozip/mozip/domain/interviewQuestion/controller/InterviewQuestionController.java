@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/interviews/questions")
+@RequestMapping("/api/interviews/questions")
 @RequiredArgsConstructor
 public class InterviewQuestionController {
 
