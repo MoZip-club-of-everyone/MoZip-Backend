@@ -4,6 +4,7 @@ import com.mozip.mozip.domain.interviewQuestion.dto.InterviewQuestionCreateReqDt
 import com.mozip.mozip.domain.interviewQuestion.dto.InterviewQuestionResDto;
 import com.mozip.mozip.domain.interviewQuestion.dto.InterviewQuestionUpdateReqDto;
 import com.mozip.mozip.domain.interviewQuestion.service.InterviewQuestionManager;
+import java.util.HashMap;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +26,11 @@ public class InterviewQuestionController {
     private final InterviewQuestionManager interviewQuestionManager;
 
     @GetMapping
-    public List<InterviewQuestionResDto> getQuestionsByMozipId(@RequestParam("mozip_id") String mozipId) {
-        return interviewQuestionManager.getInterviewQuestionsByMozipId(mozipId);
+    public HashMap<String, List<InterviewQuestionResDto>> getQuestionsByMozipId(@RequestParam("mozip_id") String mozipId) {
+        List<InterviewQuestionResDto> interviewQuestionResDtoList = interviewQuestionManager.getInterviewQuestionsByMozipId(mozipId);
+        HashMap<String, List<InterviewQuestionResDto>> response = new HashMap<>();
+        response.put("list", interviewQuestionResDtoList);
+        return response;
     }
 
     @GetMapping("/{question_id}")

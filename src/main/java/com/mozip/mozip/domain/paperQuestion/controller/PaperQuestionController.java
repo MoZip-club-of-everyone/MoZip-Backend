@@ -4,6 +4,7 @@ import com.mozip.mozip.domain.paperQuestion.dto.PaperQuestionCreateReqDto;
 import com.mozip.mozip.domain.paperQuestion.dto.PaperQuestionResDto;
 import com.mozip.mozip.domain.paperQuestion.dto.PaperQuestionUpdateReqDto;
 import com.mozip.mozip.domain.paperQuestion.service.PaperQuestionManager;
+import java.util.HashMap;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +26,11 @@ public class PaperQuestionController {
     private final PaperQuestionManager paperQuestionManager;
 
     @GetMapping
-    public List<PaperQuestionResDto> getQuestionsByMozipId(@RequestParam("mozip_id") String mozipId) {
-        return paperQuestionManager.getPaperQuestionsByMozipId(mozipId);
+    public HashMap<String, List<PaperQuestionResDto>> getQuestionsByMozipId(@RequestParam("mozip_id") String mozipId) {
+        List<PaperQuestionResDto> paperQuestionResDtoList = paperQuestionManager.getPaperQuestionsByMozipId(mozipId);
+        HashMap<String, List<PaperQuestionResDto>> response = new HashMap<>();
+        response.put("list", paperQuestionResDtoList);
+        return response;
     }
 
     @GetMapping("/{question_id}")
