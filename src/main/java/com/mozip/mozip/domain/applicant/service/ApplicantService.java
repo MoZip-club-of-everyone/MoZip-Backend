@@ -1,9 +1,9 @@
 package com.mozip.mozip.domain.applicant.service;
 
-import com.mozip.mozip.domain.answer.dto.PaperAnswerDto;
-import com.mozip.mozip.domain.answer.dto.PaperAnswersResDto;
-import com.mozip.mozip.domain.answer.entity.PaperAnswer;
-import com.mozip.mozip.domain.answer.repository.PaperAnswerRepository;
+import com.mozip.mozip.domain.paperAnswer.dto.PaperAnswerForApplicantDto;
+import com.mozip.mozip.domain.paperAnswer.dto.PaperAnswersForApplicantResDto;
+import com.mozip.mozip.domain.paperAnswer.entity.PaperAnswer;
+import com.mozip.mozip.domain.paperAnswer.repository.PaperAnswerRepository;
 import com.mozip.mozip.domain.applicant.dto.*;
 import com.mozip.mozip.domain.applicant.entity.Applicant;
 import com.mozip.mozip.domain.applicant.exception.ApplicantNotFoundException;
@@ -17,12 +17,13 @@ import com.mozip.mozip.domain.evaluation.exception.EvaluationNotFoundException;
 import com.mozip.mozip.domain.evaluation.exception.PaperEvaluationNotFoundException;
 import com.mozip.mozip.domain.evaluation.repository.EvaluationRepository;
 import com.mozip.mozip.domain.evaluation.repository.PaperEvaluationRepository;
-import com.mozip.mozip.domain.PaperQuestion.dto.PaperQuestionWithAnswersDto;
-import com.mozip.mozip.domain.PaperQuestion.entity.PaperQuestion;
-import com.mozip.mozip.domain.PaperQuestion.repository.PaperQuestionRepository;
+import com.mozip.mozip.domain.paperQuestion.dto.PaperQuestionWithAnswersDto;
+import com.mozip.mozip.domain.paperQuestion.entity.PaperQuestion;
+import com.mozip.mozip.domain.paperQuestion.repository.PaperQuestionRepository;
 import com.mozip.mozip.domain.user.entity.User;
 import com.mozip.mozip.domain.user.exception.UserNotFoundException;
 import com.mozip.mozip.domain.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +41,11 @@ public class ApplicantService {
     private final PaperAnswerRepository paperAnswerRepository;
     private final EvaluationRepository evaluationRepository;
     private final PaperEvaluationRepository paperEvaluationRepository;
+
+    public Applicant getApplicantById(String applicantId) {
+        return applicantRepository.findById(applicantId)
+                .orElseThrow(() -> new EntityNotFoundException("Applicant가 없습니다 : " + applicantId));
+    }
 
     public ApplicantListResponse getApplicantListByMozipId(String mozipId, String sortBy, String order) {
         Mozip mozip = mozipRepository.findById(mozipId)
@@ -60,7 +66,7 @@ public class ApplicantService {
         return ApplicantListResponse.from(applicationDtos, mozip);
     }
 
-    public PaperAnswersResDto getPaperAnswersByMozipId(String userId, String mozipId, String applicantId, String questionId) {
+    public PaperAnswersForApplicantResDto getPaperAnswersByMozipId(String userId, String mozipId, String applicantId, String questionId) {
         User evaluator = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
@@ -70,12 +76,12 @@ public class ApplicantService {
 
         List<PaperQuestionWithAnswersDto> questionWithAnswersDtos = paperQuestions.stream()
                 .map(question -> {
-                    List<PaperAnswer> paperAnswers = paperAnswerRepository.findByQuestion(question)
+                    List<PaperAnswer> paperAnswers = paperAnswerRepository.findByPaperQuestionId(question.getId())
                             .stream()
                             .filter(answer -> applicantId == null || Arrays.asList(applicantId.split(",")).contains(answer.getApplicant().getId()))
                             .toList();
 
-                    List<PaperAnswerDto> paperAnswerDtos = paperAnswers.stream()
+                    List<PaperAnswerForApplicantDto> paperAnswerForApplicantDtos = paperAnswers.stream()
                             .map(answer -> {
                                 Evaluation evaluation = evaluationRepository.findByEvaluatorAndApplicant(
                                         evaluator,
@@ -87,15 +93,15 @@ public class ApplicantService {
                                         evaluation
                                 ).orElseThrow(() -> new PaperEvaluationNotFoundException(evaluation.getId(), answer.getId()));
 
-                                return PaperAnswerDto.from(answer, paperEvaluation.getScore());
+                                return PaperAnswerForApplicantDto.from(answer, paperEvaluation.getScore());
                             })
                             .toList();
 
-                    return PaperQuestionWithAnswersDto.from(question, paperAnswerDtos);
+                    return PaperQuestionWithAnswersDto.from(question, paperAnswerForApplicantDtos);
                 })
                 .toList();
 
-        return PaperAnswersResDto.from(questionWithAnswersDtos);
+        return PaperAnswersForApplicantResDto.from(questionWithAnswersDtos);
     }
 
     public UpdateApplicantStatusResponse updateApplicantPaperStatuses(String mozipId, UpdateApplicantStatusRequest request) {

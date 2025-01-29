@@ -4,11 +4,11 @@ import com.mozip.mozip.domain.mozip.dto.MozipRequestDto;
 import com.mozip.mozip.domain.club.entity.Club;
 import com.mozip.mozip.domain.mozip.entity.Mozip;
 import com.mozip.mozip.domain.mozip.repository.MozipRepository;
-import com.mozip.mozip.domain.PaperQuestion.entity.PaperQuestion;
-import com.mozip.mozip.domain.PaperQuestion.service.PaperQuestionService;
+import com.mozip.mozip.domain.paperQuestion.entity.PaperQuestion;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class MozipService {
     }
 
     @Transactional
-    public Mozip createMozip(Club club, MozipRequestDto dto, List<PaperQuestion> paperQuestions) {
+    public Mozip createMozip(Club club, MozipRequestDto dto) {
         Mozip mozip = Mozip.builder()
                 .club(club)
                 .title(dto.getTitle())
@@ -40,7 +40,7 @@ public class MozipService {
                 .isEditAvailable(dto.isEditAvailable())
                 .descriptionBeforeMozip(dto.getDescriptionBeforeMozip())
                 .descriptionAfterMozip(dto.getDescriptionAfterMozip())
-                .paperQuestions(paperQuestions)
+                .paperQuestions(new ArrayList<>())
                 .build();
         return mozipRepository.save(mozip);
     }
@@ -50,6 +50,12 @@ public class MozipService {
         Mozip mozip = getMozipById(mozipId);
         mozip.setTitle(title);
         mozip.setDescription(description);
+        return mozipRepository.save(mozip);
+    }
+
+    @Transactional
+    public Mozip updateMozipQuestions(Mozip mozip, List<PaperQuestion> paperQuestions) {
+        mozip.setPaperQuestions(paperQuestions);
         return mozipRepository.save(mozip);
     }
 

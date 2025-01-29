@@ -1,7 +1,7 @@
 package com.mozip.mozip.domain.mozip.entity;
 
 import com.mozip.mozip.domain.club.entity.Club;
-import com.mozip.mozip.domain.PaperQuestion.entity.PaperQuestion;
+import com.mozip.mozip.domain.paperQuestion.entity.PaperQuestion;
 import com.mozip.mozip.global.entity.BaseTime;
 import de.huxhorn.sulky.ulid.ULID;
 import jakarta.persistence.*;
@@ -52,6 +52,7 @@ public class Mozip extends BaseTime {
     @Builder.Default
     private boolean isEditAvailable = false;
 
+    @Setter
     @OneToMany(mappedBy = "mozip", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PaperQuestion> paperQuestions;
 }

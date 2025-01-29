@@ -5,8 +5,8 @@ import com.mozip.mozip.domain.club.service.ClubService;
 import com.mozip.mozip.domain.mozip.dto.MozipRequestDto;
 import com.mozip.mozip.domain.mozip.dto.MozipResponseDto;
 import com.mozip.mozip.domain.mozip.entity.Mozip;
-import com.mozip.mozip.domain.PaperQuestion.entity.PaperQuestion;
-import com.mozip.mozip.domain.PaperQuestion.service.PaperQuestionService;
+import com.mozip.mozip.domain.paperQuestion.entity.PaperQuestion;
+import com.mozip.mozip.domain.paperQuestion.service.PaperQuestionService;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +32,12 @@ public class MozipManager {
     @Transactional
     public MozipResponseDto createMozip(String clubId, MozipRequestDto dto) {
         Club club = clubService.getClubById(clubId);
-        List<PaperQuestion> paperQuestions = dto.getPaperQuestions().stream().map(paperQuestionService::dtoToEntity).toList();
-        Mozip createdMozip = mozipService.createMozip(club, dto, paperQuestions);
-        return MozipResponseDto.entityToDto(createdMozip);
+        Mozip createdMozip = mozipService.createMozip(club, dto);
+        List<PaperQuestion> paperQuestions = dto.getPaperQuestions()
+                .stream().map(paperQuestion -> paperQuestionService.createPaperQuestion(createdMozip, paperQuestion))
+                .toList();
+        Mozip updatedMozip = mozipService.updateMozipQuestions(createdMozip, paperQuestions);
+        return MozipResponseDto.entityToDto(updatedMozip);
     }
 
     @Transactional

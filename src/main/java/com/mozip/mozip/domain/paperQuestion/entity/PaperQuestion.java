@@ -1,4 +1,4 @@
-package com.mozip.mozip.domain.interviewQuestion.entity;
+package com.mozip.mozip.domain.paperQuestion.entity;
 
 import com.mozip.mozip.domain.mozip.entity.Mozip;
 import com.mozip.mozip.global.entity.BaseTime;
@@ -10,20 +10,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class InterviewQuestion extends BaseTime {
+public class PaperQuestion extends BaseTime {
     @Id
-    @Column(name = "interview_question_id")
+    @Column(name = "paper_question_id")
     @Builder.Default
     private final String id = new ULID().nextULID();
 
