@@ -1,6 +1,6 @@
 package com.mozip.mozip.domain.evaluation.entity;
 
-import com.mozip.mozip.domain.answer.entity.InterviewAnswer;
+import com.mozip.mozip.domain.answer.entity.PaperAnswer;
 import com.mozip.mozip.domain.user.entity.User;
 import com.mozip.mozip.global.entity.BaseTime;
 import de.huxhorn.sulky.ulid.ULID;
@@ -12,9 +12,10 @@ import lombok.*;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class InterviewComment extends BaseTime {
+public class PaperMemo extends BaseTime {
+
     @Id
-    @Column(name = "interview_comment_id")
+    @Column(name = "paper_comment_id")
     @Builder.Default
     private final String id = new ULID().nextULID();
 
@@ -23,9 +24,9 @@ public class InterviewComment extends BaseTime {
     private User writer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "interview_answer_id", nullable = false)
-    private InterviewAnswer interviewAnswer;
+    @JoinColumn(name = "paper_answer_id", nullable = false)
+    private PaperAnswer paperAnswer;
 
     @Lob
-    private String comment;
+    private String memo;
 }

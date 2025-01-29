@@ -18,9 +18,6 @@ public class PaperComment extends BaseTime {
     @Builder.Default
     private final String id = new ULID().nextULID();
 
-    @Lob
-    private String comment;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id", nullable = false)
     private User writer;
@@ -28,4 +25,7 @@ public class PaperComment extends BaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "paper_answer_id", nullable = false)
     private PaperAnswer paperAnswer;
+
+    @Lob
+    private String comment;
 }

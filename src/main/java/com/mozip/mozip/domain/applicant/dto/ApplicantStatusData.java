@@ -2,16 +2,14 @@ package com.mozip.mozip.domain.applicant.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.Builder;
+import com.mozip.mozip.domain.applicant.entity.enums.EvaluationStatus;
 import lombok.Getter;
-
-import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
+@NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class UpdateApplicantStatusResponse {
-    @Builder.Default
-    private String message = "지원자 상태가 성공적으로 업데이트되었습니다.";
-    private String timestamp;
+public class ApplicantStatusData {
+    private String applicantId;
+    private EvaluationStatus status;
 }

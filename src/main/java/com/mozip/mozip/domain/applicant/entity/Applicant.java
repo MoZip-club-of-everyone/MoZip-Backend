@@ -1,6 +1,6 @@
 package com.mozip.mozip.domain.applicant.entity;
 
-import com.mozip.mozip.domain.applicant.entity.enums.ApplicationStatus;
+import com.mozip.mozip.domain.applicant.entity.enums.EvaluationStatus;
 import com.mozip.mozip.domain.mozip.entity.Mozip;
 import com.mozip.mozip.domain.user.entity.User;
 import com.mozip.mozip.global.entity.BaseTime;
@@ -31,13 +31,13 @@ public class Applicant extends BaseTime {
 
     @Setter
     @Builder.Default
-    private ApplicationStatus paperStatus = ApplicationStatus.UNEVALUATED;
+    private EvaluationStatus paperStatus = EvaluationStatus.UNEVALUATED;
 
     @Setter
     @Builder.Default
-    private ApplicationStatus interviewStatus = ApplicationStatus.UNEVALUATED;
+    private EvaluationStatus interviewStatus = EvaluationStatus.UNEVALUATED;
 
     @Setter
     @Builder.Default
-    private ApplicationStatus totalStatus = ApplicationStatus.UNEVALUATED;
+    private EvaluationStatus totalStatus = EvaluationStatus.UNEVALUATED;
 }
