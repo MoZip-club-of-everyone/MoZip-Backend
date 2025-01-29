@@ -1,6 +1,6 @@
 package com.mozip.mozip.domain.applicant.controller;
 
-import com.mozip.mozip.domain.answer.dto.PaperAnswersResDto;
+import com.mozip.mozip.domain.paperAnswer.dto.PaperAnswersForApplicantResDto;
 import com.mozip.mozip.domain.applicant.dto.*;
 import com.mozip.mozip.domain.applicant.service.ApplicantService;
 import com.mozip.mozip.global.dto.CustomUserDetails;
@@ -26,7 +26,7 @@ public class ApplicantController {
 
     // 서류 지원서 목록 조회
     @GetMapping("/paper-answers")
-    public ResponseEntity<PaperAnswersResDto> getPaperAnswers(
+    public ResponseEntity<PaperAnswersForApplicantResDto> getPaperAnswers(
             Authentication authentication,
             @PathVariable("mozip_id") String mozipId,
             @RequestParam(value = "applicant-id", required = false) String applicantId,

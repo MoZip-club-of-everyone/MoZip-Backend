@@ -1,6 +1,6 @@
 package com.mozip.mozip.domain.mozip.dto;
 
-import com.mozip.mozip.domain.PaperQuestion.dto.PaperQuestionCreateReqDto;
+import com.mozip.mozip.domain.paperQuestion.dto.PaperQuestionCreateReqDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

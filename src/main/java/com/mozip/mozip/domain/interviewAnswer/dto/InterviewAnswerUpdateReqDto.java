@@ -1,10 +1,10 @@
-package com.mozip.mozip.domain.answer.dto;
+package com.mozip.mozip.domain.interviewAnswer.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class PaperAnswerUpdateReqDto {
+public class InterviewAnswerUpdateReqDto {
     private String answer;
 }

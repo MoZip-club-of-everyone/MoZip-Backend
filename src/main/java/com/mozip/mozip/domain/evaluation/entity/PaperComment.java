@@ -1,6 +1,6 @@
 package com.mozip.mozip.domain.evaluation.entity;
 
-import com.mozip.mozip.domain.answer.entity.PaperAnswer;
+import com.mozip.mozip.domain.paperAnswer.entity.PaperAnswer;
 import com.mozip.mozip.domain.user.entity.User;
 import com.mozip.mozip.global.entity.BaseTime;
 import de.huxhorn.sulky.ulid.ULID;

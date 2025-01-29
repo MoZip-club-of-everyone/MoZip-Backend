@@ -1,22 +1,22 @@
-package com.mozip.mozip.domain.answer.dto;
+package com.mozip.mozip.domain.paperAnswer.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.mozip.mozip.domain.answer.entity.PaperAnswer;
+import com.mozip.mozip.domain.paperAnswer.entity.PaperAnswer;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class PaperAnswerDto {
+public class PaperAnswerForApplicantDto {
     private String applicantId;
     private String realname;
     private String answer;
     private int score;
 
-    public static PaperAnswerDto from(PaperAnswer answer, int score) {
-        return PaperAnswerDto.builder()
+    public static PaperAnswerForApplicantDto from(PaperAnswer answer, int score) {
+        return PaperAnswerForApplicantDto.builder()
                 .applicantId(answer.getApplicant().getId())
                 .realname(answer.getApplicant().getUser().getRealname())
                 .answer(answer.getAnswer())

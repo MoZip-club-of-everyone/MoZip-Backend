@@ -1,6 +1,6 @@
 package com.mozip.mozip.domain.evaluation.entity;
 
-import com.mozip.mozip.domain.answer.entity.InterviewAnswer;
+import com.mozip.mozip.domain.interviewAnswer.entity.InterviewAnswer;
 import com.mozip.mozip.global.entity.BaseTime;
 import de.huxhorn.sulky.ulid.ULID;
 import jakarta.persistence.*;
