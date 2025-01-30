@@ -25,6 +25,10 @@ public class MozipResponseDto {
                 .description(mozip.getDescription())
                 .startDate(mozip.getStartDate())
                 .endDate(mozip.getEndDate())
+                .isLoginRequired(mozip.isLoginRequired())
+                .isEditAvailable(mozip.isEditAvailable())
+                .descriptionBeforeMozip(mozip.getDescriptionBeforeMozip())
+                .descriptionAfterMozip(mozip.getDescriptionAfterMozip())
                 .build();
     }
 }
