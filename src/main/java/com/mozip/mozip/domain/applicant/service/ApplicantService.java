@@ -7,16 +7,15 @@ import com.mozip.mozip.domain.answer.dto.PaperAnswerData;
 import com.mozip.mozip.domain.answer.dto.PaperAnswersResDto;
 import com.mozip.mozip.domain.answer.entity.PaperAnswer;
 import com.mozip.mozip.domain.answer.repository.PaperAnswerRepository;
-import com.mozip.mozip.domain.applicant.dto.ApplicantData;
 import com.mozip.mozip.domain.applicant.dto.ApplicantListResponse;
+import com.mozip.mozip.domain.applicant.dto.PaperApplicantData;
 import com.mozip.mozip.domain.applicant.dto.UpdateApplicantStatusRequest;
 import com.mozip.mozip.domain.applicant.entity.Applicant;
 import com.mozip.mozip.domain.applicant.exception.ApplicantNotFoundException;
 import com.mozip.mozip.domain.applicant.repository.ApplicantRepository;
-import com.mozip.mozip.domain.evaluation.dto.EvaluatedApplicantData;
-import com.mozip.mozip.domain.evaluation.dto.EvaluationData;
+import com.mozip.mozip.domain.evaluation.dto.PaperEvaluatedApplicantData;
+import com.mozip.mozip.domain.evaluation.dto.PaperEvaluationData;
 import com.mozip.mozip.domain.evaluation.entity.Evaluation;
-import com.mozip.mozip.domain.evaluation.repository.EvaluationRepository;
 import com.mozip.mozip.domain.evaluation.service.EvaluationService;
 import com.mozip.mozip.domain.mozip.entity.Mozip;
 import com.mozip.mozip.domain.mozip.service.MozipService;
@@ -55,14 +54,13 @@ public class ApplicantService {
 
     // 서류 지원자 목록 조회
     @Transactional(readOnly = true)
-    public ApplicantListResponse<ApplicantData> getApplicantListByMozipId(String mozipId, String sortBy, String order) {
+    public ApplicantListResponse<PaperApplicantData> getApplicantListByMozipId(String mozipId, String sortBy, String order) {
         Mozip mozip = mozipService.getMozipById(mozipId);
-//        List<Applicant> applicants = applicantRepository.findApplicantsByMozipWithSorting(mozip, sortBy, order);
         List<Applicant> applicants = applicantRepository.findApplicantsByMozip(mozip);
-        List<ApplicantData> applicantDataList = applicants.stream()
+        List<PaperApplicantData> applicantDataList = applicants.stream()
                 .map(applicant -> {
                     Double paperScore = calculateAveragePaperScore(applicant);
-                    return ApplicantData.from(applicant, paperScore);
+                    return PaperApplicantData.from(applicant, paperScore);
                 })
                 .toList();
         return ApplicantListResponse.from(applicantDataList);
@@ -106,24 +104,25 @@ public class ApplicantService {
 
     // 서류 평가 점수 목록 조회
     @Transactional(readOnly = true)
-    public ApplicantListResponse<EvaluatedApplicantData> getPaperEvaluationsByMozipId(String mozipId, String sortBy, String order) {
+    public ApplicantListResponse<PaperEvaluatedApplicantData> getPaperEvaluationsByMozipId(String mozipId, String sortBy, String order) {
         Mozip mozip = mozipService.getMozipById(mozipId);
-//        List<Applicant> applicants = applicantRepository.findApplicantsByMozipWithSorting(mozip, sortBy, order);
         List<Applicant> applicants = applicantRepository.findApplicantsByMozip(mozip);
-        List<EvaluatedApplicantData> applicantDataList = applicants.stream()
+        List<PaperEvaluatedApplicantData> applicantDataList = applicants.stream()
                 .map(applicant -> {
                     List<Evaluation> evaluations = evaluationService.getEvaluationsByApplicant(applicant);
-                    List<EvaluationData> evaluationDataList = evaluations.stream()
-                            .map(EvaluationData::from)
+                    List<PaperEvaluationData> evaluationDataList = evaluations.stream()
+                            .map(PaperEvaluationData::from)
                             .toList();
                     Double paperScore = calculateAveragePaperScore(applicant);
-                    return EvaluatedApplicantData.from(applicant, paperScore, evaluationDataList);
+                    return PaperEvaluatedApplicantData.from(applicant, paperScore, evaluationDataList);
                 })
                 .toList();
         return ApplicantListResponse.from(applicantDataList);
     }
 
     // 서류 합격자 목록 조회
+    // @Transactional(readOnly = true)
+    // public ApplicantListResponse<Interview>
 
     // 면접 기록 목록 조회
 

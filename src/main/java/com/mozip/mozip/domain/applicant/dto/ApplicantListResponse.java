@@ -3,13 +3,14 @@ package com.mozip.mozip.domain.applicant.dto;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.mozip.mozip.domain.applicant.entity.enums.EvaluationStatus;
+
+import lombok.Builder;
 import lombok.Getter;
-import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 @Getter
-@SuperBuilder
+@Builder
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ApplicantListResponse<T extends ApplicantData> {
     private int totalCnt;

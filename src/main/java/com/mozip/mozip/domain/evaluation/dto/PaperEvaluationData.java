@@ -9,18 +9,14 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class EvaluationData {
-    private String evaluationId;
-    private String realname;
+public class PaperEvaluationData extends EvaluationData {
     private Integer paperScore;
-    private Integer interviewScore;
 
-    public static EvaluationData from(Evaluation evaluation) {
-        return EvaluationData.builder()
+    public static PaperEvaluationData from(Evaluation evaluation) {
+        return PaperEvaluationData.builder()
                 .evaluationId(evaluation.getId())
                 .realname(evaluation.getEvaluator().getRealname())
                 .paperScore(evaluation.getPaperScore())
-                .interviewScore(evaluation.getInterviewScore())
                 .build();
     }
-}
+} 

@@ -1,11 +1,11 @@
 package com.mozip.mozip.domain.applicant.controller;
 
 import com.mozip.mozip.domain.answer.dto.PaperAnswersResDto;
-import com.mozip.mozip.domain.applicant.dto.ApplicantData;
 import com.mozip.mozip.domain.applicant.dto.ApplicantListResponse;
+import com.mozip.mozip.domain.applicant.dto.PaperApplicantData;
 import com.mozip.mozip.domain.applicant.dto.UpdateApplicantStatusRequest;
 import com.mozip.mozip.domain.applicant.service.ApplicantService;
-import com.mozip.mozip.domain.evaluation.dto.EvaluatedApplicantData;
+import com.mozip.mozip.domain.evaluation.dto.PaperEvaluatedApplicantData;
 import com.mozip.mozip.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/mozip/{mozip_id}/applicants")
+@RequestMapping("/api//mozip/{mozip_id}/applicants")
 public class ApplicantController {
     private final ApplicantService applicantService;
 
     // 서류 지원자 목록 조회
     @GetMapping
-    public ResponseEntity<ApplicantListResponse<ApplicantData>> getApplicantList(
+    public ResponseEntity<ApplicantListResponse<PaperApplicantData>> getApplicantList(
             @PathVariable("mozip_id") String mozipId,
             @RequestParam(value = "sort-by", required = false, defaultValue = "number") String sortBy,
             @RequestParam(value = "order", required = false, defaultValue = "asc") String order) {
@@ -50,7 +50,7 @@ public class ApplicantController {
 
     // 서류 평가 점수 목록 조회
     @GetMapping("/papers/evaluations")
-    public ResponseEntity<ApplicantListResponse<EvaluatedApplicantData>> getPaperEvaluations(
+    public ResponseEntity<ApplicantListResponse<PaperEvaluatedApplicantData>> getPaperEvaluations(
             @PathVariable("mozip_id") String mozipId,
             @RequestParam(value = "sort-by", required = false, defaultValue = "number") String sortBy,
             @RequestParam(value = "order", required = false, defaultValue = "asc") String order) {
