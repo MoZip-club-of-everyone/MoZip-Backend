@@ -3,7 +3,6 @@ package com.mozip.mozip.domain.paperAnswer.repository;
 import com.mozip.mozip.domain.paperAnswer.entity.PaperAnswer;
 import java.util.List;
 
-import com.mozip.mozip.domain.paperQuestion.entity.PaperQuestion;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 

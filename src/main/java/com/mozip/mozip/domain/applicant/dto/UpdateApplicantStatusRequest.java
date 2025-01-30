@@ -11,5 +11,5 @@ import java.util.List;
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class UpdateApplicantStatusRequest {
-    private List<ApplicantStatusDto> applicants;
+    private List<ApplicantStatusData> applicants;
 }

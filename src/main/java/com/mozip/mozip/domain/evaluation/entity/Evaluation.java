@@ -22,7 +22,7 @@ public class Evaluation extends BaseTime {
     @JoinColumn(name = "evaluator_id", nullable = false)
     private User evaluator;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "applicant_id", nullable = false)
     private Applicant applicant;
 

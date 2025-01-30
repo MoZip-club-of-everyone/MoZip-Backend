@@ -1,13 +1,9 @@
 package com.mozip.mozip.domain.paperAnswer.service;
 
-import com.mozip.mozip.domain.paperAnswer.dto.PaperAnswerCreateReqDto;
-import com.mozip.mozip.domain.paperAnswer.dto.PaperAnswerUpdateReqDto;
 import com.mozip.mozip.domain.paperAnswer.entity.PaperAnswer;
 import com.mozip.mozip.domain.paperAnswer.repository.PaperAnswerRepository;
 import com.mozip.mozip.domain.paperQuestion.entity.PaperQuestion;
-import com.mozip.mozip.domain.paperQuestion.repository.PaperQuestionRepository;
 import com.mozip.mozip.domain.applicant.entity.Applicant;
-import com.mozip.mozip.domain.applicant.repository.ApplicantRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.List;

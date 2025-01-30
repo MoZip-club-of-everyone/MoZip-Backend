@@ -5,11 +5,12 @@ import com.mozip.mozip.domain.mozip.entity.Mozip;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ApplicantRepository extends JpaRepository<Applicant, String> {
 
-//    정렬 로직 추후 도입
+    List<Applicant> findApplicantsByMozip(Mozip mozip);
+
+    //    정렬 로직 추후 도입
 //    @Query("SELECT a FROM Applicant a " +
 //            "JOIN a.evaluations e " +
 //            "WHERE a.mozip = :mozip " +
@@ -21,8 +22,4 @@ public interface ApplicantRepository extends JpaRepository<Applicant, String> {
 //            "ASC " +
 //            "CASE WHEN :order = 'desc' THEN DESC ELSE ASC END")
 //    List<Applicant> findApplicantsByMozipWithSorting(Mozip mozip, String sortBy, String order);
-
-    List<Applicant> findApplicantsByMozip(Mozip mozip);
-
-    Optional<Applicant> findByIdAndMozip(String id, Mozip mozip);
 }

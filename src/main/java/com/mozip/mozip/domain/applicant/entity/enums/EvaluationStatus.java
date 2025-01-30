@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
-public enum ApplicationStatus {
+public enum EvaluationStatus {
     UNEVALUATED("평가 중"), // 평가 중
     EVALUATED("평가 완료"), // 평가 완료
     PASSED("합격"), // 합격
@@ -20,7 +20,7 @@ public enum ApplicationStatus {
     private final String value;
 
     @JsonCreator
-    public static ApplicationStatus fromValue(String value) {
+    public static EvaluationStatus fromValue(String value) {
         return Arrays.stream(values())
                 .filter(constant -> constant.value.equals(value))
                 .findFirst()
