@@ -1,6 +1,6 @@
 package com.mozip.mozip.domain.evaluation.entity;
 
-import com.mozip.mozip.domain.answer.entity.PaperAnswer;
+import com.mozip.mozip.domain.paperAnswer.entity.PaperAnswer;
 import com.mozip.mozip.domain.user.entity.User;
 import com.mozip.mozip.global.entity.BaseTime;
 import de.huxhorn.sulky.ulid.ULID;
@@ -18,9 +18,6 @@ public class PaperComment extends BaseTime {
     @Builder.Default
     private final String id = new ULID().nextULID();
 
-    @Lob
-    private String comment;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id", nullable = false)
     private User writer;
@@ -28,4 +25,7 @@ public class PaperComment extends BaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "paper_answer_id", nullable = false)
     private PaperAnswer paperAnswer;
+
+    @Lob
+    private String comment;
 }
