@@ -55,7 +55,7 @@ public class MozipService {
 
     @Transactional
     public Mozip updateMozipQuestions(Mozip mozip, List<PaperQuestion> paperQuestions) {
-        mozip.setPaperQuestions(paperQuestions);
+        mozip.setPaperQuestions(new ArrayList<>(paperQuestions));
         return mozipRepository.save(mozip);
     }
 
