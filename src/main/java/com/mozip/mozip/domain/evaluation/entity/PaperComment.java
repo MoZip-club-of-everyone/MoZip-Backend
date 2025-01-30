@@ -27,5 +27,6 @@ public class PaperComment extends BaseTime {
     private PaperAnswer paperAnswer;
 
     @Lob
+    @Setter
     private String comment;
 }
