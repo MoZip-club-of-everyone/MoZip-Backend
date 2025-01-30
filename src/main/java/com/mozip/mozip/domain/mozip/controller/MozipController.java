@@ -2,11 +2,8 @@ package com.mozip.mozip.domain.mozip.controller;
 
 import com.mozip.mozip.domain.mozip.dto.MozipRequestDto;
 import com.mozip.mozip.domain.mozip.dto.MozipResponseDto;
-import com.mozip.mozip.domain.mozip.entity.Mozip;
 import com.mozip.mozip.domain.mozip.service.MozipManager;
-import com.mozip.mozip.domain.mozip.service.MozipService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

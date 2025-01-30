@@ -28,5 +28,6 @@ public class PaperMemo extends BaseTime {
     private PaperAnswer paperAnswer;
 
     @Lob
+    @Setter
     private String memo;
 }
