@@ -2,6 +2,7 @@ package com.mozip.mozip.domain.applicant.controller;
 
 import com.mozip.mozip.domain.answer.dto.PaperAnswersResDto;
 import com.mozip.mozip.domain.applicant.dto.ApplicantListResponse;
+import com.mozip.mozip.domain.applicant.dto.InterviewApplicantData;
 import com.mozip.mozip.domain.applicant.dto.PaperApplicantData;
 import com.mozip.mozip.domain.applicant.dto.UpdateApplicantStatusRequest;
 import com.mozip.mozip.domain.applicant.service.ApplicantService;
@@ -57,14 +58,14 @@ public class ApplicantController {
         return ResponseEntity.ok(applicantService.getPaperEvaluationsByMozipId(mozipId, sortBy, order));
     }
 
-//    // 서류 합격자 목록 조회
-//    @GetMapping("/papers/passed")
-//    public ResponseEntity<PaperPassedListResponse> getPaperPassedApplicants(
-//            @PathVariable("mozip_id") String mozipId,
-//            @RequestParam(value = "sort-by", required = false, defaultValue = "number") String sortBy,
-//            @RequestParam(value = "order", required = false, defaultValue = "asc") String order) {
-//        return ResponseEntity.ok(applicantService.getPaperPassedApplicantsByMozipId(mozipId, sortBy, order));
-//    }
+    // 서류 합격자 목록 조회
+    @GetMapping("/papers/passed")
+    public ResponseEntity<ApplicantListResponse<InterviewApplicantData>> getPaperPassedApplicants(
+            @PathVariable("mozip_id") String mozipId,
+            @RequestParam(value = "sort-by", required = false, defaultValue = "number") String sortBy,
+            @RequestParam(value = "order", required = false, defaultValue = "asc") String order) {
+        return ResponseEntity.ok(applicantService.getInterviewApplicantListByMozipId(mozipId, sortBy, order));
+    }
 //
 //    // 면접 기록 목록 조회
 //    @GetMapping("/interviews/answers")

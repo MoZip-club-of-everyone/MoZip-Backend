@@ -34,7 +34,6 @@ public class InterviewEvaluatedApplicantData extends ApplicantData {
                 .applicationNumber(applicant.getApplicationNumber())
                 .realname(applicant.getUser().getRealname())
                 .appliedAt(applicant.getCreatedAt())
-                .paperScore(interviewScore)
                 .email(applicant.getUser().getEmail())
                 .phone(applicant.getUser().getPhone())
                 .interviewStatus(applicant.getInterviewStatus())

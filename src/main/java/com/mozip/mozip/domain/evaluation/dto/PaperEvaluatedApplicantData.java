@@ -34,7 +34,6 @@ public class PaperEvaluatedApplicantData extends ApplicantData {
                 .applicationNumber(applicant.getApplicationNumber())
                 .realname(applicant.getUser().getRealname())
                 .appliedAt(applicant.getCreatedAt())
-                .paperScore(paperScore)
                 .email(applicant.getUser().getEmail())
                 .phone(applicant.getUser().getPhone())
                 .paperStatus(applicant.getPaperStatus())

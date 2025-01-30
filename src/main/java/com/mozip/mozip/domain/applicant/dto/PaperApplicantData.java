@@ -8,6 +8,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 public class PaperApplicantData extends ApplicantData {
+    private Double paperScore;
     private EvaluationStatus paperStatus;
 
     @Override

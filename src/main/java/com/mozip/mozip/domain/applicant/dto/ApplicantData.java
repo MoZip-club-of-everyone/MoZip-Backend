@@ -17,7 +17,6 @@ public abstract class ApplicantData {
     private int applicationNumber;
     private String realname;
     private LocalDateTime appliedAt;
-    private Double paperScore;
     private String email;
     private String phone;
 

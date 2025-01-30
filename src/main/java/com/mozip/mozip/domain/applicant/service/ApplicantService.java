@@ -8,9 +8,11 @@ import com.mozip.mozip.domain.answer.dto.PaperAnswersResDto;
 import com.mozip.mozip.domain.answer.entity.PaperAnswer;
 import com.mozip.mozip.domain.answer.repository.PaperAnswerRepository;
 import com.mozip.mozip.domain.applicant.dto.ApplicantListResponse;
+import com.mozip.mozip.domain.applicant.dto.InterviewApplicantData;
 import com.mozip.mozip.domain.applicant.dto.PaperApplicantData;
 import com.mozip.mozip.domain.applicant.dto.UpdateApplicantStatusRequest;
 import com.mozip.mozip.domain.applicant.entity.Applicant;
+import com.mozip.mozip.domain.applicant.entity.enums.EvaluationStatus;
 import com.mozip.mozip.domain.applicant.exception.ApplicantNotFoundException;
 import com.mozip.mozip.domain.applicant.repository.ApplicantRepository;
 import com.mozip.mozip.domain.evaluation.dto.PaperEvaluatedApplicantData;
@@ -51,6 +53,13 @@ public class ApplicantService {
         return average.isPresent() ? Math.round(average.getAsDouble() * 100.0) / 100.0 : null;
     }
 
+    private Double calculateAverageInterviewScore(Applicant applicant) {
+        List<Evaluation> evaluations = evaluationService.getEvaluationsByApplicant(applicant);
+        OptionalDouble average = evaluations.stream()
+                .mapToInt(Evaluation::getInterviewScore)
+                .average();
+        return average.isPresent() ? Math.round(average.getAsDouble() * 100.0) / 100.0 : null;
+    }
 
     // 서류 지원자 목록 조회
     @Transactional(readOnly = true)
@@ -120,9 +129,21 @@ public class ApplicantService {
         return ApplicantListResponse.from(applicantDataList);
     }
 
-    // 서류 합격자 목록 조회
-    // @Transactional(readOnly = true)
-    // public ApplicantListResponse<Interview>
+    // 면접 지원자 목록 조회
+    @Transactional(readOnly = true)
+    public ApplicantListResponse<InterviewApplicantData> getInterviewApplicantListByMozipId(String mozipId, String sortBy, String order) {
+        Mozip mozip = mozipService.getMozipById(mozipId);
+        List<Applicant> applicants = applicantRepository.findApplicantsByMozip(mozip);
+        List<InterviewApplicantData> applicantDataList = applicants.stream()
+                .filter(applicant -> applicant.getPaperStatus() == EvaluationStatus.PASSED)
+                .map(applicant -> {
+                    Double interviewScore = calculateAverageInterviewScore(applicant);
+                    Double paperScore = calculateAveragePaperScore(applicant);
+                    return InterviewApplicantData.from(applicant, paperScore, interviewScore);
+                })
+                .toList();
+        return ApplicantListResponse.from(applicantDataList);
+    }
 
     // 면접 기록 목록 조회
 

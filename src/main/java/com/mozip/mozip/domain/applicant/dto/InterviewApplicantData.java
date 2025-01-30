@@ -8,6 +8,8 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 public class InterviewApplicantData extends ApplicantData {
+    private Double paperScore;
+    private Double interviewScore;
     private EvaluationStatus interviewStatus;
 
     @Override
@@ -21,13 +23,14 @@ public class InterviewApplicantData extends ApplicantData {
         return this.interviewStatus;
     }
 
-    public static InterviewApplicantData from(Applicant applicant, Double interviewScore) {
+    public static InterviewApplicantData from(Applicant applicant, Double paperScore, Double interviewScore) {
         return InterviewApplicantData.builder()
                 .applicantId(applicant.getId())
                 .applicationNumber(applicant.getApplicationNumber())
                 .realname(applicant.getUser().getRealname())
                 .appliedAt(applicant.getCreatedAt())
-                .paperScore(interviewScore)
+                .paperScore(paperScore)
+                .interviewScore(interviewScore)
                 .email(applicant.getUser().getEmail())
                 .phone(applicant.getUser().getPhone())
                 .build()

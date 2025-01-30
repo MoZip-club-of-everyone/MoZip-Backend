@@ -23,18 +23,12 @@ public class TotalEvaluatedApplicantData extends ApplicantData {
         return this;
     }
 
-    @Override
-    public EvaluationStatus getStatus() {
-        return this.status;
-    }
-
     public static TotalEvaluatedApplicantData from(Applicant applicant, Double paperScore, List<EvaluationData> evaluations) {
         return TotalEvaluatedApplicantData.builder()
                 .applicantId(applicant.getId())
                 .applicationNumber(applicant.getApplicationNumber())
                 .realname(applicant.getUser().getRealname())
                 .appliedAt(applicant.getCreatedAt())
-                .paperScore(paperScore)
                 .email(applicant.getUser().getEmail())
                 .phone(applicant.getUser().getPhone())
                 .status(applicant.getTotalStatus())
