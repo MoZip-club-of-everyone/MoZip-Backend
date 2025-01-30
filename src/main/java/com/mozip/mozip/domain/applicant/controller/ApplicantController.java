@@ -10,13 +10,15 @@ import com.mozip.mozip.domain.evaluation.dto.InterviewEvaluatedApplicantData;
 import com.mozip.mozip.domain.evaluation.dto.PaperEvaluatedApplicantData;
 import com.mozip.mozip.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api//mozip/{mozip_id}/applicants")
+@RequestMapping("/api/mozip/{mozip_id}/applicants")
 public class ApplicantController {
     private final ApplicantService applicantService;
 
@@ -26,6 +28,7 @@ public class ApplicantController {
             @PathVariable("mozip_id") String mozipId,
             @RequestParam(value = "sort-by", required = false, defaultValue = "number") String sortBy,
             @RequestParam(value = "order", required = false, defaultValue = "asc") String order) {
+        log.info("GET 서류 지원자 목록 조회: mozip-{}", mozipId);
         return ResponseEntity.ok(applicantService.getApplicantListByMozipId(mozipId, sortBy, order));
     }
 
@@ -37,6 +40,7 @@ public class ApplicantController {
             @RequestParam(value = "applicant-id", required = false) String applicantId,
             @RequestParam(value = "question-id", required = false) String questionId) {
         User evaluator = (User) authentication.getPrincipal();
+        log.info("GET 서류 지원서 목록 조회: mozip-{}, evaluator-{}", mozipId, evaluator.getId());
         return ResponseEntity.ok(applicantService.getPaperAnswersByMozipId(evaluator, mozipId, applicantId, questionId));
     }
 
@@ -45,10 +49,10 @@ public class ApplicantController {
     public ResponseEntity<Void> updateApplicantPaperStatuses(
             @PathVariable("mozip_id") String mozipId,
             @RequestBody UpdateApplicantStatusRequest request) {
+        log.info("PATCH 서류 합불 상태 수정: mozip-{}", mozipId);
         applicantService.updateApplicantPaperStatuses(request);
         return ResponseEntity.ok().build();
     }
-
 
     // 서류 평가 점수 목록 조회
     @GetMapping("/papers/evaluations")
@@ -56,6 +60,7 @@ public class ApplicantController {
             @PathVariable("mozip_id") String mozipId,
             @RequestParam(value = "sort-by", required = false, defaultValue = "number") String sortBy,
             @RequestParam(value = "order", required = false, defaultValue = "asc") String order) {
+        log.info("GET 서류 평가 점수 목록 조회: mozip-{}", mozipId);
         return ResponseEntity.ok(applicantService.getPaperEvaluationsByMozipId(mozipId, sortBy, order));
     }
 
@@ -65,6 +70,7 @@ public class ApplicantController {
             @PathVariable("mozip_id") String mozipId,
             @RequestParam(value = "sort-by", required = false, defaultValue = "number") String sortBy,
             @RequestParam(value = "order", required = false, defaultValue = "asc") String order) {
+        log.info("GET 서류 합격자 목록 조회: mozip-{}", mozipId);
         return ResponseEntity.ok(applicantService.getInterviewApplicantListByMozipId(mozipId, sortBy, order));
     }
 
@@ -83,6 +89,7 @@ public class ApplicantController {
             @PathVariable("mozip_id") String mozipId,
             @RequestParam(value = "sort-by", required = false, defaultValue = "number") String sortBy,
             @RequestParam(value = "order", required = false, defaultValue = "asc") String order) {
+        log.info("GET 면접 평가 점수 목록 조회: mozip-{}", mozipId);
         return ResponseEntity.ok(applicantService.getInterviewEvaluationsByMozipId(mozipId, sortBy, order));
     }
 }

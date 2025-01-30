@@ -26,7 +26,9 @@ public class Evaluation extends BaseTime {
     @JoinColumn(name = "applicant_id", nullable = false)
     private Applicant applicant;
 
-    private int paperScore;
+    @Setter
+    private Integer paperScore;
 
-    private int interviewScore;
+    @Setter
+    private Integer interviewScore;
 }
