@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @NoArgsConstructor
 public class ClubCreateReqDto {
+    private String userId;
     private String name;
     private MultipartFile image;
 }

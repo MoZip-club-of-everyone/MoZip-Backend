@@ -2,8 +2,13 @@ package com.mozip.mozip.domain.club.controller;
 
 import com.mozip.mozip.domain.club.dto.ClubHomeResDto;
 import com.mozip.mozip.domain.club.dto.ClubResponseDto;
+import com.mozip.mozip.domain.club.dto.ClubinviteReqDto;
+import com.mozip.mozip.domain.club.dto.PositionReqDto;
 import com.mozip.mozip.domain.club.entity.Club;
 import com.mozip.mozip.domain.club.service.ClubService;
+import com.mozip.mozip.domain.user.entity.Position;
+import com.mozip.mozip.domain.user.entity.enums.PositionType;
+import com.mozip.mozip.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,6 +24,7 @@ import java.util.List;
 @RequestMapping("/api/clubs")
 public class ClubController {
     private final ClubService clubService;
+    private final UserService userService;
 
     @GetMapping("/club/{club_id}")
     public ResponseEntity<Club> getClubById(@PathVariable("Club_id") String clubId) {
@@ -32,11 +38,14 @@ public class ClubController {
 
     @PostMapping
     public ResponseEntity<?> createClub(
+            @RequestParam("userId") String userId,
             @RequestParam("name") String name,
             @RequestParam("image") MultipartFile image) {
         try {
             log.info(name);
             ClubResponseDto createdClub = clubService.createClub(name, image);
+            clubService.inviteClub(createdClub.getClubId(), userService.getUserById(userId).getEmail());
+            clubService.updatePosition(createdClub.getClubId(), userId, PositionType.MASTER);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdClub);
         }
         catch (IllegalArgumentException e) {
@@ -45,6 +54,23 @@ public class ClubController {
         catch (RuntimeException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @PostMapping("/{club_id}/invite")
+    public ResponseEntity<String> inviteClub(
+            @PathVariable("club_id") String clubId,
+            @RequestBody ClubinviteReqDto clubinviteReqDto){
+        Position position = clubService.inviteClub(clubId, clubinviteReqDto.getEmail());
+        return ResponseEntity.ok("성공적으로 초대되었습니다.");
+    }
+
+    @PutMapping("/{club_id}/{user_id}/position")
+    public ResponseEntity<String> updatePosition(
+            @PathVariable("club_id") String clubId,
+            @PathVariable("user_id") String userId,
+            @RequestBody PositionReqDto positionReqDto) {
+        clubService.updatePosition(clubId, userId, positionReqDto.getPositionName());
+        return ResponseEntity.ok("권한이 수정되었습니다.");
     }
 
     @PutMapping("/{club_id}")
@@ -61,4 +87,5 @@ public class ClubController {
         clubService.deleteClub(clubId);
         return ResponseEntity.noContent().build();
     }
+
 }
