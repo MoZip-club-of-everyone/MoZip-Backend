@@ -1,8 +1,9 @@
 name: Deploy to EC2
 
 on:
-  pull_request_target:
-    types: [closed]
+  # pull_request_target:
+  #   types: [closed]
+  push:
     branches:
       - main
 
