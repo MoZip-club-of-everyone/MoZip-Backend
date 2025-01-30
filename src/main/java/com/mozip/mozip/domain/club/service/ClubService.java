@@ -5,8 +5,12 @@ import com.mozip.mozip.domain.club.dto.ClubResponseDto;
 import com.mozip.mozip.domain.club.entity.Club;
 import com.mozip.mozip.domain.club.repository.ClubRepository;
 import com.mozip.mozip.domain.mozip.repository.MozipRepository;
+import com.mozip.mozip.domain.user.entity.Position;
+import com.mozip.mozip.domain.user.entity.User;
 import com.mozip.mozip.domain.user.entity.enums.PositionType;
 import com.mozip.mozip.domain.user.repository.PositionRepository;
+import com.mozip.mozip.domain.user.repository.UserRepository;
+import com.mozip.mozip.domain.user.service.UserService;
 import com.mozip.mozip.global.service.S3Service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -25,7 +29,19 @@ public class ClubService {
     private final ClubRepository clubRepository;
     private final MozipRepository mozipRepository;
     private final PositionRepository positionRepository;
+    private final UserRepository userRepository;
     private final S3Service s3Service;
+    private final UserService userService;
+
+    public Club getClubById(String clubId) {
+        return clubRepository.findById(clubId)
+                .orElseThrow(() -> new EntityNotFoundException("Club이 없습니다 : " + clubId));
+    }
+
+    public Position getPositionByUserIdAndClubId(String userId, String clubId){
+        return positionRepository.findByUserIdAndClubId(userId, clubId)
+                .orElseThrow(() -> new EntityNotFoundException("맞는 user 또는 club Id가 아닙니다."));
+    }
 
     public List<ClubHomeResDto> getClubsByUserId(String userId) {
         List<Club> clubs = positionRepository.findClubsByUserId(userId);
@@ -34,8 +50,8 @@ public class ClubService {
     }
 
     private ClubHomeResDto clubHomeResDto(Club club) {
-        String leaderName = club.getPosition().stream()
-                .filter(position -> position.getPositionName() == PositionType.LEADER)
+        String masterName = club.getPosition().stream()
+                .filter(position -> position.getPositionName() == PositionType.MASTER)
                 .map(position -> position.getUser().getRealname())
                 .findFirst()
                 .orElse(null);
@@ -46,15 +62,9 @@ public class ClubService {
                 club.getId(),
                 club.getName(),
                 club.getImage(),
-                leaderName,
+                masterName,
                 mozipCount
         );
-    }
-
-
-    public Club getClubById(String clubId) {
-        return clubRepository.findById(clubId)
-                .orElseThrow(() -> new EntityNotFoundException("Club이 없습니다 : " + clubId));
     }
 
     @Transactional
@@ -109,5 +119,23 @@ public class ClubService {
     public void deleteClub(String clubId) {
         Club club = getClubById(clubId);
         clubRepository.delete(club);
+    }
+    @Transactional
+    public Position inviteClub(String clubId, String email){
+        User user = userService.getUserByEmail(email);
+        Club club = getClubById(clubId);
+        Position position = Position.builder()
+                .positionName(PositionType.READ)
+                .club(club)
+                .user(user)
+                .build();
+        return positionRepository.save(position);
+    }
+
+    @Transactional
+    public void updatePosition(String clubId, String userId, PositionType positionName){
+        Position position = getPositionByUserIdAndClubId(userId, clubId);
+        position.setPositionName(positionName);
+        positionRepository.save(position);
     }
 }

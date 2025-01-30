@@ -8,9 +8,10 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum PositionType {
-    LEADER("대표"),
-    MANAGER("운영진"),
-    MEMBER("멤버");
+    MASTER("마스터"),
+    MANAGER("관리"),
+    EVALUATE("평가"),
+    READ("조회");
 
     private final String value;
 
