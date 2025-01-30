@@ -17,7 +17,7 @@ public class EvaluationController {
     private final EvaluationService evaluationService;
 
     // 서류 점수 입력
-    @PatchMapping("/paper-answers/{paper_answer_id}/evaluations/score")
+    @PatchMapping("/papers/answers/{paper_answer_id}/evaluations/score")
     public ResponseEntity<Void> patchPaperScore(
             Authentication authentication,
             @PathVariable("paper_answer_id") String paperAnswerId,

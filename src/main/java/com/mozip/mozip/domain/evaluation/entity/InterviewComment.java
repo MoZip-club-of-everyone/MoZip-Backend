@@ -27,5 +27,6 @@ public class InterviewComment extends BaseTime {
     private InterviewAnswer interviewAnswer;
 
     @Lob
+    @Setter
     private String comment;
 }

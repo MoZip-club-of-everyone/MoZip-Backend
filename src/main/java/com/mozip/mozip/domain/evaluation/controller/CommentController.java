@@ -1,5 +1,6 @@
 package com.mozip.mozip.domain.evaluation.controller;
 
+import com.mozip.mozip.domain.evaluation.dto.CommentRequest;
 import com.mozip.mozip.domain.evaluation.entity.PaperComment;
 import com.mozip.mozip.domain.evaluation.service.CommentService;
 import com.mozip.mozip.domain.user.entity.User;
@@ -17,32 +18,32 @@ public class CommentController {
     private final CommentService commentService;
 
     // 서류 코멘트 작성
-    @PostMapping("/paper-answers/{paper_answer_id}/evaluations/comments")
-    public ResponseEntity<PaperComment> postPaperComment(
+    @PostMapping("/papers/answers/{paper_answer_id}/evaluations/comments")
+    public ResponseEntity<Void> postPaperComment(
             Authentication authentication,
             @PathVariable("paper_answer_id") String paperAnswerId,
-            @RequestBody String comment) {
+            @RequestBody CommentRequest request) {
         User evaluator = (User) authentication.getPrincipal();
         log.info("POST 서류 코멘트 작성: evaluator-{}", evaluator.getId());
-        PaperComment paperComment = commentService.addPaperComment(evaluator, paperAnswerId, comment);
-        return ResponseEntity.ok(paperComment);
+        commentService.addPaperComment(evaluator, paperAnswerId, request.getComment());
+        return ResponseEntity.ok().build();
     }
 
     // 서류 코멘트 수정
-    @PutMapping("/paper-answers/{paper_answer_id}/evaluations/comments/{comment_id}")
-    public ResponseEntity<PaperComment> putPaperComment(
+    @PutMapping("/papers/answers/{paper_answer_id}/evaluations/comments/{comment_id}")
+    public ResponseEntity<Void> putPaperComment(
             Authentication authentication,
             @PathVariable("paper_answer_id") String paperAnswerId,
             @PathVariable("comment_id") String commentId,
-            @RequestBody String comment) {
+            @RequestBody CommentRequest request) {
         User evaluator = (User) authentication.getPrincipal();
         log.info("PUT 서류 코멘트 수정: evaluator-{}", evaluator.getId());
-        PaperComment updatedComment = commentService.updatePaperComment(evaluator, paperAnswerId, commentId, comment);
-        return ResponseEntity.ok(updatedComment);
+        commentService.updatePaperComment(evaluator, paperAnswerId, commentId, request.getComment());
+        return ResponseEntity.ok().build();
     }
 
     // 서류 코멘트 삭제
-    @DeleteMapping("/paper-answers/{paper_answer_id}/evaluations/comments/{comment_id}")
+    @DeleteMapping("/papers/answers/{paper_answer_id}/evaluations/comments/{comment_id}")
     public ResponseEntity<Void> deletePaperComment(
             Authentication authentication,
             @PathVariable("paper_answer_id") String paperAnswerId,
@@ -55,27 +56,27 @@ public class CommentController {
 
     // 인터뷰 코멘트 작성
     @PostMapping("/interviews/answers/{interview_answer_id}/evaluations/comments")
-    public ResponseEntity<PaperComment> postInterviewComment(
+    public ResponseEntity<Void> postInterviewComment(
             Authentication authentication,
             @PathVariable("interview_answer_id") String interviewAnswerId,
-            @RequestBody String comment) {
+            @RequestBody CommentRequest request) {
         User evaluator = (User) authentication.getPrincipal();
         log.info("POST 인터뷰 코멘트 작성: evaluator-{}", evaluator.getId());
-        PaperComment interviewComment = commentService.addInterviewComment(evaluator, interviewAnswerId, comment);
-        return ResponseEntity.ok(interviewComment);
+        commentService.addInterviewComment(evaluator, interviewAnswerId, request.getComment());
+        return ResponseEntity.ok().build();
     }
 
     // 인터뷰 코멘트 수정
     @PutMapping("/interviews/answers/{interview_answer_id}/evaluations/comments/{comment_id}")
-    public ResponseEntity<PaperComment> putInterviewComment(
+    public ResponseEntity<Void> putInterviewComment(
             Authentication authentication,
             @PathVariable("interview_answer_id") String interviewAnswerId,
             @PathVariable("comment_id") String commentId,
-            @RequestBody String comment) {
+            @RequestBody CommentRequest request) {
         User evaluator = (User) authentication.getPrincipal();
         log.info("PUT 인터뷰 코멘트 수정: evaluator-{}", evaluator.getId());
-        PaperComment updatedComment = commentService.updateInterviewComment(evaluator, interviewAnswerId, commentId, comment);
-        return ResponseEntity.ok(updatedComment);
+        commentService.updateInterviewComment(evaluator, interviewAnswerId, commentId, request.getComment());
+        return ResponseEntity.ok().build();
     }
 
     // 인터뷰 코멘트 삭제

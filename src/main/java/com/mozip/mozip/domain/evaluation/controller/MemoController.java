@@ -1,6 +1,6 @@
 package com.mozip.mozip.domain.evaluation.controller;
 
-import com.mozip.mozip.domain.evaluation.entity.PaperMemo;
+import com.mozip.mozip.domain.evaluation.dto.MemoRequest;
 import com.mozip.mozip.domain.evaluation.service.MemoService;
 import com.mozip.mozip.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -17,32 +17,32 @@ public class MemoController {
     private final MemoService memoService;
 
     // 서류 메모 작성
-    @PostMapping("/paper-answers/{paper_answer_id}/evaluations/memos")
-    public ResponseEntity<PaperMemo> postPaperMemo(
+    @PostMapping("/papers/answers/{paper_answer_id}/evaluations/memos")
+    public ResponseEntity<Void> postPaperMemo(
             Authentication authentication,
             @PathVariable("paper_answer_id") String paperAnswerId,
-            @RequestBody String memo) {
+            @RequestBody MemoRequest request) {
         User evaluator = (User) authentication.getPrincipal();
         log.info("POST 서류 메모 작성: evaluator-{}", evaluator.getId());
-        PaperMemo paperMemo = memoService.addPaperMemo(evaluator, paperAnswerId, memo);
-        return ResponseEntity.ok(paperMemo);
+        memoService.addPaperMemo(evaluator, paperAnswerId, request.getMemo());
+        return ResponseEntity.ok().build();
     }
 
     // 서류 메모 수정
-    @PutMapping("/paper-answers/{paper_answer_id}/evaluations/memos/{memo_id}")
-    public ResponseEntity<PaperMemo> putPaperMemo(
+    @PutMapping("/papers/answers/{paper_answer_id}/evaluations/memos/{memo_id}")
+    public ResponseEntity<Void> putPaperMemo(
             Authentication authentication,
             @PathVariable("paper_answer_id") String paperAnswerId,
             @PathVariable("memo_id") String memoId,
-            @RequestBody String memo) {
+            @RequestBody MemoRequest request) {
         User evaluator = (User) authentication.getPrincipal();
         log.info("PUT 서류 메모 수정: evaluator-{}", evaluator.getId());
-        PaperMemo updatedMemo = memoService.updatePaperMemo(evaluator, paperAnswerId, memoId, memo);
-        return ResponseEntity.ok(updatedMemo);
+        memoService.updatePaperMemo(evaluator, paperAnswerId, memoId, request.getMemo());
+        return ResponseEntity.ok().build();
     }
 
     // 서류 메모 삭제
-    @DeleteMapping("/paper-answers/{paper_answer_id}/evaluations/memos/{memo_id}")
+    @DeleteMapping("/papers/answers/{paper_answer_id}/evaluations/memos/{memo_id}")
     public ResponseEntity<Void> deletePaperMemo(
             Authentication authentication,
             @PathVariable("paper_answer_id") String paperAnswerId,
@@ -55,27 +55,27 @@ public class MemoController {
 
     // 인터뷰 메모 작성
     @PostMapping("/interviews/answers/{interview_answer_id}/evaluations/memos")
-    public ResponseEntity<PaperMemo> postInterviewMemo(
+    public ResponseEntity<Void> postInterviewMemo(
             Authentication authentication,
             @PathVariable("interview_answer_id") String interviewAnswerId,
-            @RequestBody String memo) {
+            @RequestBody MemoRequest request) {
         User evaluator = (User) authentication.getPrincipal();
         log.info("POST 인터뷰 메모 작성: evaluator-{}", evaluator.getId());
-        PaperMemo interviewMemo = memoService.addInterviewMemo(evaluator, interviewAnswerId, memo);
-        return ResponseEntity.ok(interviewMemo);
+        memoService.addInterviewMemo(evaluator, interviewAnswerId, request.getMemo());
+        return ResponseEntity.ok().build();
     }
 
     // 인터뷰 메모 수정
     @PutMapping("/interviews/answers/{interview_answer_id}/evaluations/memos/{memo_id}")
-    public ResponseEntity<PaperMemo> putInterviewMemo(
+    public ResponseEntity<Void> putInterviewMemo(
             Authentication authentication,
             @PathVariable("interview_answer_id") String interviewAnswerId,
             @PathVariable("memo_id") String memoId,
-            @RequestBody String memo) {
+            @RequestBody MemoRequest request) {
         User evaluator = (User) authentication.getPrincipal();
         log.info("PUT 인터뷰 메모 수정: evaluator-{}", evaluator.getId());
-        PaperMemo updatedMemo = memoService.updateInterviewMemo(evaluator, interviewAnswerId, memoId, memo);
-        return ResponseEntity.ok(updatedMemo);
+        memoService.updateInterviewMemo(evaluator, interviewAnswerId, memoId, request.getMemo());
+        return ResponseEntity.ok().build();
     }
 
     // 인터뷰 메모 삭제
