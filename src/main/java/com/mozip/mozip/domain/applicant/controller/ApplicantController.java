@@ -6,6 +6,7 @@ import com.mozip.mozip.domain.applicant.dto.InterviewApplicantData;
 import com.mozip.mozip.domain.applicant.dto.PaperApplicantData;
 import com.mozip.mozip.domain.applicant.dto.UpdateApplicantStatusRequest;
 import com.mozip.mozip.domain.applicant.service.ApplicantService;
+import com.mozip.mozip.domain.evaluation.dto.InterviewEvaluatedApplicantData;
 import com.mozip.mozip.domain.evaluation.dto.PaperEvaluatedApplicantData;
 import com.mozip.mozip.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -66,7 +67,7 @@ public class ApplicantController {
             @RequestParam(value = "order", required = false, defaultValue = "asc") String order) {
         return ResponseEntity.ok(applicantService.getInterviewApplicantListByMozipId(mozipId, sortBy, order));
     }
-//
+
 //    // 면접 기록 목록 조회
 //    @GetMapping("/interviews/answers")
 //    public ResponseEntity<InterviewAnswerListResponse> getInterviewAnswers(
@@ -76,12 +77,12 @@ public class ApplicantController {
 //        return ResponseEntity.ok(applicantService.getInterviewAnswersByMozipId(mozipId, applicantId, questionId));
 //    }
 //
-//    // 면접 평가 점수 목록 조회
-//    @GetMapping("/interviews/evaluations")
-//    public ResponseEntity<InterviewEvaluationListResponse> getInterviewEvaluations(
-//            @PathVariable("mozip_id") String mozipId,
-//            @RequestParam(value = "sort-by", required = false, defaultValue = "number") String sortBy,
-//            @RequestParam(value = "order", required = false, defaultValue = "asc") String order) {
-//        return ResponseEntity.ok(applicantService.getInterviewEvaluationsByMozipId(mozipId, sortBy, order));
-//    }
+    // 면접 평가 점수 목록 조회
+    @GetMapping("/interviews/evaluations")
+    public ResponseEntity<ApplicantListResponse<InterviewEvaluatedApplicantData>> getInterviewEvaluations(
+            @PathVariable("mozip_id") String mozipId,
+            @RequestParam(value = "sort-by", required = false, defaultValue = "number") String sortBy,
+            @RequestParam(value = "order", required = false, defaultValue = "asc") String order) {
+        return ResponseEntity.ok(applicantService.getInterviewEvaluationsByMozipId(mozipId, sortBy, order));
+    }
 }

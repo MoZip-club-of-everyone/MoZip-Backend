@@ -15,6 +15,8 @@ import com.mozip.mozip.domain.applicant.entity.Applicant;
 import com.mozip.mozip.domain.applicant.entity.enums.EvaluationStatus;
 import com.mozip.mozip.domain.applicant.exception.ApplicantNotFoundException;
 import com.mozip.mozip.domain.applicant.repository.ApplicantRepository;
+import com.mozip.mozip.domain.evaluation.dto.InterviewEvaluatedApplicantData;
+import com.mozip.mozip.domain.evaluation.dto.InterviewEvaluationData;
 import com.mozip.mozip.domain.evaluation.dto.PaperEvaluatedApplicantData;
 import com.mozip.mozip.domain.evaluation.dto.PaperEvaluationData;
 import com.mozip.mozip.domain.evaluation.entity.Evaluation;
@@ -148,7 +150,20 @@ public class ApplicantService {
     // 면접 기록 목록 조회
 
     // 면접 평가 점수 목록 조회
-
-    // 특정 서류 응답 평가 조회
-
+    @Transactional(readOnly = true)
+    public ApplicantListResponse<InterviewEvaluatedApplicantData> getInterviewEvaluationsByMozipId(String mozipId, String sortBy, String order)  {
+        Mozip mozip = mozipService.getMozipById(mozipId);
+        List<Applicant> applicants = applicantRepository.findApplicantsByMozip(mozip);
+        List<InterviewEvaluatedApplicantData> applicantDataList = applicants.stream()
+                .map(applicant -> {
+                    List<Evaluation> evaluations = evaluationService.getEvaluationsByApplicant(applicant);
+                    List<InterviewEvaluationData> evaluationDataList = evaluations.stream()
+                            .map(InterviewEvaluationData::from)
+                            .toList();
+                    Double paperScore = calculateAveragePaperScore(applicant);
+                    return InterviewEvaluatedApplicantData.from(applicant, paperScore, evaluationDataList);
+                })
+                .toList();
+        return ApplicantListResponse.from(applicantDataList);
+    }
 }
