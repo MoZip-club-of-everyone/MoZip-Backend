@@ -1,5 +1,6 @@
 package com.mozip.mozip.domain.evaluation.service;
 
+import com.mozip.mozip.domain.evaluation.dto.CommentData;
 import com.mozip.mozip.domain.evaluation.entity.InterviewComment;
 import com.mozip.mozip.domain.evaluation.entity.PaperComment;
 import com.mozip.mozip.domain.evaluation.exception.CommentNotFoundException;
@@ -13,6 +14,8 @@ import com.mozip.mozip.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +34,20 @@ public class CommentService {
     private InterviewComment getInterviewCommentByCommentId(String commentId) {
         return interviewCommentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException(commentId));
+    }
+
+    public List<CommentData> getCommentsByPaperAnswer(PaperAnswer paperAnswer) {
+        List<PaperComment> paperComments = paperCommentRepository.findByPaperAnswer(paperAnswer);
+        return paperComments.stream()
+                .map(CommentData::from)
+                .toList();
+    }
+
+    public List<CommentData> getCommentsByInterviewAnswer(InterviewAnswer interviewAnswer) {
+        List<InterviewComment> interviewComments = interviewCommentRepository.findByInterviewAnswer(interviewAnswer);
+        return interviewComments.stream()
+                .map(CommentData::from)
+                .toList();
     }
     
     @Transactional

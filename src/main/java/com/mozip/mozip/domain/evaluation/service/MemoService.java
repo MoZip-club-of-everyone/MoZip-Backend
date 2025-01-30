@@ -1,5 +1,6 @@
 package com.mozip.mozip.domain.evaluation.service;
 
+import com.mozip.mozip.domain.evaluation.dto.MemoData;
 import com.mozip.mozip.domain.evaluation.entity.InterviewMemo;
 import com.mozip.mozip.domain.evaluation.entity.PaperMemo;
 import com.mozip.mozip.domain.evaluation.exception.MemoNotFoundException;
@@ -13,6 +14,8 @@ import com.mozip.mozip.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +34,22 @@ public class MemoService {
     private InterviewMemo getInterviewMemoByMemoId(String memoId) {
         return interviewMemoRepository.findById(memoId)
                 .orElseThrow(() -> new MemoNotFoundException(memoId));
+    }
+
+    @Transactional(readOnly = true)
+    public List<MemoData> getMemosByPaperAnswer(PaperAnswer paperAnswer) {
+        List<PaperMemo> paperMemos = paperMemoRepository.findByPaperAnswer(paperAnswer);
+        return paperMemos.stream()
+                .map(MemoData::from)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<MemoData> getMemosByInterviewAnswer(InterviewAnswer interviewAnswer) {
+        List<InterviewMemo> interviewMemos = interviewMemoRepository.findByInterviewAnswer(interviewAnswer);
+        return interviewMemos.stream()
+                .map(MemoData::from)
+                .toList();
     }
 
     @Transactional
