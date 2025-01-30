@@ -40,15 +40,16 @@ public class InterviewAnswerService {
 
     @Transactional
     public InterviewAnswer createAnswer(Applicant applicant, InterviewQuestion interviewQuestion, String answer) {
-        getInterviewAnswerByQuestionAndApplicant(interviewQuestion.getId(), applicant.getId())
-                .ifPresent(interviewAnswerRepository::delete);
-
-        InterviewAnswer interviewAnswer = InterviewAnswer.builder()
-                .applicant(applicant)
-                .interviewQuestion(interviewQuestion)
-                .answer(answer)
-                .build();
-        return interviewAnswerRepository.save(interviewAnswer);
+        return getInterviewAnswerByQuestionAndApplicant(interviewQuestion.getId(), applicant.getId())
+                .map(existingAnswer -> {
+                    existingAnswer.setAnswer(answer);
+                    return existingAnswer;
+                })
+                .orElseGet(() -> InterviewAnswer.builder()
+                        .applicant(applicant)
+                        .interviewQuestion(interviewQuestion)
+                        .answer(answer)
+                        .build());
     }
 
     @Transactional
