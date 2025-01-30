@@ -40,15 +40,16 @@ public class PaperAnswerService {
 
     @Transactional
     public PaperAnswer createAnswer(Applicant applicant, PaperQuestion paperQuestion, String answer) {
-        getPaperAnswerByQuestionAndApplicant(paperQuestion.getId(), applicant.getId())
-                .ifPresent(paperAnswerRepository::delete);
-
-        PaperAnswer paperAnswer = PaperAnswer.builder()
-                .applicant(applicant)
-                .paperQuestion(paperQuestion)
-                .answer(answer)
-                .build();
-        return paperAnswerRepository.save(paperAnswer);
+        return getPaperAnswerByQuestionAndApplicant(paperQuestion.getId(), applicant.getId())
+                .map(existingAnswer -> {
+                    existingAnswer.setAnswer(answer);
+                    return existingAnswer;
+                })
+                .orElseGet(() -> PaperAnswer.builder()
+                        .applicant(applicant)
+                        .paperQuestion(paperQuestion)
+                        .answer(answer)
+                        .build());
     }
 
     @Transactional
