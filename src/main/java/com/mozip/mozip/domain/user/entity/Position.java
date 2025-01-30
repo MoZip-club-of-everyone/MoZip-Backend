@@ -18,13 +18,16 @@ public class Position extends BaseTime {
     @Builder.Default
     private final String id = new ULID().nextULID();
 
+    @Setter
     @Enumerated(EnumType.STRING)
     private PositionType positionName;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id")
     private Club club;

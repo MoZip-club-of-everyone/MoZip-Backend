@@ -16,6 +16,6 @@ public class ClubHomeResDto {
     private String clubId;
     private String name;
     private String image;
-    private String leaderName;
+    private String masterName;
     private int mozipCount;
 }

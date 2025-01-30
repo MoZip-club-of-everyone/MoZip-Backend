@@ -7,9 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PositionRepository extends JpaRepository<Position, String> {
     List<Position> findByUserId(String userId);
+
+    Optional<Position> findByUserIdAndClubId(String userId, String clubId);
+
     @Query("SELECT p.club FROM Position p WHERE p.user.id = :userId")
     List<Club> findClubsByUserId(@Param("userId") String userId);
 }
