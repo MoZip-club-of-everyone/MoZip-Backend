@@ -1,5 +1,6 @@
 package com.mozip.mozip.domain.interviewQuestion.service;
 
+import com.mozip.mozip.domain.applicant.entity.Applicant;
 import com.mozip.mozip.domain.applicant.service.ApplicantService;
 import com.mozip.mozip.domain.interviewQuestion.dto.InterviewQuestionCreateReqDto;
 import com.mozip.mozip.domain.interviewQuestion.dto.InterviewQuestionResDto;
@@ -24,7 +25,7 @@ public class InterviewQuestionManager {
     public List<InterviewQuestionResDto> getInterviewQuestionsByMozipId(String mozipId) {
         Mozip mozip = mozipService.getMozipById(mozipId);
         User user = userService.getCurrentUser();
-        applicantService.createApplicant(user, mozip);
+        Applicant applicant = applicantService.getCurrentApplicant(user, mozip);
         return interviewQuestionService.getInterviewQuestionsByMozipId(mozipId)
                 .stream().map(InterviewQuestionResDto::fromEntity).toList();
     }

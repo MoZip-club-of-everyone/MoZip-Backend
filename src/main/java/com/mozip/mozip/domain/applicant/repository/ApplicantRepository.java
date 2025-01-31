@@ -2,15 +2,19 @@ package com.mozip.mozip.domain.applicant.repository;
 
 import com.mozip.mozip.domain.applicant.entity.Applicant;
 import com.mozip.mozip.domain.mozip.entity.Mozip;
+import com.mozip.mozip.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ApplicantRepository extends JpaRepository<Applicant, String> {
 
     List<Applicant> findAllByMozip(Mozip mozip);
 
-    Long countAllByMozip(Mozip mozip);
+    Optional<Applicant> findTopByMozipOrderByApplicationNumberDesc(Mozip mozip);
+
+    Optional<Applicant> findByUserAndMozip(User user, Mozip mozip);
 
     //    정렬 로직 추후 도입
 //    @Query("SELECT a FROM Applicant a " +
