@@ -29,7 +29,6 @@ public class User extends BaseTime {
 
     private String phone;
 
-
     @Enumerated(EnumType.STRING)
     private Role role;
 

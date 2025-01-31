@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public abstract class ApplicantData {
     private String applicantId;
-    private int applicationNumber;
+    private Long applicationNumber;
     private String realname;
     private LocalDateTime appliedAt;
     private String email;

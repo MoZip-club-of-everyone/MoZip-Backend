@@ -8,7 +8,9 @@ import java.util.List;
 
 public interface ApplicantRepository extends JpaRepository<Applicant, String> {
 
-    List<Applicant> findApplicantsByMozip(Mozip mozip);
+    List<Applicant> findAllByMozip(Mozip mozip);
+
+    Long countAllByMozip(Mozip mozip);
 
     //    정렬 로직 추후 도입
 //    @Query("SELECT a FROM Applicant a " +

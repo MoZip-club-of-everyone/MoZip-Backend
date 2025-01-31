@@ -1,16 +1,15 @@
 package com.mozip.mozip.domain.evaluation.controller;
 
-import com.mozip.mozip.domain.evaluation.dto.*;
+import com.mozip.mozip.domain.evaluation.dto.InterviewEvaluationDetailsResponse;
+import com.mozip.mozip.domain.evaluation.dto.PaperEvaluationDetailsResponse;
+import com.mozip.mozip.domain.evaluation.dto.UpdateScoreRequest;
 import com.mozip.mozip.domain.evaluation.service.EvaluationService;
-import com.mozip.mozip.domain.interviewAnswer.entity.InterviewAnswer;
 import com.mozip.mozip.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
