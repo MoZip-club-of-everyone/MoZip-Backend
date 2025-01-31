@@ -12,6 +12,13 @@ import com.mozip.mozip.domain.evaluation.dto.PaperEvaluatedApplicantData;
 import com.mozip.mozip.domain.evaluation.dto.PaperEvaluationData;
 import com.mozip.mozip.domain.evaluation.entity.Evaluation;
 import com.mozip.mozip.domain.evaluation.service.EvaluationService;
+import com.mozip.mozip.domain.interviewAnswer.dto.InterviewAnswerForApplicantDto;
+import com.mozip.mozip.domain.interviewAnswer.dto.InterviewAnswersForApplicantResDto;
+import com.mozip.mozip.domain.interviewAnswer.entity.InterviewAnswer;
+import com.mozip.mozip.domain.interviewAnswer.service.InterviewAnswerService;
+import com.mozip.mozip.domain.interviewQuestion.dto.InterviewQuestionWithAnswersDto;
+import com.mozip.mozip.domain.interviewQuestion.entity.InterviewQuestion;
+import com.mozip.mozip.domain.interviewQuestion.service.InterviewQuestionService;
 import com.mozip.mozip.domain.mozip.entity.Mozip;
 import com.mozip.mozip.domain.mozip.service.MozipService;
 import com.mozip.mozip.domain.paperAnswer.dto.PaperAnswerForApplicantDto;
@@ -40,6 +47,8 @@ public class ApplicantManager {
     private final EvaluationService evaluationService;
     private final PaperQuestionService paperQuestionService;
     private final PaperAnswerService paperAnswerService;
+    private final InterviewQuestionService interviewQuestionService;
+    private final InterviewAnswerService interviewAnswerService;
 
     private Double calculateAverageScore(Applicant applicant, ToIntFunction<Evaluation> scoreFunction) {
         List<Evaluation> evaluations = evaluationService.getEvaluationsByApplicant(applicant);
@@ -63,6 +72,7 @@ public class ApplicantManager {
                 .toList();
     }
 
+    // 서류 지원자 목록 조회
     @Transactional(readOnly = true)
     public ApplicantListResponse<PaperApplicantData> getApplicantListByMozipId(String mozipId, String sortBy, String order) {
         Mozip mozip = mozipService.getMozipById(mozipId);
@@ -74,24 +84,37 @@ public class ApplicantManager {
         return ApplicantListResponse.from(applicantDataList);
     }
 
-    private List<PaperQuestion> filterQuestionsByIds(List<PaperQuestion> questions, String questionIds) {
+    private List<PaperQuestion> filterPaperQuestionsByIds(List<PaperQuestion> questions, String questionIds) {
         return questions.stream()
                 .filter(question -> questionIds == null || Arrays.asList(questionIds.split(",")).contains(question.getId()))
                 .toList();
     }
 
-    private List<PaperAnswer> filterAnswersByApplicantIds(List<PaperAnswer> answers, String applicantIds) {
+    private List<InterviewQuestion> filterInterviewQuestionsByIds(List<InterviewQuestion> questions, String questionIds) {
+        return questions.stream()
+                .filter(question -> questionIds == null || Arrays.asList(questionIds.split(",")).contains(question.getId()))
+                .toList();
+    }
+
+    private List<PaperAnswer> filterPaperAnswersByApplicantIds(List<PaperAnswer> answers, String applicantIds) {
         return answers.stream()
                 .filter(answer -> applicantIds == null || Arrays.asList(applicantIds.split(",")).contains(answer.getApplicant().getId()))
                 .toList();
     }
 
+    private List<InterviewAnswer> filterInterviewAnswersByApplicantIds(List<InterviewAnswer> answers, String applicantIds) {
+        return answers.stream()
+                .filter(answer -> applicantIds == null || Arrays.asList(applicantIds.split(",")).contains(answer.getApplicant().getId()))
+                .toList();
+    }
+
+    // 서류 지원서 목록 조회
     @Transactional(readOnly = true)
     public PaperAnswersForApplicantResDto getPaperAnswersByMozipId(User evaluator, String mozipId, String applicantIds, String questionIds) {
-        List<PaperQuestion> paperQuestions = filterQuestionsByIds(paperQuestionService.getPaperQuestionsByMozipId(mozipId), questionIds);
+        List<PaperQuestion> paperQuestions = filterPaperQuestionsByIds(paperQuestionService.getPaperQuestionsByMozipId(mozipId), questionIds);
         List<PaperQuestionWithAnswersDto> questionWithAnswersDataList = paperQuestions.stream()
                 .map(question -> {
-                    List<PaperAnswer> paperAnswers = filterAnswersByApplicantIds(paperAnswerService.getPaperAnswersByQuestionId(question.getId()), applicantIds);
+                    List<PaperAnswer> paperAnswers = filterPaperAnswersByApplicantIds(paperAnswerService.getPaperAnswersByQuestionId(question.getId()), applicantIds);
                     List<PaperAnswerForApplicantDto> paperAnswerDataList = paperAnswers.stream()
                             .map(answer -> {
                                 Evaluation evaluation = evaluationService.getEvaluationByApplicantAndEvaluator(answer.getApplicant(), evaluator);
@@ -104,6 +127,7 @@ public class ApplicantManager {
         return PaperAnswersForApplicantResDto.from(questionWithAnswersDataList);
     }
 
+    // 서류 평가 점수 목록 조회
     @Transactional(readOnly = true)
     public ApplicantListResponse<PaperEvaluatedApplicantData> getPaperEvaluationsByMozipId(String mozipId, String sortBy, String order) {
         Mozip mozip = mozipService.getMozipById(mozipId);
@@ -119,6 +143,7 @@ public class ApplicantManager {
         return ApplicantListResponse.from(applicantDataList);
     }
 
+    // 서류 합격자 목록 조회
     @Transactional(readOnly = true)
     public ApplicantListResponse<InterviewApplicantData> getInterviewApplicantListByMozipId(String mozipId, String sortBy, String order) {
         Mozip mozip = mozipService.getMozipById(mozipId);
@@ -134,6 +159,26 @@ public class ApplicantManager {
         return ApplicantListResponse.from(applicantDataList);
     }
 
+    // 면접 기록 목록 조회
+    @Transactional(readOnly = true)
+    public InterviewAnswersForApplicantResDto getInterviewAnswersByMozipId(User evaluator, String mozipId, String applicantIds, String questionIds) {
+        List<InterviewQuestion> interviewQuestions = filterInterviewQuestionsByIds(interviewQuestionService.getInterviewQuestionsByMozipId(mozipId), questionIds);
+        List<InterviewQuestionWithAnswersDto> questionWithAnswersDataList = interviewQuestions.stream()
+                .map(question -> {
+                    List<InterviewAnswer> interviewAnswers = filterInterviewAnswersByApplicantIds(interviewAnswerService.getInterviewAnswersByQuestionId(question.getId()), applicantIds);
+                    List<InterviewAnswerForApplicantDto> interviewAnswerDataList = interviewAnswers.stream()
+                            .map(answer -> {
+                                Evaluation evaluation = evaluationService.getEvaluationByApplicantAndEvaluator(answer.getApplicant(), evaluator);
+                                return InterviewAnswerForApplicantDto.from(answer, evaluation.getInterviewScore());
+                            })
+                            .toList();
+                    return InterviewQuestionWithAnswersDto.from(question, interviewAnswerDataList);
+                })
+                .toList();
+        return InterviewAnswersForApplicantResDto.from(questionWithAnswersDataList);
+    }
+
+    // 면접 평가 점수 목록 조회
     @Transactional(readOnly = true)
     public ApplicantListResponse<InterviewEvaluatedApplicantData> getInterviewEvaluationsByMozipId(String mozipId, String sortBy, String order) {
         Mozip mozip = mozipService.getMozipById(mozipId);
