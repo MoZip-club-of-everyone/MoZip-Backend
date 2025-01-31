@@ -7,13 +7,9 @@ import com.mozip.mozip.domain.evaluation.exception.CommentNotFoundException;
 import com.mozip.mozip.domain.evaluation.repository.InterviewCommentRepository;
 import com.mozip.mozip.domain.evaluation.repository.PaperCommentRepository;
 import com.mozip.mozip.domain.interviewAnswer.entity.InterviewAnswer;
-import com.mozip.mozip.domain.interviewAnswer.service.InterviewAnswerService;
 import com.mozip.mozip.domain.paperAnswer.entity.PaperAnswer;
-import com.mozip.mozip.domain.paperAnswer.service.PaperAnswerService;
-import com.mozip.mozip.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

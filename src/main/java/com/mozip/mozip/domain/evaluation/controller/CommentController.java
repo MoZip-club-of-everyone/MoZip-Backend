@@ -25,7 +25,7 @@ public class CommentController {
         User evaluator = (User) authentication.getPrincipal();
         log.info("POST 서류 코멘트 작성: evaluator-{}", evaluator.getId());
         commentManager.addPaperComment(evaluator, paperAnswerId, request.getComment());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(201).build();
     }
 
     // 서류 코멘트 수정
@@ -50,7 +50,7 @@ public class CommentController {
         User evaluator = (User) authentication.getPrincipal();
         log.info("DELETE 서류 코멘트 삭제: evaluator-{}", evaluator.getId());
         commentManager.deletePaperComment(evaluator, paperAnswerId, commentId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     // 인터뷰 코멘트 작성
@@ -62,7 +62,7 @@ public class CommentController {
         User evaluator = (User) authentication.getPrincipal();
         log.info("POST 인터뷰 코멘트 작성: evaluator-{}", evaluator.getId());
         commentManager.addInterviewComment(evaluator, interviewAnswerId, request.getComment());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(201).build();
     }
 
     // 인터뷰 코멘트 수정
@@ -87,6 +87,6 @@ public class CommentController {
         User evaluator = (User) authentication.getPrincipal();
         log.info("DELETE 인터뷰 코멘트 삭제: evaluator-{}", evaluator.getId());
         commentManager.deleteInterviewComment(evaluator, interviewAnswerId, commentId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 } 

@@ -14,18 +14,20 @@ import java.util.List;
 @SuperBuilder
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class PaperEvaluatedApplicantData extends ApplicantData {
-    private EvaluationStatus paperStatus;
     private List<PaperEvaluationData> evaluations;
+    private Double paperScore;
+    private EvaluationStatus status;
+
 
     @Override
     public PaperEvaluatedApplicantData withStatus(Applicant applicant) {
-        this.paperStatus = applicant.getPaperStatus();
+        this.status = applicant.getPaperStatus();
         return this;
     }
 
     @Override
     public EvaluationStatus getStatus() {
-        return this.paperStatus;
+        return this.status;
     }
 
     public static PaperEvaluatedApplicantData from(Applicant applicant, Double paperScore, List<PaperEvaluationData> evaluations) {
@@ -36,8 +38,9 @@ public class PaperEvaluatedApplicantData extends ApplicantData {
                 .appliedAt(applicant.getCreatedAt())
                 .email(applicant.getUser().getEmail())
                 .phone(applicant.getUser().getPhone())
-                .paperStatus(applicant.getPaperStatus())
                 .evaluations(evaluations)
+                .paperScore(paperScore)
+                .status(applicant.getPaperStatus())
                 .build();
     }
 } 

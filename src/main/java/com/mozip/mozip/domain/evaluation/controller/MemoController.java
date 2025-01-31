@@ -25,7 +25,7 @@ public class MemoController {
         User evaluator = (User) authentication.getPrincipal();
         log.info("POST 서류 메모 작성: evaluator-{}", evaluator.getId());
         memoManager.addPaperMemo(evaluator, paperAnswerId, request.getMemo());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(201).build();
     }
 
     // 서류 메모 수정
@@ -50,7 +50,7 @@ public class MemoController {
         User evaluator = (User) authentication.getPrincipal();
         log.info("DELETE 서류 메모 삭제: evaluator-{}", evaluator.getId());
         memoManager.deletePaperMemo(evaluator, paperAnswerId, memoId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     // 인터뷰 메모 작성
@@ -62,7 +62,7 @@ public class MemoController {
         User evaluator = (User) authentication.getPrincipal();
         log.info("POST 인터뷰 메모 작성: evaluator-{}", evaluator.getId());
         memoManager.addInterviewMemo(evaluator, interviewAnswerId, request.getMemo());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(201).build();
     }
 
     // 인터뷰 메모 수정
@@ -87,6 +87,6 @@ public class MemoController {
         User evaluator = (User) authentication.getPrincipal();
         log.info("DELETE 인터뷰 메모 삭제: evaluator-{}", evaluator.getId());
         memoManager.deleteInterviewMemo(evaluator, interviewAnswerId, memoId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 } 
