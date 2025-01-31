@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,18 +30,25 @@ public class ApplicantService {
     }
 
     public Long getApplicationNumberByMozip(Mozip mozip) {
-        return applicantRepository.countAllByMozip(mozip) + 1;
+        return applicantRepository.findTopByMozipOrderByApplicationNumberDesc(mozip)
+                .map(Applicant::getApplicationNumber)
+                .orElse(0L) + 1;
+    }
+
+    public Applicant getCurrentApplicant(User user, Mozip mozip) {
+        Optional<Applicant> existingApplicant = applicantRepository.findByUserAndMozip(user, mozip);
+        return existingApplicant.orElseGet(() -> createApplicant(user, mozip));
     }
 
     // 지원자 생성
-    public void createApplicant(User user, Mozip mozip) {
+    public Applicant createApplicant(User user, Mozip mozip) {
         Long applicationNumber = getApplicationNumberByMozip(mozip);
         Applicant applicant = Applicant.builder()
                 .user(user)
                 .mozip(mozip)
                 .applicationNumber(applicationNumber)
                 .build();
-        applicantRepository.save(applicant);
+        return applicantRepository.save(applicant);
     }
 
     // register true
