@@ -1,5 +1,9 @@
 package com.mozip.mozip.domain.paperQuestion.controller;
 
+import com.mozip.mozip.domain.paperChoice.dto.PaperChoiceReqDto;
+import com.mozip.mozip.domain.paperChoice.dto.PaperChoiceResDto;
+import com.mozip.mozip.domain.paperChoice.dto.PaperChoicesReqDto;
+import com.mozip.mozip.domain.paperChoice.dto.PaperChoicesResDto;
 import com.mozip.mozip.domain.paperQuestion.dto.PaperQuestionCreateReqDto;
 import com.mozip.mozip.domain.paperQuestion.dto.PaperQuestionResDto;
 import com.mozip.mozip.domain.paperQuestion.dto.PaperQuestionUpdateReqDto;
@@ -53,5 +57,23 @@ public class PaperQuestionController {
     public ResponseEntity<Void> deleteQuestion(@PathVariable("question_id") String questionId) {
         paperQuestionManager.deletePaperQuestion(questionId);
         return ResponseEntity.noContent().build();
+    }
+
+    // 선택지 관련 ----
+    @PostMapping("/{question_id}/choices")
+    public PaperChoiceResDto createChoice(@PathVariable("question_id") String questionId,
+                                          @RequestBody PaperChoiceReqDto requestDto) {
+        return paperQuestionManager.createPaperChoice(questionId, requestDto);
+    }
+
+    @PostMapping("/{question_id}/choices/bulk")
+    public PaperChoicesResDto createChoices(@PathVariable("question_id") String questionId,
+                                            @RequestBody PaperChoicesReqDto requestDtoList) {
+        return paperQuestionManager.createPaperChoices(questionId, requestDtoList);
+    }
+
+    @GetMapping("/{question_id}/choices")
+    public PaperChoicesResDto getChoicesByQuestionId(@PathVariable("question_id") String questionId) {
+        return paperQuestionManager.getPaperChoicesByPaperQuestionId(questionId);
     }
 }
