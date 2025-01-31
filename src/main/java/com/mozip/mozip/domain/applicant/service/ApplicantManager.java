@@ -17,10 +17,10 @@ import com.mozip.mozip.domain.mozip.service.MozipService;
 import com.mozip.mozip.domain.paperAnswer.dto.PaperAnswerForApplicantDto;
 import com.mozip.mozip.domain.paperAnswer.dto.PaperAnswersForApplicantResDto;
 import com.mozip.mozip.domain.paperAnswer.entity.PaperAnswer;
-import com.mozip.mozip.domain.paperAnswer.repository.PaperAnswerRepository;
+import com.mozip.mozip.domain.paperAnswer.service.PaperAnswerService;
 import com.mozip.mozip.domain.paperQuestion.dto.PaperQuestionWithAnswersDto;
 import com.mozip.mozip.domain.paperQuestion.entity.PaperQuestion;
-import com.mozip.mozip.domain.paperQuestion.repository.PaperQuestionRepository;
+import com.mozip.mozip.domain.paperQuestion.service.PaperQuestionService;
 import com.mozip.mozip.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,9 +36,8 @@ public class ApplicantManager {
     private final ApplicantService applicantService;
     private final MozipService mozipService;
     private final EvaluationService evaluationService;
-
-    private final PaperQuestionRepository paperQuestionRepository;
-    private final PaperAnswerRepository paperAnswerRepository;
+    private final PaperQuestionService paperQuestionService;
+    private final PaperAnswerService paperAnswerService;
 
     public Double calculateAveragePaperScore(Applicant applicant) {
         List<Evaluation> evaluations = evaluationService.getEvaluationsByApplicant(applicant);
@@ -74,13 +73,13 @@ public class ApplicantManager {
     @Transactional(readOnly = true)
     public PaperAnswersForApplicantResDto getPaperAnswersByMozipId(User evaluator, String mozipId, String applicantIds, String questionIds) {
         // questionId로 필터링
-        List<PaperQuestion> paperQuestions = paperQuestionRepository.findByMozipId(mozipId).stream()
+        List<PaperQuestion> paperQuestions = paperQuestionService.getPaperQuestionsByMozipId(mozipId).stream()
                 .filter(question -> questionIds == null || Arrays.asList(questionIds.split(",")).contains(question.getId()))
                 .toList();
         List<PaperQuestionWithAnswersDto> questionWithAnswersDataList = paperQuestions.stream()
                 .map(question -> {
                     // applicantId로 필터링
-                    List<PaperAnswer> paperAnswers = paperAnswerRepository.findByPaperQuestionId(question.getId())
+                    List<PaperAnswer> paperAnswers = paperAnswerService.getPaperAnswersByQuestionId(question.getId())
                             .stream()
                             .filter(answer -> applicantIds == null || Arrays.asList(applicantIds.split(",")).contains(answer.getApplicant().getId()))
                             .toList();

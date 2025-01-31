@@ -51,7 +51,6 @@ public class ApplicantService {
         return applicantRepository.save(applicant);
     }
 
-    // register true
     public void registerApplicant(Applicant applicant) {
         applicant.setIsRegistered(true);
         applicantRepository.save(applicant);

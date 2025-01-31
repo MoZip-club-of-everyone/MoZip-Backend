@@ -1,7 +1,7 @@
 package com.mozip.mozip.domain.evaluation.controller;
 
 import com.mozip.mozip.domain.evaluation.dto.MemoRequest;
-import com.mozip.mozip.domain.evaluation.service.MemoService;
+import com.mozip.mozip.domain.evaluation.service.MemoManager;
 import com.mozip.mozip.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class MemoController {
-    private final MemoService memoService;
+    private final MemoManager memoManager;
 
     // 서류 메모 작성
     @PostMapping("/papers/answers/{paper_answer_id}/evaluations/memos")
@@ -24,7 +24,7 @@ public class MemoController {
             @RequestBody MemoRequest request) {
         User evaluator = (User) authentication.getPrincipal();
         log.info("POST 서류 메모 작성: evaluator-{}", evaluator.getId());
-        memoService.addPaperMemo(evaluator, paperAnswerId, request.getMemo());
+        memoManager.addPaperMemo(evaluator, paperAnswerId, request.getMemo());
         return ResponseEntity.ok().build();
     }
 
@@ -37,7 +37,7 @@ public class MemoController {
             @RequestBody MemoRequest request) {
         User evaluator = (User) authentication.getPrincipal();
         log.info("PUT 서류 메모 수정: evaluator-{}", evaluator.getId());
-        memoService.updatePaperMemo(evaluator, paperAnswerId, memoId, request.getMemo());
+        memoManager.updatePaperMemo(evaluator, paperAnswerId, memoId, request.getMemo());
         return ResponseEntity.ok().build();
     }
 
@@ -49,7 +49,7 @@ public class MemoController {
             @PathVariable("memo_id") String memoId) {
         User evaluator = (User) authentication.getPrincipal();
         log.info("DELETE 서류 메모 삭제: evaluator-{}", evaluator.getId());
-        memoService.deletePaperMemo(evaluator, paperAnswerId, memoId);
+        memoManager.deletePaperMemo(evaluator, paperAnswerId, memoId);
         return ResponseEntity.ok().build();
     }
 
@@ -61,7 +61,7 @@ public class MemoController {
             @RequestBody MemoRequest request) {
         User evaluator = (User) authentication.getPrincipal();
         log.info("POST 인터뷰 메모 작성: evaluator-{}", evaluator.getId());
-        memoService.addInterviewMemo(evaluator, interviewAnswerId, request.getMemo());
+        memoManager.addInterviewMemo(evaluator, interviewAnswerId, request.getMemo());
         return ResponseEntity.ok().build();
     }
 
@@ -74,7 +74,7 @@ public class MemoController {
             @RequestBody MemoRequest request) {
         User evaluator = (User) authentication.getPrincipal();
         log.info("PUT 인터뷰 메모 수정: evaluator-{}", evaluator.getId());
-        memoService.updateInterviewMemo(evaluator, interviewAnswerId, memoId, request.getMemo());
+        memoManager.updateInterviewMemo(evaluator, interviewAnswerId, memoId, request.getMemo());
         return ResponseEntity.ok().build();
     }
 
@@ -86,7 +86,7 @@ public class MemoController {
             @PathVariable("memo_id") String memoId) {
         User evaluator = (User) authentication.getPrincipal();
         log.info("DELETE 인터뷰 메모 삭제: evaluator-{}", evaluator.getId());
-        memoService.deleteInterviewMemo(evaluator, interviewAnswerId, memoId);
+        memoManager.deleteInterviewMemo(evaluator, interviewAnswerId, memoId);
         return ResponseEntity.ok().build();
     }
 } 
