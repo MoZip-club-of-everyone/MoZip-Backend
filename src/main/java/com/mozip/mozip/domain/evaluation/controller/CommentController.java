@@ -1,8 +1,7 @@
 package com.mozip.mozip.domain.evaluation.controller;
 
 import com.mozip.mozip.domain.evaluation.dto.CommentRequest;
-import com.mozip.mozip.domain.evaluation.entity.PaperComment;
-import com.mozip.mozip.domain.evaluation.service.CommentService;
+import com.mozip.mozip.domain.evaluation.service.CommentManager;
 import com.mozip.mozip.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class CommentController {
-    private final CommentService commentService;
+    private final CommentManager commentManager;
 
     // 서류 코멘트 작성
     @PostMapping("/papers/answers/{paper_answer_id}/evaluations/comments")
@@ -25,8 +24,8 @@ public class CommentController {
             @RequestBody CommentRequest request) {
         User evaluator = (User) authentication.getPrincipal();
         log.info("POST 서류 코멘트 작성: evaluator-{}", evaluator.getId());
-        commentService.addPaperComment(evaluator, paperAnswerId, request.getComment());
-        return ResponseEntity.ok().build();
+        commentManager.addPaperComment(evaluator, paperAnswerId, request.getComment());
+        return ResponseEntity.status(201).build();
     }
 
     // 서류 코멘트 수정
@@ -38,7 +37,7 @@ public class CommentController {
             @RequestBody CommentRequest request) {
         User evaluator = (User) authentication.getPrincipal();
         log.info("PUT 서류 코멘트 수정: evaluator-{}", evaluator.getId());
-        commentService.updatePaperComment(evaluator, paperAnswerId, commentId, request.getComment());
+        commentManager.updatePaperComment(evaluator, paperAnswerId, commentId, request.getComment());
         return ResponseEntity.ok().build();
     }
 
@@ -50,8 +49,8 @@ public class CommentController {
             @PathVariable("comment_id") String commentId) {
         User evaluator = (User) authentication.getPrincipal();
         log.info("DELETE 서류 코멘트 삭제: evaluator-{}", evaluator.getId());
-        commentService.deletePaperComment(evaluator, paperAnswerId, commentId);
-        return ResponseEntity.ok().build();
+        commentManager.deletePaperComment(evaluator, paperAnswerId, commentId);
+        return ResponseEntity.noContent().build();
     }
 
     // 인터뷰 코멘트 작성
@@ -62,8 +61,8 @@ public class CommentController {
             @RequestBody CommentRequest request) {
         User evaluator = (User) authentication.getPrincipal();
         log.info("POST 인터뷰 코멘트 작성: evaluator-{}", evaluator.getId());
-        commentService.addInterviewComment(evaluator, interviewAnswerId, request.getComment());
-        return ResponseEntity.ok().build();
+        commentManager.addInterviewComment(evaluator, interviewAnswerId, request.getComment());
+        return ResponseEntity.status(201).build();
     }
 
     // 인터뷰 코멘트 수정
@@ -75,7 +74,7 @@ public class CommentController {
             @RequestBody CommentRequest request) {
         User evaluator = (User) authentication.getPrincipal();
         log.info("PUT 인터뷰 코멘트 수정: evaluator-{}", evaluator.getId());
-        commentService.updateInterviewComment(evaluator, interviewAnswerId, commentId, request.getComment());
+        commentManager.updateInterviewComment(evaluator, interviewAnswerId, commentId, request.getComment());
         return ResponseEntity.ok().build();
     }
 
@@ -87,7 +86,7 @@ public class CommentController {
             @PathVariable("comment_id") String commentId) {
         User evaluator = (User) authentication.getPrincipal();
         log.info("DELETE 인터뷰 코멘트 삭제: evaluator-{}", evaluator.getId());
-        commentService.deleteInterviewComment(evaluator, interviewAnswerId, commentId);
-        return ResponseEntity.ok().build();
+        commentManager.deleteInterviewComment(evaluator, interviewAnswerId, commentId);
+        return ResponseEntity.noContent().build();
     }
 } 

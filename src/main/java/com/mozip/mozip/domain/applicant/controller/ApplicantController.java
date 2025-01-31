@@ -6,7 +6,6 @@ import com.mozip.mozip.domain.applicant.dto.ApplicantListResponse;
 import com.mozip.mozip.domain.applicant.dto.InterviewApplicantData;
 import com.mozip.mozip.domain.applicant.dto.PaperApplicantData;
 import com.mozip.mozip.domain.applicant.dto.UpdateApplicantStatusRequest;
-import com.mozip.mozip.domain.applicant.service.ApplicantService;
 import com.mozip.mozip.domain.evaluation.dto.InterviewEvaluatedApplicantData;
 import com.mozip.mozip.domain.evaluation.dto.PaperEvaluatedApplicantData;
 import com.mozip.mozip.domain.user.entity.User;
@@ -92,5 +91,15 @@ public class ApplicantController {
             @RequestParam(value = "order", required = false, defaultValue = "asc") String order) {
         log.info("GET 면접 평가 점수 목록 조회: mozip-{}", mozipId);
         return ResponseEntity.ok(applicantManager.getInterviewEvaluationsByMozipId(mozipId, sortBy, order));
+    }
+
+    // 면접 합불 상태 수정
+    @PatchMapping("/interviews/status")
+    public ResponseEntity<Void> updateApplicantInterviewStatuses(
+            @PathVariable("mozip_id") String mozipId,
+            @RequestBody UpdateApplicantStatusRequest request) {
+        log.info("PATCH 면접 합불 상태 수정: mozip-{}", mozipId);
+        applicantManager.updateApplicantInterviewStatuses(request);
+        return ResponseEntity.ok().build();
     }
 }

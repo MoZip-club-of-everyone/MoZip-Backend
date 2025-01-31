@@ -10,17 +10,17 @@ import lombok.experimental.SuperBuilder;
 public class InterviewApplicantData extends ApplicantData {
     private Double paperScore;
     private Double interviewScore;
-    private EvaluationStatus interviewStatus;
+    private EvaluationStatus status;
 
     @Override
     public InterviewApplicantData withStatus(Applicant applicant) {
-        this.interviewStatus = applicant.getInterviewStatus();
+        this.status = applicant.getInterviewStatus();
         return this;
     }
 
     @Override
     public EvaluationStatus getStatus() {
-        return this.interviewStatus;
+        return this.status;
     }
 
     public static InterviewApplicantData from(Applicant applicant, Double paperScore, Double interviewScore) {
