@@ -27,7 +27,12 @@ public class Applicant extends BaseTime {
     @JoinColumn(name = "mozip_id", nullable = false)
     private Mozip mozip;
 
-    private int applicationNumber;
+    @Setter
+    private Long applicationNumber;
+
+    @Setter
+    @Builder.Default
+    private Boolean isRegistered = false;
 
     @Setter
     @Builder.Default

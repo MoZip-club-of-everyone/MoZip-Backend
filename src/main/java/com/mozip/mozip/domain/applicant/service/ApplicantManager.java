@@ -70,8 +70,6 @@ public class ApplicantManager {
         return ApplicantListResponse.from(applicantDataList);
     }
 
-
-
     // 서류 지원서 목록 조회
     @Transactional(readOnly = true)
     public PaperAnswersForApplicantResDto getPaperAnswersByMozipId(User evaluator, String mozipId, String applicantIds, String questionIds) {
