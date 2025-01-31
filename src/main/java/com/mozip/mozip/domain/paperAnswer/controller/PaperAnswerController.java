@@ -54,6 +54,12 @@ public class PaperAnswerController {
         return paperAnswerManager.createAnswer(requestDto);
     }
 
+    @PostMapping("/register/applicants/{applicant_id}")
+    public String registerApplicant(@PathVariable("applicant_id") String applicantId) {
+        paperAnswerManager.registerAnswer(applicantId);
+        return "정상적으로 등록되었습니다.";
+    }
+
     @PutMapping("/{answer_id}")
     public PaperAnswerResDto updateAnswer(@PathVariable("answer_id") String answerId,
                                           @RequestBody PaperAnswerUpdateReqDto requestDto) {
