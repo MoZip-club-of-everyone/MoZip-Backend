@@ -34,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.OptionalDouble;
 import java.util.function.ToIntFunction;
@@ -72,11 +73,43 @@ public class ApplicantManager {
                 .toList();
     }
 
+    public List<Applicant> getSortedApplicantsByMozip(Mozip mozip, String sortBy, String order) {
+        List<Applicant> applicants = applicantService.getApplicantsByMozip(mozip);
+        Comparator<Applicant> comparator;
+        switch (sortBy) {
+            case "realname":
+                comparator = Comparator.comparing(applicant -> applicant.getUser().getRealname());
+                break;
+            case "applied_at":
+                comparator = Comparator.comparing(Applicant::getCreatedAt);
+                break;
+            case "paper_score":
+                comparator = Comparator.comparing(this::calculateAveragePaperScore);
+                break;
+            case "interview_score":
+                comparator = Comparator.comparing(this::calculateAverageInterviewScore);
+                break;
+            case "paper_status":
+                comparator = Comparator.comparing(Applicant::getPaperStatus);
+                break;
+            case "interview_status":
+                comparator = Comparator.comparing(Applicant::getInterviewStatus);
+                break;
+            default:
+                comparator = Comparator.comparing(Applicant::getApplicationNumber);
+                break;
+        }
+        if ("desc".equalsIgnoreCase(order)) {
+            comparator = comparator.reversed();
+        }
+        return applicants.stream().sorted(comparator).toList();
+    }
+
     // 서류 지원자 목록 조회
     @Transactional(readOnly = true)
     public ApplicantListResponse<PaperApplicantData> getApplicantListByMozipId(String mozipId, String sortBy, String order) {
         Mozip mozip = mozipService.getMozipById(mozipId);
-        List<Applicant> applicants = applicantService.getApplicantsByMozip(mozip);
+        List<Applicant> applicants = getSortedApplicantsByMozip(mozip, sortBy, order);
         List<PaperApplicantData> applicantDataList = createApplicantDataList(applicants, applicant -> {
             Double paperScore = calculateAveragePaperScore(applicant);
             return PaperApplicantData.from(applicant, paperScore);
@@ -131,7 +164,7 @@ public class ApplicantManager {
     @Transactional(readOnly = true)
     public ApplicantListResponse<PaperEvaluatedApplicantData> getPaperEvaluationsByMozipId(String mozipId, String sortBy, String order) {
         Mozip mozip = mozipService.getMozipById(mozipId);
-        List<Applicant> applicants = applicantService.getApplicantsByMozip(mozip);
+        List<Applicant> applicants = getSortedApplicantsByMozip(mozip, sortBy, order);
         List<PaperEvaluatedApplicantData> applicantDataList = createApplicantDataList(applicants, applicant -> {
             List<Evaluation> evaluations = evaluationService.getEvaluationsByApplicant(applicant);
             List<PaperEvaluationData> evaluationDataList = evaluations.stream()
@@ -147,7 +180,7 @@ public class ApplicantManager {
     @Transactional(readOnly = true)
     public ApplicantListResponse<InterviewApplicantData> getInterviewApplicantListByMozipId(String mozipId, String sortBy, String order) {
         Mozip mozip = mozipService.getMozipById(mozipId);
-        List<Applicant> applicants = applicantService.getApplicantsByMozip(mozip);
+        List<Applicant> applicants = getSortedApplicantsByMozip(mozip, sortBy, order);
         List<InterviewApplicantData> applicantDataList = createApplicantDataList(
                 applicants.stream().filter(applicant -> applicant.getPaperStatus() == EvaluationStatus.PASSED).toList(),
                 applicant -> {
@@ -182,14 +215,16 @@ public class ApplicantManager {
     @Transactional(readOnly = true)
     public ApplicantListResponse<InterviewEvaluatedApplicantData> getInterviewEvaluationsByMozipId(String mozipId, String sortBy, String order) {
         Mozip mozip = mozipService.getMozipById(mozipId);
-        List<Applicant> applicants = applicantService.getApplicantsByMozip(mozip);
+        List<Applicant> applicants = getSortedApplicantsByMozip(mozip, sortBy, order);
         List<InterviewEvaluatedApplicantData> applicantDataList = createApplicantDataList(applicants, applicant -> {
             List<Evaluation> evaluations = evaluationService.getEvaluationsByApplicant(applicant);
             List<InterviewEvaluationData> evaluationDataList = evaluations.stream()
                     .map(InterviewEvaluationData::from)
                     .toList();
+            Double interviewScore = calculateAverageInterviewScore(applicant);
             Double paperScore = calculateAveragePaperScore(applicant);
-            return InterviewEvaluatedApplicantData.from(applicant, paperScore, evaluationDataList);
+            return InterviewEvaluatedApplicantData.from(applicant, paperScore, interviewScore, evaluationDataList);
+
         });
         return ApplicantListResponse.from(applicantDataList);
     }

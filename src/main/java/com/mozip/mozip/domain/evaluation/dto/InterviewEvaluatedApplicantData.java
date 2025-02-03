@@ -15,6 +15,7 @@ import java.util.List;
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class InterviewEvaluatedApplicantData extends ApplicantData {
     private List<InterviewEvaluationData> evaluations;
+    private Double paperScore;
     private Double interviewScore;
     private EvaluationStatus status;
 
@@ -29,7 +30,7 @@ public class InterviewEvaluatedApplicantData extends ApplicantData {
         return this.status;
     }
 
-    public static InterviewEvaluatedApplicantData from(Applicant applicant, Double interviewScore, List<InterviewEvaluationData> evaluations) {
+    public static InterviewEvaluatedApplicantData from(Applicant applicant, Double paperScore, Double interviewScore, List<InterviewEvaluationData> evaluations) {
         return InterviewEvaluatedApplicantData.builder()
                 .applicantId(applicant.getId())
                 .applicationNumber(applicant.getApplicationNumber())
@@ -38,8 +39,10 @@ public class InterviewEvaluatedApplicantData extends ApplicantData {
                 .email(applicant.getUser().getEmail())
                 .phone(applicant.getUser().getPhone())
                 .evaluations(evaluations)
+                .paperScore(paperScore)
                 .interviewScore(interviewScore)
                 .status(applicant.getInterviewStatus())
                 .build();
+
     }
 } 
