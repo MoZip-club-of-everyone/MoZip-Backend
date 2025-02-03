@@ -1,6 +1,7 @@
 package com.mozip.mozip.domain.applicant.controller;
 
 import com.mozip.mozip.domain.applicant.service.ApplicantManager;
+import com.mozip.mozip.domain.interviewAnswer.dto.InterviewAnswersForApplicantResDto;
 import com.mozip.mozip.domain.paperAnswer.dto.PaperAnswersForApplicantResDto;
 import com.mozip.mozip.domain.applicant.dto.ApplicantListResponse;
 import com.mozip.mozip.domain.applicant.dto.InterviewApplicantData;
@@ -74,15 +75,17 @@ public class ApplicantController {
         return ResponseEntity.ok(applicantManager.getInterviewApplicantListByMozipId(mozipId, sortBy, order));
     }
 
-//    // 면접 기록 목록 조회
-//    @GetMapping("/interviews/answers")
-//    public ResponseEntity<InterviewAnswerListResponse> getInterviewAnswers(
-//            @PathVariable("mozip_id") String mozipId,
-//            @RequestParam(value = "applicant-id", required = false) String applicantId,
-//            @RequestParam(value = "question-id", required = false) String questionId) {
-//        return ResponseEntity.ok(applicantManager.getInterviewAnswersByMozipId(mozipId, applicantId, questionId));
-//    }
-//
+    // 면접 기록 목록 조회
+    @GetMapping("/interviews/answers")
+    public ResponseEntity<InterviewAnswersForApplicantResDto> getInterviewAnswers(
+            Authentication authentication,
+            @PathVariable("mozip_id") String mozipId,
+            @RequestParam(value = "applicant-id", required = false) String applicantId,
+            @RequestParam(value = "question-id", required = false) String questionId) {
+        User evaluator = (User) authentication.getPrincipal();
+        log.info("GET 면접 기록 목록 조회: mozip-{}, evaluator-{}", mozipId, evaluator.getId());
+        return ResponseEntity.ok(applicantManager.getInterviewAnswersByMozipId(evaluator, mozipId, applicantId, questionId));
+    }
     // 면접 평가 점수 목록 조회
     @GetMapping("/interviews/evaluations")
     public ResponseEntity<ApplicantListResponse<InterviewEvaluatedApplicantData>> getInterviewEvaluations(
