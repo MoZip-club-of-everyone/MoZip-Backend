@@ -34,4 +34,8 @@ public class EvaluationService {
     public Evaluation saveEvaluation(Evaluation evaluation) {
         return evaluationRepository.save(evaluation);
     }
+
+    public long countEvaluatedPaperScore(Applicant applicant) {
+        return evaluationRepository.countByApplicantAndPaperScoreIsNotNull(applicant);
+    }
 }
