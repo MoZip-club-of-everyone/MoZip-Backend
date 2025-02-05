@@ -6,6 +6,7 @@ import com.mozip.mozip.domain.applicant.dto.PaperApplicantData;
 import com.mozip.mozip.domain.applicant.dto.UpdateApplicantStatusRequest;
 import com.mozip.mozip.domain.applicant.entity.Applicant;
 import com.mozip.mozip.domain.applicant.entity.enums.EvaluationStatus;
+import com.mozip.mozip.domain.applicant.exception.ApplicantException;
 import com.mozip.mozip.domain.evaluation.dto.InterviewEvaluatedApplicantData;
 import com.mozip.mozip.domain.evaluation.dto.InterviewEvaluationData;
 import com.mozip.mozip.domain.evaluation.dto.PaperEvaluatedApplicantData;
@@ -234,9 +235,13 @@ public class ApplicantManager {
     public void updateApplicantPaperStatuses(UpdateApplicantStatusRequest request) {
         request.getApplicants().forEach(each -> {
             Applicant applicant = applicantService.getApplicantById(each.getApplicantId());
+            if (applicant.getPaperStatus() == EvaluationStatus.UNEVALUATED) {
+                throw ApplicantException.paperNotEvaluated(applicant);
+            }
             applicant.setPaperStatus(each.getStatus());
             applicantService.saveApplicant(applicant);
         });
+
     }
 
     // 면접 합불 상태 수정
@@ -244,8 +249,12 @@ public class ApplicantManager {
     public void updateApplicantInterviewStatuses(UpdateApplicantStatusRequest request) {
         request.getApplicants().forEach(each -> {
             Applicant applicant = applicantService.getApplicantById(each.getApplicantId());
+            if (applicant.getInterviewStatus() == EvaluationStatus.UNEVALUATED) {
+                throw ApplicantException.interviewNotEvaluated(applicant);
+            }
             applicant.setInterviewStatus(each.getStatus());
             applicantService.saveApplicant(applicant);
         });
+
     }
 }

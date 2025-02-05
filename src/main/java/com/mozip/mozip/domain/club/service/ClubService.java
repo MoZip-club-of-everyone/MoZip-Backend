@@ -138,4 +138,8 @@ public class ClubService {
         position.setPositionName(positionName);
         positionRepository.save(position);
     }
+
+    public long countEvaluatorsByClub(Club club) {
+        return positionRepository.countByClubAndPositionNameIn(club, PositionType.evaluablePositions);
+    }
 }

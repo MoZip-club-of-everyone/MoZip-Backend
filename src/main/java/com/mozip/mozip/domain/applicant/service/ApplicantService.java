@@ -1,7 +1,7 @@
 package com.mozip.mozip.domain.applicant.service;
 
 import com.mozip.mozip.domain.applicant.entity.Applicant;
-import com.mozip.mozip.domain.applicant.exception.ApplicantNotFoundException;
+import com.mozip.mozip.domain.applicant.exception.ApplicantException;
 import com.mozip.mozip.domain.applicant.repository.ApplicantRepository;
 import com.mozip.mozip.domain.mozip.entity.Mozip;
 import com.mozip.mozip.domain.user.entity.User;
@@ -18,7 +18,7 @@ public class ApplicantService {
 
     public Applicant getApplicantById(String applicantId) {
         return applicantRepository.findById(applicantId)
-                .orElseThrow(() -> new ApplicantNotFoundException(applicantId));
+                .orElseThrow(() -> ApplicantException.notFound(applicantId));
     }
 
     public List<Applicant> getApplicantsByMozip(Mozip mozip) {

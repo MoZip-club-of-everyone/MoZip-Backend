@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface EvaluationRepository extends JpaRepository<Evaluation, String> {
     List<Evaluation> findByApplicant(Applicant applicant);
     Optional<Evaluation> findByApplicantAndEvaluator(Applicant applicant, User evaluator);
+
+    long countByApplicantAndPaperScoreIsNotNull(Applicant applicant);
 }
