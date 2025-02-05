@@ -47,8 +47,11 @@ public class EvaluationManager {
         checkPaperEvaluable(applicant);
         Evaluation evaluation = evaluationService.getEvaluationByApplicantAndEvaluator(applicant, evaluator);
         evaluation.setPaperScore(score);
-        checkAllEvaluated(applicant);
         evaluationService.saveEvaluation(evaluation);
+        applicant.setPaperScoreAverage(applicant.calculatePaperAverage());
+        applicant.setPaperScoreStandardDeviation(applicant.calculatePaperStandardDeviation());
+        applicantService.saveApplicant(applicant);
+        checkAllEvaluated(applicant);
     }
 
     // 면접 점수 입력
@@ -59,8 +62,11 @@ public class EvaluationManager {
         checkInterviewEvaluable(applicant);
         Evaluation evaluation = evaluationService.getEvaluationByApplicantAndEvaluator(applicant, evaluator);
         evaluation.setInterviewScore(score);
-        checkAllEvaluated(applicant);
         evaluationService.saveEvaluation(evaluation);
+        applicant.setInterviewScoreAverage(applicant.calculateInterviewAverage());
+        applicant.setInterviewStandardDeviation(applicant.calculateInterviewStandardDeviation());
+        applicantService.saveApplicant(applicant);
+        checkAllEvaluated(applicant);
     }
 
     private void checkPaperEvaluable(Applicant applicant) {

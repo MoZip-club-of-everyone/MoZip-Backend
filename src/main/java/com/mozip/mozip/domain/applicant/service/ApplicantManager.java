@@ -37,9 +37,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.OptionalDouble;
-import java.util.function.ToIntFunction;
 import java.util.function.Function;
+
 
 @Service
 @RequiredArgsConstructor
@@ -51,22 +50,6 @@ public class ApplicantManager {
     private final PaperAnswerService paperAnswerService;
     private final InterviewQuestionService interviewQuestionService;
     private final InterviewAnswerService interviewAnswerService;
-
-    private Double calculateAverageScore(Applicant applicant, ToIntFunction<Evaluation> scoreFunction) {
-        List<Evaluation> evaluations = evaluationService.getEvaluationsByApplicant(applicant);
-        OptionalDouble average = evaluations.stream()
-                .mapToInt(scoreFunction)
-                .average();
-        return average.isPresent() ? Math.round(average.getAsDouble() * 100.0) / 100.0 : null;
-    }
-
-    public Double calculateAveragePaperScore(Applicant applicant) {
-        return calculateAverageScore(applicant, Evaluation::getPaperScore);
-    }
-
-    private Double calculateAverageInterviewScore(Applicant applicant) {
-        return calculateAverageScore(applicant, Evaluation::getInterviewScore);
-    }
 
     private <T> List<T> createApplicantDataList(List<Applicant> applicants, Function<Applicant, T> mapper) {
         return applicants.stream()
@@ -85,10 +68,10 @@ public class ApplicantManager {
                 comparator = Comparator.comparing(Applicant::getCreatedAt);
                 break;
             case "paper_score":
-                comparator = Comparator.comparing(this::calculateAveragePaperScore);
+                comparator = Comparator.comparing(Applicant::getPaperScoreAverage);
                 break;
             case "interview_score":
-                comparator = Comparator.comparing(this::calculateAverageInterviewScore);
+                comparator = Comparator.comparing(Applicant::getInterviewScoreAverage);
                 break;
             case "paper_status":
                 comparator = Comparator.comparing(Applicant::getPaperStatus);
@@ -111,10 +94,7 @@ public class ApplicantManager {
     public ApplicantListResponse<PaperApplicantData> getApplicantListByMozipId(String mozipId, String sortBy, String order) {
         Mozip mozip = mozipService.getMozipById(mozipId);
         List<Applicant> applicants = getSortedApplicantsByMozip(mozip, sortBy, order);
-        List<PaperApplicantData> applicantDataList = createApplicantDataList(applicants, applicant -> {
-            Double paperScore = calculateAveragePaperScore(applicant);
-            return PaperApplicantData.from(applicant, paperScore);
-        });
+        List<PaperApplicantData> applicantDataList = createApplicantDataList(applicants, PaperApplicantData::from);
         return ApplicantListResponse.from(applicantDataList);
     }
 
@@ -171,8 +151,7 @@ public class ApplicantManager {
             List<PaperEvaluationData> evaluationDataList = evaluations.stream()
                     .map(PaperEvaluationData::from)
                     .toList();
-            Double paperScore = calculateAveragePaperScore(applicant);
-            return PaperEvaluatedApplicantData.from(applicant, paperScore, evaluationDataList);
+            return PaperEvaluatedApplicantData.from(applicant, evaluationDataList);
         });
         return ApplicantListResponse.from(applicantDataList);
     }
@@ -184,11 +163,7 @@ public class ApplicantManager {
         List<Applicant> applicants = getSortedApplicantsByMozip(mozip, sortBy, order);
         List<InterviewApplicantData> applicantDataList = createApplicantDataList(
                 applicants.stream().filter(applicant -> applicant.getPaperStatus() == EvaluationStatus.PASSED).toList(),
-                applicant -> {
-                    Double interviewScore = calculateAverageInterviewScore(applicant);
-                    Double paperScore = calculateAveragePaperScore(applicant);
-                    return InterviewApplicantData.from(applicant, paperScore, interviewScore);
-                }
+                InterviewApplicantData::from
         );
         return ApplicantListResponse.from(applicantDataList);
     }
@@ -222,9 +197,8 @@ public class ApplicantManager {
             List<InterviewEvaluationData> evaluationDataList = evaluations.stream()
                     .map(InterviewEvaluationData::from)
                     .toList();
-            Double interviewScore = calculateAverageInterviewScore(applicant);
-            Double paperScore = calculateAveragePaperScore(applicant);
-            return InterviewEvaluatedApplicantData.from(applicant, paperScore, interviewScore, evaluationDataList);
+            return InterviewEvaluatedApplicantData.from(applicant, evaluationDataList);
+
 
         });
         return ApplicantListResponse.from(applicantDataList);
