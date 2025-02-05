@@ -7,8 +7,10 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
+
 public class PaperApplicantData extends ApplicantData {
-    private Double paperScore;
+    private Double paperScoreAverage;
+    private Double paperScoreStandardDeviation;
     private EvaluationStatus paperStatus;
 
     @Override
@@ -22,16 +24,18 @@ public class PaperApplicantData extends ApplicantData {
         return this.paperStatus;
     }
 
-    public static PaperApplicantData from(Applicant applicant, Double paperScore) {
+    public static PaperApplicantData from(Applicant applicant) {
         return PaperApplicantData.builder()
                 .applicantId(applicant.getId())
                 .applicationNumber(applicant.getApplicationNumber())
                 .realname(applicant.getUser().getRealname())
                 .appliedAt(applicant.getCreatedAt())
-                .paperScore(paperScore)
+                .paperScoreAverage(applicant.getPaperScoreAverage())
+                .paperScoreStandardDeviation(applicant.getPaperScoreStandardDeviation())
                 .email(applicant.getUser().getEmail())
                 .phone(applicant.getUser().getPhone())
                 .build()
                 .withStatus(applicant);
+
     }
 }

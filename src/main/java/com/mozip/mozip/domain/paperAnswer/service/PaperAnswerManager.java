@@ -1,6 +1,7 @@
 package com.mozip.mozip.domain.paperAnswer.service;
 
 import com.mozip.mozip.domain.applicant.entity.Applicant;
+import com.mozip.mozip.domain.applicant.service.ApplicantManager;
 import com.mozip.mozip.domain.applicant.service.ApplicantService;
 import com.mozip.mozip.domain.paperAnswer.dto.PaperAnswerCreateReqDto;
 import com.mozip.mozip.domain.paperAnswer.dto.PaperAnswerResDto;
@@ -52,6 +53,12 @@ public class PaperAnswerManager {
         Applicant applicant = applicantService.getApplicantById(requestDto.getApplicantId());
         PaperQuestion paperQuestion = paperQuestionService.getPaperQuestionById(requestDto.getQuestionId());
         return PaperAnswerResDto.fromEntity(paperAnswerService.createAnswer(applicant, paperQuestion, requestDto.getAnswer()));
+    }
+
+    @Transactional
+    public void registerAnswer(String applicantId) {
+        Applicant applicant = applicantService.getApplicantById(applicantId);
+        applicantService.registerApplicant(applicant);
     }
 
     @Transactional

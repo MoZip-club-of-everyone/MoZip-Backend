@@ -8,6 +8,8 @@ import com.sun.jdi.request.DuplicateRequestException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,5 +43,21 @@ public class UserService {
                 .isJoin(true)
                 .build();
         userRepository.save(newUser);
+    }
+
+    public User createGuestUser() {
+        User newUser = User.builder()
+                .role(Role.ROLE_GUEST)
+                .isJoin(false)
+                .build();
+        return userRepository.save(newUser);
+    }
+
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return createGuestUser();
+        }
+        return (User) authentication.getPrincipal();
     }
 }

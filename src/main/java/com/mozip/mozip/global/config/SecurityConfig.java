@@ -30,6 +30,10 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
 
+    private static final List<String> PERMIT_ALL_PATHS = List.of(
+            "/api/users/login", "/api/users/join", "/api/interviews/questions"
+    );
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
@@ -41,6 +45,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        JwtFilter.setPermitAllPaths(PERMIT_ALL_PATHS);
 
         http
                 .httpBasic(AbstractHttpConfigurer::disable)
@@ -54,7 +59,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> {
                     // ALL 인증
-                    auth.requestMatchers("/api/users/login", "/api/users/join").permitAll();
+                    auth.requestMatchers(PERMIT_ALL_PATHS.toArray(String[]::new)).permitAll();
                     auth.anyRequest().authenticated();
                 });
 

@@ -10,13 +10,13 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class InterviewEvaluationData extends EvaluationData {
-    private Integer interviewScore;
+    private Integer score;
 
     public static InterviewEvaluationData from(Evaluation evaluation) {
         return InterviewEvaluationData.builder()
                 .evaluationId(evaluation.getId())
                 .realname(evaluation.getEvaluator().getRealname())
-                .interviewScore(evaluation.getInterviewScore())
+                .score(evaluation.getInterviewScore())
                 .build();
     }
 } 
