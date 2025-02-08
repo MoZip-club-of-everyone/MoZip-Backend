@@ -7,6 +7,7 @@ import com.mozip.mozip.domain.mozip.entity.Mozip;
 import com.mozip.mozip.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +23,7 @@ public class ApplicantService {
     }
 
     public List<Applicant> getApplicantsByMozip(Mozip mozip) {
-        return applicantRepository.findAllByMozip(mozip);
+        return applicantRepository.findAllByMozipAndIsRegisteredTrue(mozip);
     }
 
     public void saveApplicant(Applicant applicant) {
@@ -54,5 +55,10 @@ public class ApplicantService {
     public void registerApplicant(Applicant applicant) {
         applicant.setIsRegistered(true);
         applicantRepository.save(applicant);
+    }
+
+    @Transactional
+    public void deleteUnregisteredApplicants() {
+        applicantRepository.deleteByIsRegisteredFalse();
     }
 }
