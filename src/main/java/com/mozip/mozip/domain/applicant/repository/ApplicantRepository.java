@@ -10,9 +10,11 @@ import java.util.Optional;
 
 public interface ApplicantRepository extends JpaRepository<Applicant, String> {
 
-    List<Applicant> findAllByMozip(Mozip mozip);
+    List<Applicant> findAllByMozipAndIsRegisteredTrue(Mozip mozip);
 
     Optional<Applicant> findTopByMozipOrderByApplicationNumberDesc(Mozip mozip);
 
     Optional<Applicant> findByUserAndMozip(User user, Mozip mozip);
+
+    void deleteByIsRegisteredFalse();
 }
