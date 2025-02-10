@@ -2,6 +2,7 @@ package com.mozip.mozip.domain.club.service;
 
 import com.mozip.mozip.domain.club.dto.ClubHomeResDto;
 import com.mozip.mozip.domain.club.dto.ClubResponseDto;
+import com.mozip.mozip.domain.club.dto.PositionResDto;
 import com.mozip.mozip.domain.club.entity.Club;
 import com.mozip.mozip.domain.club.repository.ClubRepository;
 import com.mozip.mozip.domain.mozip.repository.MozipRepository;
@@ -45,7 +46,6 @@ public class ClubService {
 
     public List<ClubHomeResDto> getClubsByUserId(String userId) {
         List<Club> clubs = positionRepository.findClubsByUserId(userId);
-        log.info(clubs.toString());
         return clubs.stream().map(this::clubHomeResDto).toList();
     }
 
@@ -64,6 +64,19 @@ public class ClubService {
                 club.getImage(),
                 masterName,
                 mozipCount
+        );
+    }
+
+    @Transactional
+    public List<PositionResDto> getPositionsByClubId(String clubId){
+        List<Position> positions = positionRepository.findByClubId(clubId);
+        return positions.stream().map(this::positionResDto).toList();
+    }
+
+    private PositionResDto positionResDto(Position position){
+        return new PositionResDto(
+                position.getUser().getRealname(),
+                position.getPositionName().getValue()
         );
     }
 
@@ -120,6 +133,13 @@ public class ClubService {
         Club club = getClubById(clubId);
         clubRepository.delete(club);
     }
+
+    @Transactional
+    public void deleteUserInClub(String clubId, String userId){
+        Position position = getPositionByUserIdAndClubId(userId, clubId);
+        positionRepository.delete(position);
+    }
+
     @Transactional
     public Position inviteClub(String clubId, String email){
         User user = userService.getUserByEmail(email);

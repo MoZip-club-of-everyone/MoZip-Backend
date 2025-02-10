@@ -23,7 +23,7 @@ public class Position extends BaseTime {
     private PositionType positionName;
 
     @Setter
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 

@@ -1,9 +1,6 @@
 package com.mozip.mozip.domain.club.controller;
 
-import com.mozip.mozip.domain.club.dto.ClubHomeResDto;
-import com.mozip.mozip.domain.club.dto.ClubResponseDto;
-import com.mozip.mozip.domain.club.dto.ClubinviteReqDto;
-import com.mozip.mozip.domain.club.dto.PositionReqDto;
+import com.mozip.mozip.domain.club.dto.*;
 import com.mozip.mozip.domain.club.entity.Club;
 import com.mozip.mozip.domain.club.service.ClubService;
 import com.mozip.mozip.domain.user.entity.Position;
@@ -36,13 +33,17 @@ public class ClubController {
         return ResponseEntity.ok(clubService.getClubsByUserId(userId));
     }
 
+    @GetMapping("{club_id}/manage")
+    public ResponseEntity<List<PositionResDto>> getPositionsByCludId(@PathVariable("club_id") String clubId){
+        return ResponseEntity.ok(clubService.getPositionsByClubId(clubId));
+    }
+
     @PostMapping
     public ResponseEntity<?> createClub(
             @RequestParam("userId") String userId,
             @RequestParam("name") String name,
             @RequestParam("image") MultipartFile image) {
         try {
-            log.info(name);
             ClubResponseDto createdClub = clubService.createClub(name, image);
             clubService.inviteClub(createdClub.getClubId(), userService.getUserById(userId).getEmail());
             clubService.updatePosition(createdClub.getClubId(), userId, PositionType.MASTER);
@@ -88,4 +89,11 @@ public class ClubController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("{club_id}/{user_id}/role")
+    public ResponseEntity<String> deleteUserInClub(
+            @PathVariable("club_id") String clubId,
+            @PathVariable("user_id") String userId) {
+        clubService.deleteUserInClub(clubId, userId);
+        return ResponseEntity.ok("사용자 추방에 성공하였습니다.");
+    }
 }
