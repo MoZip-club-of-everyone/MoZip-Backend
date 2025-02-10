@@ -13,6 +13,8 @@ import java.util.Optional;
 public interface PositionRepository extends JpaRepository<Position, String> {
     List<Position> findByUserId(String userId);
 
+    List<Position> findByClubId(String clubId);
+
     Optional<Position> findByUserIdAndClubId(String userId, String clubId);
 
     @Query("SELECT p.club FROM Position p WHERE p.user.id = :userId")
