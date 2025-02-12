@@ -64,7 +64,7 @@ public class UserService {
     }
 
     public void updateApplicantUserInfo(User user, ApplicantInfoRequest request) {
-        user.updateInfo(request.getRealname(), request.getPhone(), request.getEmail());
+        user.updateInfo(request.getRealname(), request.getPhone());
         userRepository.save(user);
     }
 }
