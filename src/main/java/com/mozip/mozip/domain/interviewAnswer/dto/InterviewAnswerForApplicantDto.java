@@ -10,6 +10,7 @@ import lombok.Getter;
 @Builder
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class InterviewAnswerForApplicantDto {
+    private String answerId;
     private String applicantId;
     private String realname;
     private String answer;
@@ -17,6 +18,7 @@ public class InterviewAnswerForApplicantDto {
 
     public static InterviewAnswerForApplicantDto from(InterviewAnswer answer, Integer score) {
         return InterviewAnswerForApplicantDto.builder()
+                .answerId(answer.getId())
                 .applicantId(answer.getApplicant().getId())
                 .realname(answer.getApplicant().getUser().getRealname())
                 .answer(answer.getAnswer())
