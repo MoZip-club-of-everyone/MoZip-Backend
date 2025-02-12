@@ -2,16 +2,15 @@ package com.mozip.mozip.domain.user.service;
 
 import com.mozip.mozip.domain.applicant.dto.ApplicantInfoRequest;
 import com.mozip.mozip.domain.user.dto.SignupRequest;
-import com.mozip.mozip.domain.user.entity.enums.Role;
 import com.mozip.mozip.domain.user.entity.User;
+import com.mozip.mozip.domain.user.entity.enums.Role;
 import com.mozip.mozip.domain.user.repository.UserRepository;
 import com.mozip.mozip.global.dto.CustomUserDetails;
-import com.sun.jdi.request.DuplicateRequestException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,7 +33,7 @@ public class UserService {
     // 회원가입 처리
     public void joinProcess(SignupRequest signupRequest) {
         if (userRepository.findByEmail(signupRequest.getEmail()).isPresent()) {
-            throw new DuplicateRequestException("이미 존재하는 이메일입니다.");
+            throw new RuntimeException("이미 존재하는 이메일입니다.");
         }
         User newUser = User.builder()
                 .email(signupRequest.getEmail())
