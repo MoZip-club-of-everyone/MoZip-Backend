@@ -30,6 +30,9 @@ import com.mozip.mozip.domain.paperQuestion.dto.PaperQuestionWithAnswersDto;
 import com.mozip.mozip.domain.paperQuestion.entity.PaperQuestion;
 import com.mozip.mozip.domain.paperQuestion.service.PaperQuestionService;
 import com.mozip.mozip.domain.user.entity.User;
+import com.mozip.mozip.domain.applicant.dto.ApplicantInfoRequest;
+import com.mozip.mozip.domain.applicant.dto.ApplicantInfoResponse;
+import com.mozip.mozip.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +53,25 @@ public class ApplicantManager {
     private final PaperAnswerService paperAnswerService;
     private final InterviewQuestionService interviewQuestionService;
     private final InterviewAnswerService interviewAnswerService;
+    private final UserService userService;
+
+    // 지원자 생성
+    @Transactional
+    public ApplicantInfoResponse createApplicantByMozipId(ApplicantInfoRequest request, String mozipId) {
+        Mozip mozip = mozipService.getMozipById(mozipId);
+        User user = userService.getCurrentUser();
+        userService.updateApplicantUserInfo(user, request);
+        Applicant applicant = applicantService.createApplicant(user, mozip);
+        return ApplicantInfoResponse.from(applicant);
+    }
+
+    // 지원자 필수 정보 조회
+    @Transactional(readOnly = true)
+    public ApplicantInfoResponse getApplicantInfoByMozipId(User user, String mozipId) {
+        Mozip mozip = mozipService.getMozipById(mozipId);
+        Applicant applicant = applicantService.getCurrentApplicant(user, mozip);
+        return ApplicantInfoResponse.from(applicant);
+    }
 
     private <T> List<T> createApplicantDataList(List<Applicant> applicants, Function<Applicant, T> mapper) {
         return applicants.stream()
