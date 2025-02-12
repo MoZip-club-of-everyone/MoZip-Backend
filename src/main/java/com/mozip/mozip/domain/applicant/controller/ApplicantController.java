@@ -48,9 +48,11 @@ public class ApplicantController {
     // 서류 지원자 목록 조회
     @GetMapping("/papers")
     public ResponseEntity<ApplicantListResponse<PaperApplicantData>> getApplicantList(
+            Authentication authentication,
             @PathVariable("mozip_id") String mozipId,
             @RequestParam(value = "sort-by", required = false, defaultValue = "number") String sortBy,
             @RequestParam(value = "order", required = false, defaultValue = "asc") String order) {
+        User evaluator = ((CustomUserDetails) authentication.getPrincipal()).user();
         log.info("GET 서류 지원자 목록 조회: mozip-{}", mozipId);
         return ResponseEntity.ok(applicantManager.getApplicantListByMozipId(mozipId, sortBy, order));
     }
