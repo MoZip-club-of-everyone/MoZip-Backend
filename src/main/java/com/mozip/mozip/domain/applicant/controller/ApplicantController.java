@@ -10,6 +10,8 @@ import com.mozip.mozip.domain.applicant.dto.UpdateApplicantStatusRequest;
 import com.mozip.mozip.domain.evaluation.dto.InterviewEvaluatedApplicantData;
 import com.mozip.mozip.domain.evaluation.dto.PaperEvaluatedApplicantData;
 import com.mozip.mozip.domain.user.entity.User;
+import com.mozip.mozip.domain.applicant.dto.ApplicantInfoResponse;
+import com.mozip.mozip.domain.applicant.dto.ApplicantInfoRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +25,27 @@ import org.springframework.web.bind.annotation.*;
 public class ApplicantController {
     private final ApplicantManager applicantManager;
 
-    // 서류 지원자 목록 조회
+    // 지원자 생성
+    @PostMapping
+    public ResponseEntity<ApplicantInfoResponse> postApplicant(
+            @PathVariable("mozip_id") String mozipId,
+            @RequestBody ApplicantInfoRequest request) {
+        log.info("POST 지원자 생성: mozip-{}", mozipId);
+        return ResponseEntity.ok(applicantManager.createApplicantByMozipId(request, mozipId));
+    }
+
+    // 지원자 필수 정보 조회
     @GetMapping
+    public ResponseEntity<ApplicantInfoResponse> getApplicantInfo(
+            Authentication authentication,
+            @PathVariable("mozip_id") String mozipId) {
+        log.info("GET 지원자 필수 정보 조회: mozip-{}", mozipId);
+        User user = (User) authentication.getPrincipal();
+        return ResponseEntity.ok(applicantManager.getApplicantInfoByMozipId(user, mozipId));
+    }
+
+    // 서류 지원자 목록 조회
+    @GetMapping("/papers")
     public ResponseEntity<ApplicantListResponse<PaperApplicantData>> getApplicantList(
             @PathVariable("mozip_id") String mozipId,
             @RequestParam(value = "sort-by", required = false, defaultValue = "number") String sortBy,
@@ -66,7 +87,7 @@ public class ApplicantController {
     }
 
     // 서류 합격자 목록 조회
-    @GetMapping("/papers/passed")
+    @GetMapping("/interviews")
     public ResponseEntity<ApplicantListResponse<InterviewApplicantData>> getPaperPassedApplicants(
             @PathVariable("mozip_id") String mozipId,
             @RequestParam(value = "sort-by", required = false, defaultValue = "number") String sortBy,

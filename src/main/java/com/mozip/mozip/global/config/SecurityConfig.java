@@ -31,7 +31,10 @@ public class SecurityConfig {
     private final UserRepository userRepository;
 
     private static final List<String> PERMIT_ALL_PATHS = List.of(
-            "/api/users/login", "/api/users/join", "/api/interviews/questions"
+            "/api/users/login",
+            "/api/users/join",
+            "/api/interviews/questions",
+            "/api/mozip/{mozip_id}/applicants"
     );
 
     @Bean

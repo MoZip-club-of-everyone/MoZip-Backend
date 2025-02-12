@@ -1,5 +1,6 @@
 package com.mozip.mozip.domain.user.service;
 
+import com.mozip.mozip.domain.applicant.dto.ApplicantInfoRequest;
 import com.mozip.mozip.domain.user.dto.SignupRequest;
 import com.mozip.mozip.domain.user.entity.enums.Role;
 import com.mozip.mozip.domain.user.entity.User;
@@ -59,5 +60,10 @@ public class UserService {
             return createGuestUser();
         }
         return (User) authentication.getPrincipal();
+    }
+
+    public void updateApplicantUserInfo(User user, ApplicantInfoRequest request) {
+        user.updateInfo(request.getRealname(), request.getPhone(), request.getEmail());
+        userRepository.save(user);
     }
 }
