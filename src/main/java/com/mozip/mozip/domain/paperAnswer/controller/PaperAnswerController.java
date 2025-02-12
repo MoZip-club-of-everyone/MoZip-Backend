@@ -5,12 +5,14 @@ import com.mozip.mozip.domain.paperAnswer.dto.PaperAnswerResDto;
 import com.mozip.mozip.domain.paperAnswer.dto.PaperAnswerUpdateReqDto;
 import com.mozip.mozip.domain.paperAnswer.service.PaperAnswerManager;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/papers/answers")
 @RequiredArgsConstructor
@@ -51,6 +53,7 @@ public class PaperAnswerController {
 
     @PostMapping
     public PaperAnswerResDto createAnswer(@RequestBody PaperAnswerCreateReqDto requestDto) {
+        log.info("POST 서류 응답 추가: applicant-{}", requestDto.getApplicantId());
         return paperAnswerManager.createAnswer(requestDto);
     }
 
