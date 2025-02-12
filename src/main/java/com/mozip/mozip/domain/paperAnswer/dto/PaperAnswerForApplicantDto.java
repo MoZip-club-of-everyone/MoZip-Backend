@@ -13,9 +13,9 @@ public class PaperAnswerForApplicantDto {
     private String applicantId;
     private String realname;
     private String answer;
-    private int score;
+    private Integer score;
 
-    public static PaperAnswerForApplicantDto from(PaperAnswer answer, int score) {
+    public static PaperAnswerForApplicantDto from(PaperAnswer answer, Integer score) {
         return PaperAnswerForApplicantDto.builder()
                 .applicantId(answer.getApplicant().getId())
                 .realname(answer.getApplicant().getUser().getRealname())
