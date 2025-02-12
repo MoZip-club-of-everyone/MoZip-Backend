@@ -37,9 +37,8 @@ public class User extends BaseTime {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Position> position;
 
-    public void updateInfo(String realname, String phone, String email) {
+    public void updateInfo(String realname, String phone) {
         this.realname = realname;
         this.phone = phone;
-        this.email = email;
     }
 }
