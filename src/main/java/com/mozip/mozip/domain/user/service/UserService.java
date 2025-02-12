@@ -5,6 +5,7 @@ import com.mozip.mozip.domain.user.dto.SignupRequest;
 import com.mozip.mozip.domain.user.entity.enums.Role;
 import com.mozip.mozip.domain.user.entity.User;
 import com.mozip.mozip.domain.user.repository.UserRepository;
+import com.mozip.mozip.global.dto.CustomUserDetails;
 import com.sun.jdi.request.DuplicateRequestException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +60,7 @@ public class UserService {
         if (authentication == null || !authentication.isAuthenticated()) {
             return createGuestUser();
         }
-        return (User) authentication.getPrincipal();
+        return ((CustomUserDetails) authentication.getPrincipal()).user();
     }
 
     public void updateApplicantUserInfo(User user, ApplicantInfoRequest request) {

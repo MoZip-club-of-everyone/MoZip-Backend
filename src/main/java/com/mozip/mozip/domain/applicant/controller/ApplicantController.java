@@ -12,6 +12,7 @@ import com.mozip.mozip.domain.evaluation.dto.PaperEvaluatedApplicantData;
 import com.mozip.mozip.domain.user.entity.User;
 import com.mozip.mozip.domain.applicant.dto.ApplicantInfoResponse;
 import com.mozip.mozip.domain.applicant.dto.ApplicantInfoRequest;
+import com.mozip.mozip.global.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +41,7 @@ public class ApplicantController {
             Authentication authentication,
             @PathVariable("mozip_id") String mozipId) {
         log.info("GET 지원자 필수 정보 조회: mozip-{}", mozipId);
-        User user = (User) authentication.getPrincipal();
+        User user = ((CustomUserDetails) authentication.getPrincipal()).user();
         return ResponseEntity.ok(applicantManager.getApplicantInfoByMozipId(user, mozipId));
     }
 
@@ -61,7 +62,7 @@ public class ApplicantController {
             @PathVariable("mozip_id") String mozipId,
             @RequestParam(value = "applicant-id", required = false) String applicantId,
             @RequestParam(value = "question-id", required = false) String questionId) {
-        User evaluator = (User) authentication.getPrincipal();
+        User evaluator = ((CustomUserDetails) authentication.getPrincipal()).user();
         log.info("GET 서류 지원서 목록 조회: mozip-{}, evaluator-{}", mozipId, evaluator.getId());
         return ResponseEntity.ok(applicantManager.getPaperAnswersByMozipId(evaluator, mozipId, applicantId, questionId));
     }
@@ -103,7 +104,7 @@ public class ApplicantController {
             @PathVariable("mozip_id") String mozipId,
             @RequestParam(value = "applicant-id", required = false) String applicantId,
             @RequestParam(value = "question-id", required = false) String questionId) {
-        User evaluator = (User) authentication.getPrincipal();
+        User evaluator = ((CustomUserDetails) authentication.getPrincipal()).user();
         log.info("GET 면접 기록 목록 조회: mozip-{}, evaluator-{}", mozipId, evaluator.getId());
         return ResponseEntity.ok(applicantManager.getInterviewAnswersByMozipId(evaluator, mozipId, applicantId, questionId));
     }
