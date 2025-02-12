@@ -7,7 +7,6 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-
 public class PaperApplicantData extends ApplicantData {
     private Double paperScoreAverage;
     private Double paperScoreStandardDeviation;
