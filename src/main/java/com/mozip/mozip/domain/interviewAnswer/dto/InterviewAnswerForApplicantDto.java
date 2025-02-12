@@ -13,9 +13,9 @@ public class InterviewAnswerForApplicantDto {
     private String applicantId;
     private String realname;
     private String answer;
-    private int score;
+    private Integer score;
 
-    public static InterviewAnswerForApplicantDto from(InterviewAnswer answer, int score) {
+    public static InterviewAnswerForApplicantDto from(InterviewAnswer answer, Integer score) {
         return InterviewAnswerForApplicantDto.builder()
                 .applicantId(answer.getApplicant().getId())
                 .realname(answer.getApplicant().getUser().getRealname())

@@ -57,6 +57,7 @@ public class PaperAnswerController {
         return paperAnswerManager.createAnswer(requestDto);
     }
 
+    // 서류 응답 작성 완료
     @PostMapping("/register/applicants/{applicant_id}")
     public String registerApplicant(@PathVariable("applicant_id") String applicantId) {
         paperAnswerManager.registerAnswer(applicantId);

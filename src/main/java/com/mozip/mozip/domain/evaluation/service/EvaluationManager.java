@@ -44,7 +44,7 @@ public class EvaluationManager {
     public void updatePaperScore(User evaluator, String paperAnswerId, int score) {
         PaperAnswer paperAnswer = paperAnswerService.getPaperAnswerById(paperAnswerId);
         Applicant applicant = paperAnswer.getApplicant();
-        checkPaperEvaluable(applicant);
+        checkPaperEvaluable(evaluator, applicant);
         Evaluation evaluation = evaluationService.getEvaluationByApplicantAndEvaluator(applicant, evaluator);
         evaluation.setPaperScore(score);
         evaluationService.saveEvaluation(evaluation);
@@ -59,7 +59,7 @@ public class EvaluationManager {
     public void updateInterviewScore(User evaluator, String interviewAnswerId, int score) {
         InterviewAnswer interviewAnswer = interviewAnswerService.getInterviewAnswerById(interviewAnswerId);
         Applicant applicant = interviewAnswer.getApplicant();
-        checkInterviewEvaluable(applicant);
+        checkInterviewEvaluable(evaluator, applicant);
         Evaluation evaluation = evaluationService.getEvaluationByApplicantAndEvaluator(applicant, evaluator);
         evaluation.setInterviewScore(score);
         evaluationService.saveEvaluation(evaluation);
@@ -69,14 +69,14 @@ public class EvaluationManager {
         checkAllEvaluated(applicant);
     }
 
-    private void checkPaperEvaluable(Applicant applicant) {
+    private void checkPaperEvaluable(User evaluator, Applicant applicant) {
         if (applicant.getPaperStatus() != EvaluationStatus.UNEVALUATED) {
             throw ApplicantException.paperEvaluated(applicant);
         }
     }
 
-    private void checkInterviewEvaluable(Applicant applicant) {
-        checkPaperEvaluable(applicant);
+    private void checkInterviewEvaluable(User evaluator, Applicant applicant) {
+        checkPaperEvaluable(evaluator, applicant);
         if (applicant.getInterviewStatus() != EvaluationStatus.UNEVALUATED) {
             throw ApplicantException.interviewEvaluated(applicant);
         }
