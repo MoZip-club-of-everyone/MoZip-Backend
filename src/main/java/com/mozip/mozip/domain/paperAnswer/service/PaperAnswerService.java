@@ -40,7 +40,7 @@ public class PaperAnswerService {
 
     @Transactional
     public PaperAnswer createAnswer(Applicant applicant, PaperQuestion paperQuestion, String answer) {
-        return getPaperAnswerByQuestionAndApplicant(paperQuestion.getId(), applicant.getId())
+        PaperAnswer paperAnswer = getPaperAnswerByQuestionAndApplicant(paperQuestion.getId(), applicant.getId())
                 .map(existingAnswer -> {
                     existingAnswer.setAnswer(answer);
                     return existingAnswer;
@@ -50,6 +50,7 @@ public class PaperAnswerService {
                         .paperQuestion(paperQuestion)
                         .answer(answer)
                         .build());
+        return  paperAnswerRepository.save(paperAnswer);
     }
 
     @Transactional
