@@ -41,4 +41,8 @@ public enum PositionType {
     public static final List<PositionType> evaluablePositions = Arrays.stream(PositionType.values())
             .filter(PositionType::isEvaluate)
             .toList();
+
+    public static final List<PositionType> readablePositions = Arrays.stream(PositionType.values())
+            .filter(PositionType::isEvaluate)
+            .toList();
 }

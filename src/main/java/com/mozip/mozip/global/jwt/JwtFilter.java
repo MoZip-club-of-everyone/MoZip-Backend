@@ -59,6 +59,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         //토큰에서 username 획득
         String email = jwtUtil.getEmail(token);
+        log.info("token email: {}", email);
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         //UserDetails에 회원 정보 객체 담기
