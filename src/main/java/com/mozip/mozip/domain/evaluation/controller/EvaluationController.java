@@ -5,6 +5,7 @@ import com.mozip.mozip.domain.evaluation.dto.PaperEvaluationDetailsResponse;
 import com.mozip.mozip.domain.evaluation.dto.UpdateScoreRequest;
 import com.mozip.mozip.domain.evaluation.service.EvaluationManager;
 import com.mozip.mozip.domain.user.entity.User;
+import com.mozip.mozip.global.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class EvaluationController {
             Authentication authentication,
             @PathVariable("paper_answer_id") String paperAnswerId,
             @RequestBody UpdateScoreRequest request) {
-        User evaluator = (User) authentication.getPrincipal();
+        User evaluator = ((CustomUserDetails) authentication.getPrincipal()).user();
         log.info("PATCH 서류 점수 입력: evaluator-{}", evaluator.getId());
         evaluationManager.updatePaperScore(evaluator, paperAnswerId, request.getScore());
         return ResponseEntity.ok().build();
@@ -36,7 +37,7 @@ public class EvaluationController {
             Authentication authentication,
             @PathVariable("interview_answer_id") String interviewAnswerId,
             @RequestBody UpdateScoreRequest request) {
-        User evaluator = (User) authentication.getPrincipal();
+        User evaluator = ((CustomUserDetails) authentication.getPrincipal()).user();
         log.info("PATCH 인터뷰 점수 입력: evaluator-{}", evaluator.getId());
         evaluationManager.updateInterviewScore(evaluator, interviewAnswerId, request.getScore());
         return ResponseEntity.ok().build();
@@ -48,7 +49,7 @@ public class EvaluationController {
             Authentication authentication,
             @RequestParam("applicant-id") String applicantId,
             @RequestParam("question-id") String questionId) {
-        User evaluator = (User) authentication.getPrincipal();
+        User evaluator = ((CustomUserDetails) authentication.getPrincipal()).user();
         log.info("GET 특정 서류 응답 평가 조회: evaluator-{}", evaluator.getId());
         PaperEvaluationDetailsResponse response = evaluationManager.getPaperEvaluationDetails(evaluator, applicantId, questionId);
         return ResponseEntity.ok(response);
@@ -60,7 +61,7 @@ public class EvaluationController {
             Authentication authentication,
             @RequestParam("applicant-id") String applicantId,
             @RequestParam("question-id") String questionId) {
-        User evaluator = (User) authentication.getPrincipal();
+        User evaluator = ((CustomUserDetails) authentication.getPrincipal()).user();
         log.info("GET 특정 면접 기록 평가 조회: evaluator-{}", evaluator.getId());
         InterviewEvaluationDetailsResponse response = evaluationManager.getInterviewEvaluationDetails(evaluator, applicantId, questionId);
         return ResponseEntity.ok(response);
