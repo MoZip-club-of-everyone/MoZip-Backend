@@ -44,7 +44,7 @@ public class EvaluationManager {
     public void updatePaperScore(User evaluator, String paperAnswerId, int score) {
         PaperAnswer paperAnswer = paperAnswerService.getPaperAnswerById(paperAnswerId);
         Applicant applicant = paperAnswer.getApplicant();
-        checkPaperEvaluable(evaluator, applicant);
+//        checkPaperEvaluable(evaluator, applicant);
         Evaluation evaluation = evaluationService.getEvaluationByApplicantAndEvaluator(applicant, evaluator);
         evaluation.setPaperScore(score);
         evaluationService.saveEvaluation(evaluation);
@@ -59,7 +59,7 @@ public class EvaluationManager {
     public void updateInterviewScore(User evaluator, String interviewAnswerId, int score) {
         InterviewAnswer interviewAnswer = interviewAnswerService.getInterviewAnswerById(interviewAnswerId);
         Applicant applicant = interviewAnswer.getApplicant();
-        checkInterviewEvaluable(evaluator, applicant);
+//        checkInterviewEvaluable(evaluator, applicant);
         Evaluation evaluation = evaluationService.getEvaluationByApplicantAndEvaluator(applicant, evaluator);
         evaluation.setInterviewScore(score);
         evaluationService.saveEvaluation(evaluation);

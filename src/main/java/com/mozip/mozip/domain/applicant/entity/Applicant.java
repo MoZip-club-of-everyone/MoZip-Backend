@@ -58,14 +58,17 @@ public class Applicant extends BaseTime {
 
     @Setter
     @Builder.Default
+    @Enumerated(EnumType.STRING)
     private EvaluationStatus paperStatus = EvaluationStatus.UNEVALUATED;
 
     @Setter
     @Builder.Default
+    @Enumerated(EnumType.STRING)
     private EvaluationStatus interviewStatus = EvaluationStatus.UNEVALUATED;
 
     @Setter
     @Builder.Default
+    @Enumerated(EnumType.STRING)
     private EvaluationStatus totalStatus = EvaluationStatus.UNEVALUATED;
 
     // 서류 점수 평균 계산

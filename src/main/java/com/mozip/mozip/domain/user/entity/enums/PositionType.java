@@ -43,6 +43,6 @@ public enum PositionType {
             .toList();
 
     public static final List<PositionType> readablePositions = Arrays.stream(PositionType.values())
-            .filter(PositionType::isEvaluate)
+            .filter(PositionType::isRead)
             .toList();
 }
