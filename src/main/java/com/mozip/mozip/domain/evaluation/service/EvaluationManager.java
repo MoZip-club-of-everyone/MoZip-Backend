@@ -9,6 +9,7 @@ import com.mozip.mozip.domain.evaluation.dto.CommentData;
 import com.mozip.mozip.domain.evaluation.dto.InterviewEvaluationDetailsResponse;
 import com.mozip.mozip.domain.evaluation.dto.MemoData;
 import com.mozip.mozip.domain.evaluation.dto.PaperEvaluationDetailsResponse;
+import com.mozip.mozip.domain.evaluation.entity.EvaluateArea;
 import com.mozip.mozip.domain.evaluation.entity.Evaluation;
 import com.mozip.mozip.domain.interviewAnswer.entity.InterviewAnswer;
 import com.mozip.mozip.domain.interviewAnswer.service.InterviewAnswerService;
@@ -21,11 +22,15 @@ import com.mozip.mozip.domain.paperQuestion.service.PaperQuestionService;
 import com.mozip.mozip.domain.user.entity.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.OptionalDouble;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EvaluationManager {
@@ -48,8 +53,8 @@ public class EvaluationManager {
         Evaluation evaluation = evaluationService.getEvaluationByApplicantAndEvaluator(applicant, evaluator);
         evaluation.setPaperScore(score);
         evaluationService.saveEvaluation(evaluation);
-        applicant.setPaperScoreAverage(applicant.calculatePaperAverage());
-        applicant.setPaperScoreStandardDeviation(applicant.calculatePaperStandardDeviation());
+        calculateAverageScore(applicant, EvaluateArea.PAPER);
+        calculateStandardDeviation(applicant, EvaluateArea.PAPER);
         applicantService.saveApplicant(applicant);
         checkAllEvaluated(applicant);
     }
@@ -63,8 +68,8 @@ public class EvaluationManager {
         Evaluation evaluation = evaluationService.getEvaluationByApplicantAndEvaluator(applicant, evaluator);
         evaluation.setInterviewScore(score);
         evaluationService.saveEvaluation(evaluation);
-        applicant.setInterviewScoreAverage(applicant.calculateInterviewAverage());
-        applicant.setInterviewStandardDeviation(applicant.calculateInterviewStandardDeviation());
+        calculateAverageScore(applicant, EvaluateArea.INTERVIEW);
+        calculateStandardDeviation(applicant, EvaluateArea.INTERVIEW);
         applicantService.saveApplicant(applicant);
         checkAllEvaluated(applicant);
     }
@@ -115,6 +120,63 @@ public class EvaluationManager {
         if (totalEvaluators == evaluatedPaperScores) {
             applicant.setPaperStatus(EvaluationStatus.EVALUATED);
             applicantService.saveApplicant(applicant);
+        }
+    }
+
+    // 평균 계산
+    private void calculateAverageScore(Applicant applicant, EvaluateArea evaluateArea) {
+        List<Evaluation> evaluations = evaluationService.getEvaluationsByApplicant(applicant);
+        OptionalDouble average = evaluations.stream()
+                .map(evaluation -> {
+                    if (evaluateArea == EvaluateArea.PAPER) {
+                        return evaluation.getPaperScore();
+                    } else if (evaluateArea == EvaluateArea.INTERVIEW) {
+                        return evaluation.getInterviewScore();
+                    } else {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .mapToInt(Integer::intValue)
+                .average();
+        Double roundedAverage = average.isPresent() ? Math.round(average.getAsDouble() * 10.0) / 10.0 : null;
+        if (evaluateArea == EvaluateArea.PAPER) {
+            applicant.setPaperScoreAverage(roundedAverage);
+        } else if (evaluateArea == EvaluateArea.INTERVIEW) {
+            applicant.setInterviewScoreAverage(roundedAverage);
+        }
+    }
+
+    // 표준편차 계산
+    private void calculateStandardDeviation(Applicant applicant, EvaluateArea evaluateArea) {
+        List<Evaluation> evaluations = evaluationService.getEvaluationsByApplicant(applicant);
+        Double average = (evaluateArea == EvaluateArea.PAPER) ? applicant.getPaperScoreAverage() : applicant.getInterviewScoreAverage();
+        if (average == null) {
+            if (evaluateArea == EvaluateArea.PAPER) {
+                applicant.setPaperScoreStandardDeviation(null);
+            } else if (evaluateArea == EvaluateArea.INTERVIEW) {
+                applicant.setInterviewStandardDeviation(null);
+            }
+            return;
+        }
+        OptionalDouble variance = evaluations.stream()
+                .map(evaluation -> {
+                    if (evaluateArea == EvaluateArea.PAPER) {
+                        return evaluation.getPaperScore();
+                    } else if (evaluateArea == EvaluateArea.INTERVIEW) {
+                        return evaluation.getInterviewScore();
+                    } else {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .mapToDouble(score -> Math.pow(score - average, 2))
+                .average();
+        Double standardDeviation = variance.isPresent() ? Math.round(variance.getAsDouble() * 10.0) / 10.0 : null;
+        if (evaluateArea == EvaluateArea.PAPER) {
+            applicant.setPaperScoreStandardDeviation(standardDeviation);
+        } else if (evaluateArea == EvaluateArea.INTERVIEW) {
+            applicant.setInterviewStandardDeviation(standardDeviation);
         }
     }
 }

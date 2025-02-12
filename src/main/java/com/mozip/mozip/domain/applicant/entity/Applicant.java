@@ -70,43 +70,4 @@ public class Applicant extends BaseTime {
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private EvaluationStatus totalStatus = EvaluationStatus.UNEVALUATED;
-
-    // 서류 점수 평균 계산
-    public Double calculatePaperAverage() {
-        return calculateAverage(Evaluation::getPaperScore);
-    }
-
-    // 서류 점수 표준편차 계산
-    public Double calculatePaperStandardDeviation() {
-        return calculateStandardDeviation(Evaluation::getPaperScore);
-    }
-
-    // 면접 점수 평균 계산
-    public Double calculateInterviewAverage() {
-        return calculateAverage(Evaluation::getInterviewScore);
-    }
-
-    // 면접 점수 표준편차 계산
-    public Double calculateInterviewStandardDeviation() {
-        return calculateStandardDeviation(Evaluation::getInterviewScore);
-    }
-
-    // 평균 계산
-    private Double calculateAverage(ToIntFunction<Evaluation> scoreFunction) {
-        OptionalDouble average = evaluations.stream()
-                .mapToInt(scoreFunction)
-                .average();
-        return average.isPresent() ? Math.round(average.getAsDouble() * 10.0) / 10.0 : null;
-    }
-
-    // 표준편차 계산
-    private Double calculateStandardDeviation(ToIntFunction<Evaluation> scoreFunction) {
-        Double average = calculateAverage(scoreFunction);
-        if (average == null) return null;
-        double variance = evaluations.stream()
-                .mapToDouble(e -> Math.pow(scoreFunction.applyAsInt(e) - average, 2))
-                .average()
-                .orElse(0.0);
-        return Math.round(Math.sqrt(variance) * 10.0) / 10.0;
-    }
 }
