@@ -21,6 +21,7 @@ public class PaperQuestionWithAnswersDto {
 
     public static PaperQuestionWithAnswersDto from(PaperQuestion question, List<PaperAnswerForApplicantDto> answers) {
         return PaperQuestionWithAnswersDto.builder()
+                .type(question.getType())
                 .questionId(question.getId())
                 .question(question.getQuestion())
                 .answers(answers)
