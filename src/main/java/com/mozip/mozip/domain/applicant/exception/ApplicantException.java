@@ -30,4 +30,8 @@ public class ApplicantException extends RuntimeException {
     public static ApplicantException interviewNotEvaluated(Applicant applicant) {
         return new ApplicantException(applicant, "면접 평가가 완료되지 않은 Applicant입니다.");
     }
+
+    public static ApplicantException notRegistered(Applicant applicant) {
+        return new ApplicantException(applicant, "등록되지 않은 Applicant입니다.");
+    }
 }

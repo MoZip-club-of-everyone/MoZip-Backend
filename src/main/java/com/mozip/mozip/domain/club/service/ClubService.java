@@ -5,12 +5,10 @@ import com.mozip.mozip.domain.club.dto.ClubResponseDto;
 import com.mozip.mozip.domain.club.dto.PositionResDto;
 import com.mozip.mozip.domain.club.entity.Club;
 import com.mozip.mozip.domain.club.repository.ClubRepository;
-import com.mozip.mozip.domain.mozip.repository.MozipRepository;
 import com.mozip.mozip.domain.user.entity.Position;
 import com.mozip.mozip.domain.user.entity.User;
 import com.mozip.mozip.domain.user.entity.enums.PositionType;
 import com.mozip.mozip.domain.user.repository.PositionRepository;
-import com.mozip.mozip.domain.user.repository.UserRepository;
 import com.mozip.mozip.domain.user.service.UserService;
 import com.mozip.mozip.global.service.S3Service;
 import jakarta.persistence.EntityNotFoundException;
@@ -28,9 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClubService {
     private final ClubRepository clubRepository;
-    private final MozipRepository mozipRepository;
     private final PositionRepository positionRepository;
-    private final UserRepository userRepository;
     private final S3Service s3Service;
     private final UserService userService;
 
