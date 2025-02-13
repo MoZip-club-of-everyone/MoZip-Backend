@@ -22,8 +22,9 @@ public class PaperAnswerController {
 
     // 지원자에 대한 모든 응답 조회
     @GetMapping("/applicants/{applicant_id}")
-    public ResponseEntity<HashMap<String, Object>> getAnswersByApplicantId(@PathVariable("applicant_id") String applicantId) {
-        List<PaperAnswerResDto> answers = paperAnswerManager.getPaperAnswersByApplicantId(applicantId);
+    public ResponseEntity<HashMap<String, Object>> getAnswersByApplicantId(@PathVariable("applicant_id") String applicantId,
+                                                                           @PathVariable("club_id") String clubId) {
+        List<PaperAnswerResDto> answers = paperAnswerManager.getPaperAnswersByApplicantIdAndMozipId(applicantId, clubId);
         HashMap<String, Object> response = new HashMap<>();
         response.put("list", answers);
         return ResponseEntity.ok(response);

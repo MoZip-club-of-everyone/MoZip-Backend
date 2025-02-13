@@ -18,8 +18,8 @@ public class PaperAnswerService {
     private final PaperAnswerRepository paperAnswerRepository;
 
     // 지원자에 대한 모든 답변 조회
-    public List<PaperAnswer> getPaperAnswersByApplicantId(String applicantId) {
-        return paperAnswerRepository.findByApplicantId(applicantId);
+    public List<PaperAnswer> getPaperAnswersByApplicantIdAndMozipId(String applicantId, String mozipId) {
+        return paperAnswerRepository.findByApplicantIdAndPaperQuestionMozipId(applicantId, mozipId);
     }
 
     // 특정 질문에 대한 모든 답변 조회
