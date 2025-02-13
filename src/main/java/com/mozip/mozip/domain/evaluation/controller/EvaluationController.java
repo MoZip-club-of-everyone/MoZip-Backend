@@ -1,5 +1,6 @@
 package com.mozip.mozip.domain.evaluation.controller;
 
+import com.mozip.mozip.domain.applicant.dto.UpdateApplicantStatusRequest;
 import com.mozip.mozip.domain.evaluation.dto.InterviewEvaluationDetailsResponse;
 import com.mozip.mozip.domain.evaluation.dto.PaperEvaluationDetailsResponse;
 import com.mozip.mozip.domain.evaluation.dto.UpdateScoreRequest;
@@ -18,6 +19,28 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class EvaluationController {
     private final EvaluationManager evaluationManager;
+
+    // 서류 합불 상태 수정
+    @PutMapping("/applicants/papers/status")
+    public ResponseEntity<Void> updateApplicantPaperStatuses(
+            Authentication authentication,
+            @RequestBody UpdateApplicantStatusRequest request) {
+        User evaluator = ((CustomUserDetails) authentication.getPrincipal()).user();
+        log.info("PATCH 서류 합불 상태 수정: evaluator-{}", evaluator.getId());
+        evaluationManager.updateApplicantPaperStatuses(evaluator, request);
+        return ResponseEntity.ok().build();
+    }
+
+    // 면접 합불 상태 수정
+    @PutMapping("/applicants/interviews/status")
+    public ResponseEntity<Void> updateApplicantInterviewStatuses(
+            Authentication authentication,
+            @RequestBody UpdateApplicantStatusRequest request) {
+        User evaluator = ((CustomUserDetails) authentication.getPrincipal()).user();
+        log.info("PATCH 면접 합불 상태 수정: evaluator-{}", evaluator.getId());
+        evaluationManager.updateApplicantInterviewStatuses(evaluator, request);
+        return ResponseEntity.ok().build();
+    }
 
     // 서류 점수 입력
     @PatchMapping("/papers/answers/{paper_answer_id}/evaluations/score")

@@ -2,6 +2,7 @@ package com.mozip.mozip.domain.user.repository;
 
 import com.mozip.mozip.domain.club.entity.Club;
 import com.mozip.mozip.domain.user.entity.Position;
+import com.mozip.mozip.domain.user.entity.User;
 import com.mozip.mozip.domain.user.entity.enums.PositionType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,5 +22,7 @@ public interface PositionRepository extends JpaRepository<Position, String> {
     List<Club> findClubsByUserId(@Param("userId") String userId);
 
     long countByClubAndPositionNameIn(Club club, List<PositionType> positionNames);
+
+    boolean existsByIdAndPositionNameIn(String id, List<PositionType> positionNames);
 
 }

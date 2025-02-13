@@ -3,13 +3,7 @@ package com.mozip.mozip.domain.paperQuestion.entity;
 import com.mozip.mozip.domain.mozip.entity.Mozip;
 import com.mozip.mozip.global.entity.BaseTime;
 import de.huxhorn.sulky.ulid.ULID;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -32,6 +26,7 @@ public class PaperQuestion extends BaseTime {
 
     private Long questionNo; // 질문지 내에서의 질문 번호
 
+    @Enumerated(EnumType.STRING)
     private PaperQuestionType type;
 
     @Lob
