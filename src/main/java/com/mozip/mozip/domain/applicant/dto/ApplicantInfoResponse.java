@@ -14,13 +14,15 @@ public class ApplicantInfoResponse {
     private final String realname;
     private final String phone;
     private final String email;
+    private final boolean isAnswerExist;
 
-    public static ApplicantInfoResponse from(Applicant applicant) {
+    public static ApplicantInfoResponse from(Applicant applicant, boolean isAnswerExist) {
         return ApplicantInfoResponse.builder()
                 .applicantId(applicant.getId())
                 .realname(applicant.getUser().getRealname())
                 .phone(applicant.getUser().getPhone())
                 .email(applicant.getUser().getEmail())
+                .isAnswerExist(isAnswerExist)
                 .build();
     }
 } 

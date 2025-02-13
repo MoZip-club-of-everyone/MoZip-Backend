@@ -66,7 +66,7 @@ public class ApplicantManager {
         User user = userService.getCurrentUser();
         userService.updateApplicantUserInfo(user, request);
         Applicant applicant = applicantService.createApplicant(user, mozip);
-        return ApplicantInfoResponse.from(applicant);
+        return ApplicantInfoResponse.from(applicant, false);
     }
 
     // 지원자 필수 정보 조회
@@ -74,7 +74,8 @@ public class ApplicantManager {
     public ApplicantInfoResponse getApplicantInfoByMozipId(User user, String mozipId) {
         Mozip mozip = mozipService.getMozipById(mozipId);
         Applicant applicant = applicantService.getCurrentApplicant(user, mozip);
-        return ApplicantInfoResponse.from(applicant);
+        boolean isAnswerExist = paperAnswerService.existPaperAnswerByApplicant(applicant);
+        return ApplicantInfoResponse.from(applicant, isAnswerExist && !applicant.getIsRegistered());
     }
 
     private void checkReadable(User evaluator, Mozip mozip) {
