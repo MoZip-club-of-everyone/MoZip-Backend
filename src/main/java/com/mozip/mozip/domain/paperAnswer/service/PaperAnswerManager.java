@@ -1,7 +1,6 @@
 package com.mozip.mozip.domain.paperAnswer.service;
 
 import com.mozip.mozip.domain.applicant.entity.Applicant;
-import com.mozip.mozip.domain.applicant.service.ApplicantManager;
 import com.mozip.mozip.domain.applicant.service.ApplicantService;
 import com.mozip.mozip.domain.paperAnswer.dto.PaperAnswerCreateReqDto;
 import com.mozip.mozip.domain.paperAnswer.dto.PaperAnswerResDto;
@@ -25,8 +24,8 @@ public class PaperAnswerManager {
 
 
     // 지원자에 대한 모든 답변 조회
-    public List<PaperAnswerResDto> getPaperAnswersByApplicantId(String applicantId) {
-        return paperAnswerService.getPaperAnswersByApplicantId(applicantId)
+    public List<PaperAnswerResDto> getPaperAnswersByApplicantIdAndMozipId(String applicantId, String mozipId) {
+        return paperAnswerService.getPaperAnswersByApplicantIdAndMozipId(applicantId, mozipId)
                 .stream().map(PaperAnswerResDto::fromEntity).toList();
     }
 
