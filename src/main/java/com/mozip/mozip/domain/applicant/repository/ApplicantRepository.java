@@ -17,4 +17,19 @@ public interface ApplicantRepository extends JpaRepository<Applicant, String> {
     Optional<Applicant> findByUserAndMozip(User user, Mozip mozip);
 
     void deleteByIsRegisteredFalse();
+
+    List<Applicant> findAllByMozipAndIsRegisteredTrueOrderByUserRealnameAsc(Mozip mozip);
+    List<Applicant> findAllByMozipAndIsRegisteredTrueOrderByUserRealnameDesc(Mozip mozip);
+    List<Applicant> findAllByMozipAndIsRegisteredTrueOrderByCreatedAtAsc(Mozip mozip);
+    List<Applicant> findAllByMozipAndIsRegisteredTrueOrderByCreatedAtDesc(Mozip mozip);
+    List<Applicant> findAllByMozipAndIsRegisteredTrueOrderByPaperScoreAverageAsc(Mozip mozip);
+    List<Applicant> findAllByMozipAndIsRegisteredTrueOrderByPaperScoreAverageDesc(Mozip mozip);
+    List<Applicant> findAllByMozipAndIsRegisteredTrueOrderByInterviewScoreAverageAsc(Mozip mozip);
+    List<Applicant> findAllByMozipAndIsRegisteredTrueOrderByInterviewScoreAverageDesc(Mozip mozip);
+    List<Applicant> findAllByMozipAndIsRegisteredTrueOrderByApplicationNumberAsc(Mozip mozip);
+    List<Applicant> findAllByMozipAndIsRegisteredTrueOrderByApplicationNumberDesc(Mozip mozip);
+    List<Applicant> findAllByMozipAndIsRegisteredTrueOrderByPaperStatusAsc(Mozip mozip);
+    List<Applicant> findAllByMozipAndIsRegisteredTrueOrderByPaperStatusDesc(Mozip mozip);
+    List<Applicant> findAllByMozipAndIsRegisteredTrueOrderByInterviewStatusAsc(Mozip mozip);
+    List<Applicant> findAllByMozipAndIsRegisteredTrueOrderByInterviewStatusDesc(Mozip mozip);
 }
