@@ -34,7 +34,10 @@ public class SecurityConfig {
             "/api/users/login",
             "/api/users/join",
             "/api/interviews/questions",
-            "/api/mozip/{mozip_id}/applicants"
+            "/api/mozip/{mozip_id}/applicants",
+            "/api/users/certification-number",
+            "/api/users/certification-number/id",
+            "/api/users/certification-number/password"
     );
 
     @Bean

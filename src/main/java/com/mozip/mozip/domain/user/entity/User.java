@@ -21,6 +21,7 @@ public class User extends BaseTime {
 
     private String email;
 
+    @Setter
     private String password;
 
     private String realname;
