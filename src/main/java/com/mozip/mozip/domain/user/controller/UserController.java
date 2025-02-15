@@ -32,7 +32,7 @@ public class UserController {
         } catch(DuplicateRequestException e){
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
-                    .body("이미 존재하는 아이디입니다.");
+                    .body(e.getMessage());
         }
     }
 
