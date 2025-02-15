@@ -16,7 +16,13 @@ import java.util.HashMap;
 public class SmsService {
     private final VerificationCodeRepository verificationCodeRepository;
 
+//    @Value("${spring.sms.api-key}")
+//    private final String apiKey;
+//    @Value("${spring.sms.secret-key}")
+//    private final String secretKey;
+
     public boolean sendVerificationCode(String phone) {
+        deleteBeforeCode(phone);
         String verificationCode = String.valueOf((int) (Math.random() * 900000) + 100000);
         String message = "인증번호는 [" + verificationCode + "] 입니다.";
         boolean isSent = sendSms(phone, message);
@@ -37,12 +43,18 @@ public class SmsService {
     }
 
     public boolean verifyCode(String phone, String code) {
-        return verificationCodeRepository.findByPhoneAndCode(phone, code)
+        if (verificationCodeRepository.findByPhoneAndCode(phone, code)
                 .filter(v -> v.getExpiresAt().isAfter(LocalDateTime.now()))
-                .isPresent();
+                .isPresent()){
+            verificationCodeRepository.deleteByPhoneAndCode(phone, code);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private boolean sendSms(String phone, String message) {
+//        Message coolsms = new Message(apiKey, secretKey);
         Message coolsms = new Message("NCSIAFJIB2WSB3D2", "BRTAFGT1OKTYBSYISLQ6NTOPV9AY5MBV");
         HashMap<String, String> params = new HashMap<>();
         params.put("to", phone);
@@ -58,5 +70,9 @@ public class SmsService {
             System.out.println("Failed to send SMS: " + e.getCode() + " - " + e.getMessage());
             return false;
         }
+    }
+
+    private void deleteBeforeCode(String phone){
+        verificationCodeRepository.deleteByPhone(phone);
     }
 }

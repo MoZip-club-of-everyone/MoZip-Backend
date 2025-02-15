@@ -4,6 +4,7 @@ import com.mozip.mozip.domain.applicant.dto.ApplicantInfoRequest;
 import com.mozip.mozip.domain.user.dto.SignupRequest;
 import com.mozip.mozip.domain.user.entity.User;
 import com.mozip.mozip.domain.user.entity.enums.Role;
+import com.mozip.mozip.domain.user.exception.DuplicateRealNameException;
 import com.mozip.mozip.domain.user.repository.UserRepository;
 import com.mozip.mozip.global.dto.CustomUserDetails;
 import jakarta.persistence.EntityNotFoundException;
@@ -30,10 +31,28 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User가 없습니다."));
     }
 
+    public User getUserByRealname(String realname) {
+        return userRepository.findByRealname(realname)
+                .orElseThrow(() -> new EntityNotFoundException(("User가 없습니다.")));
+    }
+
+    public User getUserByPhone(String phone) {
+        return userRepository.findByPhone(phone)
+                .orElseThrow(() -> new EntityNotFoundException("User가 없습니다."));
+    }
+
+    public User getUserByRealnameAndPhone(String name, String phone){
+        return userRepository.findByRealnameAndPhone(name, phone)
+                .orElseThrow(()-> new EntityNotFoundException(("User가 없습니다.")));
+    }
+
     // 회원가입 처리
     public void joinProcess(SignupRequest signupRequest) {
         if (userRepository.findByEmail(signupRequest.getEmail()).isPresent()) {
             throw new RuntimeException("이미 존재하는 이메일입니다.");
+        }
+        if (userRepository.findByRealname(signupRequest.getRealname()).isPresent()) {
+            throw new DuplicateRealNameException();
         }
         User newUser = User.builder()
                 .email(signupRequest.getEmail())
@@ -64,6 +83,12 @@ public class UserService {
 
     public void updateApplicantUserInfo(User user, ApplicantInfoRequest request) {
         user.updateInfo(request.getRealname(), request.getPhone());
+        userRepository.save(user);
+    }
+
+    public void updateUserPassword(String userId, String password) {
+        User user = getUserById(userId);
+        user.setPassword(bCryptPasswordEncoder.encode(password));
         userRepository.save(user);
     }
 }

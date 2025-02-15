@@ -131,25 +131,32 @@ public class ClubService {
     }
 
     @Transactional
-    public void deleteUserInClub(String clubId, String userId){
+    public void deleteUserInClub(String clubId, String realname){
+        String userId = userService.getUserByRealname(realname).getId();
         Position position = getPositionByUserIdAndClubId(userId, clubId);
         positionRepository.delete(position);
     }
 
     @Transactional
-    public Position inviteClub(String clubId, String email){
+    public boolean inviteClub(String clubId, String email){
         User user = userService.getUserByEmail(email);
+        if (getPositionByUserIdAndClubId(user.getId(), clubId) != null){
+            System.out.println(getPositionByUserIdAndClubId(user.getId(), clubId) != null);
+            return false;
+        }
         Club club = getClubById(clubId);
         Position position = Position.builder()
                 .positionName(PositionType.READ)
                 .club(club)
                 .user(user)
                 .build();
-        return positionRepository.save(position);
+        positionRepository.save(position);
+        return true;
     }
 
     @Transactional
-    public void updatePosition(String clubId, String userId, PositionType positionName){
+    public void updatePosition(String clubId, String realname, PositionType positionName){
+        String userId = userService.getUserByRealname(realname).getId();
         Position position = getPositionByUserIdAndClubId(userId, clubId);
         position.setPositionName(positionName);
         positionRepository.save(position);

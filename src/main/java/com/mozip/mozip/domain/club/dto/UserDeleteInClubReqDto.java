@@ -1,12 +1,10 @@
 package com.mozip.mozip.domain.club.dto;
 
-import com.mozip.mozip.domain.user.entity.enums.PositionType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class PositionReqDto {
+public class UserDeleteInClubReqDto {
     private String realname;
-    private PositionType positionName;
 }
