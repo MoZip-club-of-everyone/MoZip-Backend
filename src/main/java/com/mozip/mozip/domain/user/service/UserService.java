@@ -30,6 +30,16 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User가 없습니다."));
     }
 
+    public User getUserByPhone(String phone) {
+        return userRepository.findByPhone(phone)
+                .orElseThrow(() -> new EntityNotFoundException("User가 없습니다."));
+    }
+
+    public User getUserByRealnameAndPhone(String name, String phone){
+        return userRepository.findByRealnameAndPhone(name, phone)
+                .orElseThrow(()-> new EntityNotFoundException(("User가 없습니다.")));
+    }
+
     // 회원가입 처리
     public void joinProcess(SignupRequest signupRequest) {
         if (userRepository.findByEmail(signupRequest.getEmail()).isPresent()) {
@@ -64,6 +74,12 @@ public class UserService {
 
     public void updateApplicantUserInfo(User user, ApplicantInfoRequest request) {
         user.updateInfo(request.getRealname(), request.getPhone());
+        userRepository.save(user);
+    }
+
+    public void updateUserPassword(String userId, String password) {
+        User user = getUserById(userId);
+        user.setPassword(bCryptPasswordEncoder.encode(password));
         userRepository.save(user);
     }
 }
