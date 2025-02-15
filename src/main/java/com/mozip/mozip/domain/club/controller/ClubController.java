@@ -65,7 +65,7 @@ public class ClubController {
             @PathVariable("club_id") String clubId,
             @RequestBody ClubinviteReqDto clubinviteReqDto){
         Position position = clubService.getPositionByUserIdAndClubId(customUserDetails.getId(), clubId);
-        if (position.getPositionName().isMaster() || position.getPositionName().isManager()) {
+        if (position != null && position.getPositionName().isMaster() || position.getPositionName().isManager()) {
             if (clubService.inviteClub(clubId, clubinviteReqDto.getEmail())){
                 return ResponseEntity.ok("성공적으로 초대되었습니다.");
             }
@@ -83,7 +83,7 @@ public class ClubController {
             @PathVariable("club_id") String clubId,
             @RequestBody PositionReqDto positionReqDto) {
         Position position = clubService.getPositionByUserIdAndClubId(customUserDetails.getId(), clubId);
-        if (position.getPositionName().isMaster() || position.getPositionName().isManager()) {
+        if (position != null && position.getPositionName().isMaster() || position.getPositionName().isManager()) {
             clubService.updatePosition(clubId, positionReqDto.getRealname(), positionReqDto.getPositionName());
             return ResponseEntity.ok("권한이 수정되었습니다.");
         } else {
@@ -105,7 +105,7 @@ public class ClubController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable("club_id") String clubId) {
         Position position = clubService.getPositionByUserIdAndClubId(customUserDetails.getId(), clubId);
-        if (position.getPositionName().isMaster()) {
+        if (position != null && position.getPositionName().isMaster()) {
             clubService.deleteClub(clubId);
             return ResponseEntity.ok("동아리가 삭제되었습니다.");
         } else {
@@ -119,7 +119,7 @@ public class ClubController {
             @RequestBody UserDeleteInClubReqDto userDeleteInClubReqDto,
             @PathVariable("club_id") String clubId) {
         Position position = clubService.getPositionByUserIdAndClubId(customUserDetails.getId(), clubId);
-        if (position.getPositionName().isMaster() || position.getPositionName().isManager()) {
+        if (position != null && position.getPositionName().isMaster() || position.getPositionName().isManager()) {
             clubService.deleteUserInClub(clubId, userDeleteInClubReqDto.getRealname());
             return ResponseEntity.ok("사용자 추방에 성공하였습니다.");
         } else {

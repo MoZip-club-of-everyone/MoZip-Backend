@@ -37,7 +37,7 @@ public class ClubService {
 
     public Position getPositionByUserIdAndClubId(String userId, String clubId){
         return positionRepository.findByUserIdAndClubId(userId, clubId)
-                .orElseThrow(() -> new EntityNotFoundException("맞는 user 또는 club Id가 아닙니다."));
+                .orElse(null);
     }
 
     public List<ClubHomeResDto> getClubsByUserId(String userId) {
@@ -141,7 +141,6 @@ public class ClubService {
     public boolean inviteClub(String clubId, String email){
         User user = userService.getUserByEmail(email);
         if (getPositionByUserIdAndClubId(user.getId(), clubId) != null){
-            System.out.println(getPositionByUserIdAndClubId(user.getId(), clubId) != null);
             return false;
         }
         Club club = getClubById(clubId);
