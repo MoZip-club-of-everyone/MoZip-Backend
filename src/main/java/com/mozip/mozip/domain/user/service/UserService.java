@@ -30,6 +30,11 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User가 없습니다."));
     }
 
+    public User getUserByRealname(String realname) {
+        return userRepository.findByRealname(realname)
+                .orElseThrow(() -> new EntityNotFoundException(("User가 없습니다.")));
+    }
+
     public User getUserByPhone(String phone) {
         return userRepository.findByPhone(phone)
                 .orElseThrow(() -> new EntityNotFoundException("User가 없습니다."));

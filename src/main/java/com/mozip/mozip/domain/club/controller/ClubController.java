@@ -6,10 +6,12 @@ import com.mozip.mozip.domain.club.service.ClubService;
 import com.mozip.mozip.domain.user.entity.Position;
 import com.mozip.mozip.domain.user.entity.enums.PositionType;
 import com.mozip.mozip.domain.user.service.UserService;
+import com.mozip.mozip.global.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,21 +59,36 @@ public class ClubController {
         }
     }
 
-    @PostMapping("/{club_id}/invite")
+    @PostMapping("/{club_id}/position")
     public ResponseEntity<String> inviteClub(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable("club_id") String clubId,
             @RequestBody ClubinviteReqDto clubinviteReqDto){
-        Position position = clubService.inviteClub(clubId, clubinviteReqDto.getEmail());
-        return ResponseEntity.ok("성공적으로 초대되었습니다.");
+        Position position = clubService.getPositionByUserIdAndClubId(customUserDetails.getId(), clubId);
+        if (position.getPositionName().isMaster() || position.getPositionName().isManager()) {
+            if (clubService.inviteClub(clubId, clubinviteReqDto.getEmail())){
+                return ResponseEntity.ok("성공적으로 초대되었습니다.");
+            }
+            else{
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 초대된 운영진입니다.");
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("권한이 없습니다.");
+        }
     }
 
-    @PutMapping("/{club_id}/{user_id}/position")
+    @PutMapping("/{club_id}/position")
     public ResponseEntity<String> updatePosition(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable("club_id") String clubId,
-            @PathVariable("user_id") String userId,
             @RequestBody PositionReqDto positionReqDto) {
-        clubService.updatePosition(clubId, userId, positionReqDto.getPositionName());
-        return ResponseEntity.ok("권한이 수정되었습니다.");
+        Position position = clubService.getPositionByUserIdAndClubId(customUserDetails.getId(), clubId);
+        if (position.getPositionName().isMaster() || position.getPositionName().isManager()) {
+            clubService.updatePosition(clubId, positionReqDto.getRealname(), positionReqDto.getPositionName());
+            return ResponseEntity.ok("권한이 수정되었습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("권한이 없습니다.");
+        }
     }
 
     @PutMapping("/{club_id}")
@@ -84,16 +101,29 @@ public class ClubController {
     }
 
     @DeleteMapping("/{club_id}")
-    public ResponseEntity<Void> deleteClub(@PathVariable("club_id") String clubId) {
-        clubService.deleteClub(clubId);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> deleteClub(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable("club_id") String clubId) {
+        Position position = clubService.getPositionByUserIdAndClubId(customUserDetails.getId(), clubId);
+        if (position.getPositionName().isMaster()) {
+            clubService.deleteClub(clubId);
+            return ResponseEntity.ok("동아리가 삭제되었습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("권한이 없습니다.");
+        }
     }
 
-    @DeleteMapping("{club_id}/{user_id}/role")
+    @DeleteMapping("/{club_id}/position")
     public ResponseEntity<String> deleteUserInClub(
-            @PathVariable("club_id") String clubId,
-            @PathVariable("user_id") String userId) {
-        clubService.deleteUserInClub(clubId, userId);
-        return ResponseEntity.ok("사용자 추방에 성공하였습니다.");
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestBody UserDeleteInClubReqDto userDeleteInClubReqDto,
+            @PathVariable("club_id") String clubId) {
+        Position position = clubService.getPositionByUserIdAndClubId(customUserDetails.getId(), clubId);
+        if (position.getPositionName().isMaster() || position.getPositionName().isManager()) {
+            clubService.deleteUserInClub(clubId, userDeleteInClubReqDto.getRealname());
+            return ResponseEntity.ok("사용자 추방에 성공하였습니다.");
+        } else {
+            return ResponseEntity.ok("권한이 없습니다.");
+        }
     }
 }
