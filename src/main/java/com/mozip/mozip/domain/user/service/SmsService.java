@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import net.nurigo.java_sdk.api.Message;
 import net.nurigo.java_sdk.exceptions.CoolsmsException;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,10 +17,10 @@ import java.util.HashMap;
 public class SmsService {
     private final VerificationCodeRepository verificationCodeRepository;
 
-//    @Value("${spring.sms.api-key}")
-//    private final String apiKey;
-//    @Value("${spring.sms.secret-key}")
-//    private final String secretKey;
+    @Value("${sms.api-key}")
+    private String apiKey;
+    @Value("${sms.api-secret}")
+    private String secretKey;
 
     public boolean sendVerificationCode(String phone) {
         deleteBeforeCode(phone);
@@ -54,8 +55,7 @@ public class SmsService {
     }
 
     private boolean sendSms(String phone, String message) {
-//        Message coolsms = new Message(apiKey, secretKey);
-        Message coolsms = new Message("NCSIAFJIB2WSB3D2", "BRTAFGT1OKTYBSYISLQ6NTOPV9AY5MBV");
+        Message coolsms = new Message(apiKey, secretKey);
         HashMap<String, String> params = new HashMap<>();
         params.put("to", phone);
         params.put("from", "01040694033");
@@ -64,10 +64,10 @@ public class SmsService {
 
         try {
             JSONObject response = coolsms.send(params);
-            System.out.println("SMS sent successfully: " + response.toJSONString());
+            System.out.println("SMS를 성공적으로 전송하였습니다: " + response.toJSONString());
             return true;
         } catch (CoolsmsException e) {
-            System.out.println("Failed to send SMS: " + e.getCode() + " - " + e.getMessage());
+            System.out.println("SMS 전송에 실패하였습니다: " + e.getCode() + " - " + e.getMessage());
             return false;
         }
     }
