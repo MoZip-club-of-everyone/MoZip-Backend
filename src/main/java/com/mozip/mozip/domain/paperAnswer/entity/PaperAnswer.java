@@ -4,13 +4,7 @@ import com.mozip.mozip.domain.paperQuestion.entity.PaperQuestion;
 import com.mozip.mozip.domain.applicant.entity.Applicant;
 import com.mozip.mozip.global.entity.BaseTime;
 import de.huxhorn.sulky.ulid.ULID;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -24,11 +18,11 @@ public class PaperAnswer extends BaseTime {
     @Builder.Default
     private final String id = new ULID().nextULID();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "applicant_id", nullable = false)
     private Applicant applicant;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "paper_question_id", nullable = false)
     private PaperQuestion paperQuestion;
 

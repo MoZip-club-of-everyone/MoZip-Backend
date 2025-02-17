@@ -26,6 +26,39 @@ public class ApplicantService {
         return applicantRepository.findAllByMozipAndIsRegisteredTrue(mozip);
     }
 
+    public List<Applicant> getSortedApplicantsByMozip(Mozip mozip, String sortBy, String order) {
+        switch (sortBy) {
+            case "realname":
+                return "desc".equalsIgnoreCase(order)
+                        ? applicantRepository.findAllByMozipAndIsRegisteredTrueOrderByUserRealnameDesc(mozip)
+                        : applicantRepository.findAllByMozipAndIsRegisteredTrueOrderByUserRealnameAsc(mozip);
+            case "applied_at":
+                return "desc".equalsIgnoreCase(order)
+                        ? applicantRepository.findAllByMozipAndIsRegisteredTrueOrderByCreatedAtDesc(mozip)
+                        : applicantRepository.findAllByMozipAndIsRegisteredTrueOrderByCreatedAtAsc(mozip);
+            case "paper_score":
+                return "desc".equalsIgnoreCase(order)
+                        ? applicantRepository.findAllByMozipAndIsRegisteredTrueOrderByPaperScoreAverageDesc(mozip)
+                        : applicantRepository.findAllByMozipAndIsRegisteredTrueOrderByPaperScoreAverageAsc(mozip);
+            case "interview_score":
+                return "desc".equalsIgnoreCase(order)
+                        ? applicantRepository.findAllByMozipAndIsRegisteredTrueOrderByInterviewScoreAverageDesc(mozip)
+                        : applicantRepository.findAllByMozipAndIsRegisteredTrueOrderByInterviewScoreAverageAsc(mozip);
+            case "paper_status":
+                return "desc".equalsIgnoreCase(order)
+                        ? applicantRepository.findAllByMozipAndIsRegisteredTrueOrderByPaperStatusDesc(mozip)
+                        : applicantRepository.findAllByMozipAndIsRegisteredTrueOrderByPaperStatusAsc(mozip);
+            case "interview_status":
+                return "desc".equalsIgnoreCase(order)
+                        ? applicantRepository.findAllByMozipAndIsRegisteredTrueOrderByInterviewStatusDesc(mozip)
+                        : applicantRepository.findAllByMozipAndIsRegisteredTrueOrderByInterviewStatusAsc(mozip);
+            default:
+                return "desc".equalsIgnoreCase(order)
+                        ? applicantRepository.findAllByMozipAndIsRegisteredTrueOrderByApplicationNumberDesc(mozip)
+                        : applicantRepository.findAllByMozipAndIsRegisteredTrueOrderByApplicationNumberAsc(mozip);
+        }
+    }    
+
     public void saveApplicant(Applicant applicant) {
         applicantRepository.save(applicant);
     }

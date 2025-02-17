@@ -19,7 +19,6 @@ public abstract class ApplicantData {
     private LocalDateTime appliedAt;
     private String email;
     private String phone;
-    private EvaluationStatus totalStatus;
 
     public abstract ApplicantData withStatus(Applicant applicant);
 

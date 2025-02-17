@@ -38,6 +38,11 @@ public class PaperAnswerService {
                 .orElseThrow(() -> new EntityNotFoundException("Answer가 없습니다 : " + answerId));
     }
 
+    // 작성한 응답 존재하는지 점검
+    public boolean existPaperAnswerByApplicant(Applicant applicant) {
+        return paperAnswerRepository.existsByApplicant(applicant);
+    }
+
     @Transactional
     public PaperAnswer createAnswer(Applicant applicant, PaperQuestion paperQuestion, String answer) {
         PaperAnswer paperAnswer = getPaperAnswerByQuestionAndApplicant(paperQuestion.getId(), applicant.getId())
