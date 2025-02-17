@@ -1,12 +1,8 @@
 package com.mozip.mozip.domain.applicant.service;
 
-import com.mozip.mozip.domain.applicant.dto.ApplicantListResponse;
-import com.mozip.mozip.domain.applicant.dto.InterviewApplicantData;
-import com.mozip.mozip.domain.applicant.dto.PaperApplicantData;
-import com.mozip.mozip.domain.applicant.dto.UpdateApplicantStatusRequest;
+import com.mozip.mozip.domain.applicant.dto.*;
 import com.mozip.mozip.domain.applicant.entity.Applicant;
 import com.mozip.mozip.domain.applicant.entity.enums.EvaluationStatus;
-import com.mozip.mozip.domain.applicant.exception.ApplicantException;
 import com.mozip.mozip.domain.evaluation.dto.InterviewEvaluatedApplicantData;
 import com.mozip.mozip.domain.evaluation.dto.InterviewEvaluationData;
 import com.mozip.mozip.domain.evaluation.dto.PaperEvaluatedApplicantData;
@@ -31,8 +27,6 @@ import com.mozip.mozip.domain.paperQuestion.entity.PaperQuestion;
 import com.mozip.mozip.domain.paperQuestion.service.PaperQuestionService;
 import com.mozip.mozip.domain.user.entity.Position;
 import com.mozip.mozip.domain.user.entity.User;
-import com.mozip.mozip.domain.applicant.dto.ApplicantInfoRequest;
-import com.mozip.mozip.domain.applicant.dto.ApplicantInfoResponse;
 import com.mozip.mozip.domain.user.exception.PositionException;
 import com.mozip.mozip.domain.user.service.PositionService;
 import com.mozip.mozip.domain.user.service.UserService;
@@ -41,7 +35,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 
