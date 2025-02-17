@@ -89,7 +89,7 @@ public class UserController {
         if (smsService.verifyCode(certificationCodeReqDto.getPhone(), certificationCodeReqDto.getCode())){
             User user = userService.getUserByPhone(certificationCodeReqDto.getPhone());
             String userId = user.getId();
-            String accessToken = jwtUtil.createJwt(user.getEmail(), user.getRole().getRoleName());
+            String accessToken = "Bearer " + jwtUtil.createJwt(user.getEmail(), user.getRole().getRoleName());
             return ResponseEntity.ok(new IdResDto(userId, accessToken));
         } else {
             return ResponseEntity
