@@ -3,8 +3,13 @@ package com.mozip.mozip.domain.mozip.controller;
 import com.mozip.mozip.domain.mozip.dto.MozipRequestDto;
 import com.mozip.mozip.domain.mozip.dto.MozipResponseDto;
 import com.mozip.mozip.domain.mozip.service.MozipManager;
+import com.mozip.mozip.domain.user.entity.User;
+import com.mozip.mozip.global.dto.CustomUserDetails;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,8 +22,13 @@ public class MozipController {
     private final MozipManager mozipManager;
 
     @GetMapping
-    public List<MozipResponseDto> getMozipsByClubId(@RequestParam("club_id") String clubId) {
-        return mozipManager.getMozipsByClubId(clubId);
+    public Map<String,Object> getMozipsByClubId(Authentication authentication, @RequestParam("club_id") String clubId) {
+        User user = ((CustomUserDetails) authentication.getPrincipal()).user();
+
+        Map<String,Object> response = new HashMap<>();
+        response.put("mozips", mozipManager.getMozipsByClubId(clubId));
+        response.put("role", user.getRole());
+        return response;
     }
 
     @GetMapping("/{mozip_id}")
