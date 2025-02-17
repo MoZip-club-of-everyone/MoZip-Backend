@@ -38,4 +38,20 @@ public class EvaluationService {
     public long countEvaluatedPaperScore(Applicant applicant) {
         return evaluationRepository.countByApplicantAndPaperScoreIsNotNull(applicant);
     }
+
+    public Double calculateAveragePaperScore(Applicant applicant) {
+        return evaluationRepository.calculateAveragePaperScoreByApplicant(applicant);
+    }
+
+    public Double calculateAverageInterviewScore(Applicant applicant) {
+        return evaluationRepository.calculateAverageInterviewScoreByApplicant(applicant);
+    }
+
+    public Double calculateStandardDeviationPaperScore(Applicant applicant) {
+        return evaluationRepository.calculatePaperScoreStandardDeviationByApplicant(applicant);
+    }
+
+    public Double calculateStandardDeviationInterviewScore(Applicant applicant) {
+        return evaluationRepository.calculateInterviewScoreStandardDeviationByApplicant(applicant);
+    }
 }

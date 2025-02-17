@@ -18,11 +18,11 @@ public class Evaluation extends BaseTime {
     @Builder.Default
     private final String id = new ULID().nextULID();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "evaluator_id", nullable = false)
     private User evaluator;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "applicant_id", nullable = false)
     private Applicant applicant;
 
