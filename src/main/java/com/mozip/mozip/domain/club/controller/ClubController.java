@@ -36,7 +36,12 @@ public class ClubController {
     }
 
     @GetMapping("{club_id}/manage")
-    public ResponseEntity<List<PositionResDto>> getPositionsByCludId(@PathVariable("club_id") String clubId){
+    public ResponseEntity<?> getPositionsByCludId(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable("club_id") String clubId){
+        if (clubService.getPositionByUserIdAndClubId(customUserDetails.getId(), clubId) == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("동아리 운영진이 아닙니다.");
+        }
         return ResponseEntity.ok(clubService.getPositionsByClubId(clubId));
     }
 
@@ -84,7 +89,24 @@ public class ClubController {
             @RequestBody PositionReqDto positionReqDto) {
         Position position = clubService.getPositionByUserIdAndClubId(customUserDetails.getId(), clubId);
         if (position != null && position.getPositionName().isMaster() || position.getPositionName().isManager()) {
-            clubService.updatePosition(clubId, positionReqDto.getRealname(), positionReqDto.getPositionName());
+            if (positionReqDto.getPositionName() == PositionType.MASTER){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("마스터 역할 부여는 마스터만 할 수 있습니다.");
+            }
+            clubService.updatePosition(clubId, positionReqDto.getUserId(), positionReqDto.getPositionName());
+            return ResponseEntity.ok("권한이 수정되었습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("권한이 없습니다.");
+        }
+    }
+
+    @PutMapping("/{club_id}/position/master")
+    public ResponseEntity<String>updatePositionMaster(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable("club_id") String clubId,
+            @RequestBody PositionReqDto positionReqDto) {
+        Position position = clubService.getPositionByUserIdAndClubId(customUserDetails.getId(), clubId);
+        if (position != null && position.getPositionName().isMaster()) {
+            clubService.updatePosition(clubId, positionReqDto.getUserId(), positionReqDto.getPositionName());
             return ResponseEntity.ok("권한이 수정되었습니다.");
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("권한이 없습니다.");
@@ -120,7 +142,7 @@ public class ClubController {
             @PathVariable("club_id") String clubId) {
         Position position = clubService.getPositionByUserIdAndClubId(customUserDetails.getId(), clubId);
         if (position != null && position.getPositionName().isMaster() || position.getPositionName().isManager()) {
-            clubService.deleteUserInClub(clubId, userDeleteInClubReqDto.getRealname());
+            clubService.deleteUserInClub(clubId, userDeleteInClubReqDto.getUserId());
             return ResponseEntity.ok("사용자 추방에 성공하였습니다.");
         } else {
             return ResponseEntity.ok("권한이 없습니다.");
