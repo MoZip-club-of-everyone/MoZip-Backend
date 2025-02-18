@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class PositionReqDto {
-    private String realname;
+    private String userId;
     private PositionType positionName;
 }

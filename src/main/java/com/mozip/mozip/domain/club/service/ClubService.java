@@ -70,8 +70,11 @@ public class ClubService {
     }
 
     private PositionResDto positionResDto(Position position){
+        User user = position.getUser();
+        String lastFourPhone = user.getPhone().substring(user.getPhone().length()-4);
         return new PositionResDto(
-                position.getUser().getRealname(),
+                user.getId(),
+                user.getRealname() + "(" + lastFourPhone + ")",
                 position.getPositionName().getValue()
         );
     }
@@ -131,8 +134,7 @@ public class ClubService {
     }
 
     @Transactional
-    public void deleteUserInClub(String clubId, String realname){
-        String userId = userService.getUserByRealname(realname).getId();
+    public void deleteUserInClub(String clubId, String userId){
         Position position = getPositionByUserIdAndClubId(userId, clubId);
         positionRepository.delete(position);
     }
@@ -154,8 +156,7 @@ public class ClubService {
     }
 
     @Transactional
-    public void updatePosition(String clubId, String realname, PositionType positionName){
-        String userId = userService.getUserByRealname(realname).getId();
+    public void updatePosition(String clubId, String userId, PositionType positionName){
         Position position = getPositionByUserIdAndClubId(userId, clubId);
         position.setPositionName(positionName);
         positionRepository.save(position);
