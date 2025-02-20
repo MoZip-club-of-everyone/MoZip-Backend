@@ -6,5 +6,5 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class UserDeleteInClubReqDto {
-    private String realname;
+    private String userId;
 }

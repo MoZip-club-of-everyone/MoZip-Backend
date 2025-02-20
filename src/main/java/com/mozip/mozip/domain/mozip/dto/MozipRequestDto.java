@@ -14,8 +14,8 @@ public class MozipRequestDto {
     private String description;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private boolean isLoginRequired;
-    private boolean isEditAvailable;
+    private Boolean isLoginRequired;
+    private Boolean isEditAvailable;
     private String descriptionBeforeMozip;
     private String descriptionAfterMozip;
     private List<PaperQuestionCreateReqDto> paperQuestions;
