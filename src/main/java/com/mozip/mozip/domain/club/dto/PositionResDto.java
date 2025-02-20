@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class PositionResDto {
-    private String realname;
+    private String userId;
+    private String realnameAndPhone;
     private String positionName;
 }

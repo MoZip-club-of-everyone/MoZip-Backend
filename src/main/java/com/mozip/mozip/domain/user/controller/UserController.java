@@ -2,7 +2,6 @@ package com.mozip.mozip.domain.user.controller;
 
 import com.mozip.mozip.domain.user.dto.*;
 import com.mozip.mozip.domain.user.entity.User;
-import com.mozip.mozip.domain.user.exception.DuplicateRealNameException;
 import com.mozip.mozip.domain.user.service.SmsService;
 import com.mozip.mozip.domain.user.service.UserService;
 import com.mozip.mozip.global.dto.CustomUserDetails;
@@ -87,7 +86,7 @@ public class UserController {
         if (smsService.verifyCode(certificationCodeReqDto.getPhone(), certificationCodeReqDto.getCode())){
             User user = userService.getUserByPhone(certificationCodeReqDto.getPhone());
             String userId = user.getId();
-            String accessToken = jwtUtil.createJwt(user.getEmail(), user.getRole().getRoleName());
+            String accessToken = "Bearer " + jwtUtil.createJwt(user.getEmail(), user.getRole().getRoleName());
             return ResponseEntity.ok(new IdResDto(userId, accessToken));
         } else {
             return ResponseEntity
