@@ -16,7 +16,6 @@ import com.mozip.mozip.domain.interviewAnswer.entity.InterviewAnswer;
 import com.mozip.mozip.domain.interviewAnswer.service.InterviewAnswerService;
 import com.mozip.mozip.domain.interviewQuestion.entity.InterviewQuestion;
 import com.mozip.mozip.domain.interviewQuestion.service.InterviewQuestionService;
-import com.mozip.mozip.domain.mozip.service.MozipService;
 import com.mozip.mozip.domain.paperAnswer.entity.PaperAnswer;
 import com.mozip.mozip.domain.paperAnswer.service.PaperAnswerService;
 import com.mozip.mozip.domain.paperQuestion.entity.PaperQuestion;
@@ -32,8 +31,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.OptionalDouble;
 
 @Slf4j
 @Service
@@ -89,6 +86,7 @@ public class EvaluationManager {
         Evaluation evaluation = evaluationService.getEvaluationByApplicantAndEvaluator(applicant, evaluator);
         evaluation.setPaperScore(score);
         evaluationService.saveEvaluation(evaluation);
+        log.info("evaluator: {}, applicant: {}", evaluation.getEvaluator().getId(), applicant.getId());
         calculateAverageScore(applicant, EvaluateArea.PAPER);
         calculateStandardDeviation(applicant, EvaluateArea.PAPER);
         applicantService.saveApplicant(applicant);

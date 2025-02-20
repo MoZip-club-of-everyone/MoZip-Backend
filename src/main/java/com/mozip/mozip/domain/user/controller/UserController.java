@@ -29,7 +29,7 @@ public class UserController {
         try{
             userService.joinProcess(signupRequest);
             return ResponseEntity.ok("회원가입이 완료되었습니다.");
-        } catch(DuplicateRequestException e){
+        } catch(DuplicateRequestException | DuplicateRealNameException e){
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(e.getMessage());

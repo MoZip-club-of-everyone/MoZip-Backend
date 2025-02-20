@@ -1,17 +1,17 @@
 package com.mozip.mozip.domain.mozip.service;
 
-import com.mozip.mozip.domain.mozip.dto.MozipRequestDto;
 import com.mozip.mozip.domain.club.entity.Club;
+import com.mozip.mozip.domain.mozip.dto.MozipRequestDto;
 import com.mozip.mozip.domain.mozip.entity.Mozip;
 import com.mozip.mozip.domain.mozip.repository.MozipRepository;
 import com.mozip.mozip.domain.paperQuestion.entity.PaperQuestion;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -36,8 +36,8 @@ public class MozipService {
                 .description(dto.getDescription())
                 .startDate(dto.getStartDate())
                 .endDate(dto.getEndDate())
-                .isLoginRequired(dto.isLoginRequired())
-                .isEditAvailable(dto.isEditAvailable())
+                .isLoginRequired(dto.getIsLoginRequired())
+                .isEditAvailable(dto.getIsEditAvailable())
                 .descriptionBeforeMozip(dto.getDescriptionBeforeMozip())
                 .descriptionAfterMozip(dto.getDescriptionAfterMozip())
                 .paperQuestions(new ArrayList<>())

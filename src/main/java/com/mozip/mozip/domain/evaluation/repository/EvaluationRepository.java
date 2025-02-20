@@ -15,16 +15,16 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, String> 
     Optional<Evaluation> findByApplicantAndEvaluator(Applicant applicant, User evaluator);
     long countByApplicantAndPaperScoreIsNotNull(Applicant applicant);
 
-    @Query("SELECT AVG(e.paperScore) FROM Evaluation e WHERE e.applicant = :applicant AND e.paperScore IS NOT NULL")
+    @Query("SELECT AVG(e.paperScore) FROM Evaluation e WHERE e.applicant = :applicant")
     Double calculateAveragePaperScoreByApplicant(@Param("applicant") Applicant applicant);
 
-    @Query("SELECT AVG(e.interviewScore) FROM Evaluation e WHERE e.applicant = :applicant AND e.interviewScore IS NOT NULL")
+    @Query("SELECT AVG(e.interviewScore) FROM Evaluation e WHERE e.applicant = :applicant")
     Double calculateAverageInterviewScoreByApplicant(@Param("applicant") Applicant applicant);
 
-    @Query("SELECT STDDEV_POP(e.paperScore) FROM Evaluation e WHERE e.applicant = :applicant AND e.paperScore IS NOT NULL")
+    @Query("SELECT STDDEV_POP(e.paperScore) FROM Evaluation e WHERE e.applicant = :applicant")
     Double calculatePaperScoreStandardDeviationByApplicant(@Param("applicant") Applicant applicant);
 
-    @Query("SELECT STDDEV_POP(e.interviewScore) FROM Evaluation e WHERE e.applicant = :applicant AND e.interviewScore IS NOT NULL")
+    @Query("SELECT STDDEV_POP(e.interviewScore) FROM Evaluation e WHERE e.applicant = :applicant")
     Double calculateInterviewScoreStandardDeviationByApplicant(@Param("applicant") Applicant applicant);
 
 }
