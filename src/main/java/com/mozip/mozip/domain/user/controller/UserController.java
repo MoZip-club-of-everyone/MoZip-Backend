@@ -2,6 +2,7 @@ package com.mozip.mozip.domain.user.controller;
 
 import com.mozip.mozip.domain.user.dto.*;
 import com.mozip.mozip.domain.user.entity.User;
+import com.mozip.mozip.domain.user.exception.DuplicateRealNameException;
 import com.mozip.mozip.domain.user.service.SmsService;
 import com.mozip.mozip.domain.user.service.UserService;
 import com.mozip.mozip.global.dto.CustomUserDetails;

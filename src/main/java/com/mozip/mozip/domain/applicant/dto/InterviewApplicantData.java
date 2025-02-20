@@ -14,7 +14,6 @@ public class InterviewApplicantData extends ApplicantData {
     private Double interviewScoreStandardDeviation;
     private EvaluationStatus interviewStatus;
 
-
     @Override
     public InterviewApplicantData withStatus(Applicant applicant) {
         this.interviewStatus = applicant.getInterviewStatus();

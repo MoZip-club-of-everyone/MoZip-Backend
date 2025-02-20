@@ -70,4 +70,11 @@ public class PaperAnswerService {
         PaperAnswer existingAnswer = getPaperAnswerById(answerId);
         paperAnswerRepository.delete(existingAnswer);
     }
+
+    public List<PaperAnswer> getPaperAnswersByQuestionIdAndApplicantIds(String questionId, List<String> applicantIds) {
+        if (applicantIds == null) {
+            return paperAnswerRepository.findByPaperQuestionId(questionId);
+        }
+        return paperAnswerRepository.findByPaperQuestionIdAndApplicantIdIn(questionId, applicantIds);
+    }
 }
