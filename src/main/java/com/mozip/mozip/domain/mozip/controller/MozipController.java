@@ -33,7 +33,7 @@ public class MozipController {
 
         Map<String,Object> response = new HashMap<>();
         response.put("mozips", mozipManager.getMozipsByClubId(clubId));
-        response.put("role", positionService.getPositionByUserAndClub(user, club).getPositionName());
+        response.put("position", positionService.getPositionByUserAndClub(user, club).getPositionName());
         return response;
     }
 
