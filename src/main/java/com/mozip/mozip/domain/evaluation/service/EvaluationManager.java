@@ -16,7 +16,6 @@ import com.mozip.mozip.domain.interviewAnswer.entity.InterviewAnswer;
 import com.mozip.mozip.domain.interviewAnswer.service.InterviewAnswerService;
 import com.mozip.mozip.domain.interviewQuestion.entity.InterviewQuestion;
 import com.mozip.mozip.domain.interviewQuestion.service.InterviewQuestionService;
-import com.mozip.mozip.domain.mozip.service.MozipService;
 import com.mozip.mozip.domain.paperAnswer.entity.PaperAnswer;
 import com.mozip.mozip.domain.paperAnswer.service.PaperAnswerService;
 import com.mozip.mozip.domain.paperQuestion.entity.PaperQuestion;
@@ -32,8 +31,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.OptionalDouble;
 
 @Slf4j
 @Service
@@ -55,14 +52,10 @@ public class EvaluationManager {
     public void updateApplicantPaperStatuses(User evaluator, UpdateApplicantStatusRequest request) {
         request.getApplicants().forEach(each -> {
             Applicant applicant = applicantService.getApplicantById(each.getApplicantId());
-            checkEvaluable(evaluator, applicant);
-            if (applicant.getPaperStatus() == EvaluationStatus.UNEVALUATED) {
-                throw ApplicantException.paperNotEvaluated(applicant);
-            }
+            validateEvaluationStatusUpdatable(evaluator, applicant, EvaluateArea.PAPER);
             applicant.setPaperStatus(each.getStatus());
             applicantService.saveApplicant(applicant);
         });
-
     }
 
     // 면접 합불 상태 수정
@@ -70,14 +63,10 @@ public class EvaluationManager {
     public void updateApplicantInterviewStatuses(User evaluator, UpdateApplicantStatusRequest request) {
         request.getApplicants().forEach(each -> {
             Applicant applicant = applicantService.getApplicantById(each.getApplicantId());
-            checkEvaluable(evaluator, applicant);
-            if (applicant.getInterviewStatus() == EvaluationStatus.UNEVALUATED) {
-                throw ApplicantException.interviewNotEvaluated(applicant);
-            }
+            validateEvaluationStatusUpdatable(evaluator, applicant, EvaluateArea.INTERVIEW);
             applicant.setInterviewStatus(each.getStatus());
             applicantService.saveApplicant(applicant);
         });
-
     }
 
     // 서류 점수 입력
@@ -85,14 +74,12 @@ public class EvaluationManager {
     public void updatePaperScore(User evaluator, String paperAnswerId, int score) {
         PaperAnswer paperAnswer = paperAnswerService.getPaperAnswerById(paperAnswerId);
         Applicant applicant = paperAnswer.getApplicant();
-        checkEvaluable(evaluator, applicant);
+        validateScoreUpdatable(evaluator, applicant, EvaluateArea.PAPER);
         Evaluation evaluation = evaluationService.getEvaluationByApplicantAndEvaluator(applicant, evaluator);
         evaluation.setPaperScore(score);
         evaluationService.saveEvaluation(evaluation);
-        calculateAverageScore(applicant, EvaluateArea.PAPER);
-        calculateStandardDeviation(applicant, EvaluateArea.PAPER);
-        applicantService.saveApplicant(applicant);
-        checkAllEvaluated(applicant);
+        updateAverageAndStandardDeviation(applicant, EvaluateArea.PAPER);
+        checkAllEvaluated(applicant, EvaluateArea.PAPER);
     }
 
     // 면접 점수 입력
@@ -100,14 +87,12 @@ public class EvaluationManager {
     public void updateInterviewScore(User evaluator, String interviewAnswerId, int score) {
         InterviewAnswer interviewAnswer = interviewAnswerService.getInterviewAnswerById(interviewAnswerId);
         Applicant applicant = interviewAnswer.getApplicant();
-        checkInterviewEvaluable(evaluator, applicant);
+        validateScoreUpdatable(evaluator, applicant, EvaluateArea.INTERVIEW);
         Evaluation evaluation = evaluationService.getEvaluationByApplicantAndEvaluator(applicant, evaluator);
         evaluation.setInterviewScore(score);
         evaluationService.saveEvaluation(evaluation);
-        calculateAverageScore(applicant, EvaluateArea.INTERVIEW);
-        calculateStandardDeviation(applicant, EvaluateArea.INTERVIEW);
-        applicantService.saveApplicant(applicant);
-        checkAllEvaluated(applicant);
+        updateAverageAndStandardDeviation(applicant, EvaluateArea.INTERVIEW);
+        checkAllEvaluated(applicant, EvaluateArea.INTERVIEW);
     }
 
     // 특정 서류 응답 평가 조회
@@ -136,58 +121,78 @@ public class EvaluationManager {
         return InterviewEvaluationDetailsResponse.from(applicant, evaluation.getInterviewScore(), interviewQuestion, interviewAnswer, comments, memos);
     }
 
-    @Transactional
-    public void checkAllEvaluated(Applicant applicant) {
-        long totalEvaluators = clubService.countEvaluatorsByClub(applicant.getMozip().getClub());
-        long evaluatedPaperScores = evaluationService.countEvaluatedPaperScore(applicant);
-        if (totalEvaluators == evaluatedPaperScores) {
-            applicant.setPaperStatus(EvaluationStatus.EVALUATED);
-        } else {
-            applicant.setPaperStatus(EvaluationStatus.UNEVALUATED);
+    private void validateEvaluationStatusUpdatable(User evaluator, Applicant applicant, EvaluateArea evaluateArea) {
+        verifyEvaluatorPermission(evaluator, applicant);
+        EvaluationStatus status = switch (evaluateArea) {
+            case PAPER -> applicant.getPaperStatus();
+            case INTERVIEW -> applicant.getInterviewStatus();
+        };
+        if (status == EvaluationStatus.UNEVALUATED) {
+            throw ApplicantException.notEvaluated(applicant);
         }
-        applicantService.saveApplicant(applicant);
     }
 
-    private void checkEvaluable(User evaluator, Applicant applicant) {
+    private void validateScoreUpdatable(User evaluator, Applicant applicant, EvaluateArea evaluateArea) {
+        verifyEvaluatorPermission(evaluator, applicant);
+        EvaluationStatus status = switch (evaluateArea) {
+            case PAPER -> applicant.getPaperStatus();
+            case INTERVIEW -> applicant.getInterviewStatus();
+        };
+        if (status == EvaluationStatus.HOLD) {
+            throw ApplicantException.evaluationOnHold(applicant);
+        }
+    }
+
+    private void verifyEvaluatorPermission(User evaluator, Applicant applicant) {
+        if (!applicant.getIsRegistered()) {
+            throw ApplicantException.notRegistered(applicant);
+        }
         Position position = positionService.getPositionByUserAndClub(evaluator, applicant.getMozip().getClub());
         if (!positionService.checkEvaluablePosition(position)) {
             throw PositionException.notEvaluable(position);
         }
-        if (!applicant.getIsRegistered()) {
-            throw ApplicantException.notRegistered(applicant);
-        }
     }
 
-    private void checkInterviewEvaluable(User evaluator, Applicant applicant) {
-        if (applicant.getPaperStatus() == EvaluationStatus.UNEVALUATED) {
-            throw ApplicantException.paperNotEvaluated(applicant);
-        }
-        checkEvaluable(evaluator, applicant);
-    }
-
-    // 평균 계산
-    private void calculateAverageScore(Applicant applicant, EvaluateArea evaluateArea) {
-        Double average = switch (evaluateArea) {
-            case PAPER -> evaluationService.calculateAveragePaperScore(applicant);
-            case INTERVIEW -> evaluationService.calculateAverageInterviewScore(applicant);
-        };
-        Double roundedAverage = average * 10.0 / 10.0;
+    private void updateAverageAndStandardDeviation(Applicant applicant, EvaluateArea evaluateArea) {
+        Double average;
+        Double standardDeviation;
         switch (evaluateArea) {
-            case PAPER -> applicant.setPaperScoreAverage(roundedAverage);
-            case INTERVIEW -> applicant.setInterviewScoreAverage(roundedAverage);
+            case PAPER -> {
+                average = evaluationService.calculateAveragePaperScore(applicant);
+                standardDeviation = evaluationService.calculateStandardDeviationPaperScore(applicant);
+                applicant.setPaperScoreAverage(average);
+                applicant.setPaperScoreStandardDeviation(standardDeviation);
+            }
+            case INTERVIEW -> {
+                average = evaluationService.calculateAverageInterviewScore(applicant);
+                standardDeviation = evaluationService.calculateStandardDeviationInterviewScore(applicant);
+                applicant.setInterviewScoreAverage(average);
+                applicant.setInterviewStandardDeviation(standardDeviation);
+            }
         }
+        applicantService.saveApplicant(applicant);
     }
 
-    // 표준편차 계산
-    private void calculateStandardDeviation(Applicant applicant, EvaluateArea evaluateArea) {
-        Double standardDeviation = switch (evaluateArea) {
-            case PAPER -> evaluationService.calculateStandardDeviationPaperScore(applicant);
-            case INTERVIEW -> evaluationService.calculateStandardDeviationInterviewScore(applicant);
+    public void checkAllEvaluated(Applicant applicant, EvaluateArea evaluateArea) {
+        long totalEvaluatorsCount = clubService.countEvaluatorsByClub(applicant.getMozip().getClub());
+        long evaluatedScoresCount = getEvaluatedScoresCount(applicant, evaluateArea);
+        if (totalEvaluatorsCount == evaluatedScoresCount) {
+            setEvaluationStatus(applicant, evaluateArea, EvaluationStatus.EVALUATED);
+        }
+        applicantService.saveApplicant(applicant);
+    }
+
+    private long getEvaluatedScoresCount(Applicant applicant, EvaluateArea evaluateArea) {
+        return switch (evaluateArea) {
+            case PAPER -> evaluationService.countEvaluatedPaperScore(applicant);
+            case INTERVIEW -> evaluationService.countEvaluatedInterviewScore(applicant);
         };
-        Double roundedStandardDeviation = standardDeviation * 10.0 / 10.0;
+    }
+
+    private void setEvaluationStatus(Applicant applicant, EvaluateArea evaluateArea, EvaluationStatus status) {
         switch (evaluateArea) {
-            case PAPER -> applicant.setPaperScoreStandardDeviation(roundedStandardDeviation);
-            case INTERVIEW -> applicant.setInterviewStandardDeviation(roundedStandardDeviation);
+            case PAPER -> applicant.setPaperStatus(status);
+            case INTERVIEW -> applicant.setInterviewStatus(status);
         }
     }
 }

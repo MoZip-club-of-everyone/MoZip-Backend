@@ -84,30 +84,6 @@ public class ApplicantManager {
                 .toList();
     }
 
-    private List<PaperQuestion> filterPaperQuestionsByIds(List<PaperQuestion> questions, String questionIds) {
-        return questions.stream()
-                .filter(question -> questionIds == null || Arrays.asList(questionIds.split(",")).contains(question.getId()))
-                .toList();
-    }
-
-    private List<InterviewQuestion> filterInterviewQuestionsByIds(List<InterviewQuestion> questions, String questionIds) {
-        return questions.stream()
-                .filter(question -> questionIds == null || Arrays.asList(questionIds.split(",")).contains(question.getId()))
-                .toList();
-    }
-
-    private List<PaperAnswer> filterPaperAnswersByApplicantIds(List<PaperAnswer> answers, String applicantIds) {
-        return answers.stream()
-                .filter(answer -> applicantIds == null || Arrays.asList(applicantIds.split(",")).contains(answer.getApplicant().getId()))
-                .toList();
-    }
-
-    private List<InterviewAnswer> filterInterviewAnswersByApplicantIds(List<InterviewAnswer> answers, String applicantIds) {
-        return answers.stream()
-                .filter(answer -> applicantIds == null || Arrays.asList(applicantIds.split(",")).contains(answer.getApplicant().getId()))
-                .toList();
-    }
-
     // 서류 지원자 목록 조회
     @Transactional(readOnly = true)
     public ApplicantListResponse<PaperApplicantData> getApplicantListByMozipId(User evaluator, String mozipId, String sortBy, String order) {
@@ -123,10 +99,12 @@ public class ApplicantManager {
     public PaperAnswersForApplicantResDto getPaperAnswersByMozipId(User evaluator, String mozipId, String applicantIds, String questionIds) {
         Mozip mozip = mozipService.getMozipById(mozipId);
         checkReadable(evaluator, mozip);
-        List<PaperQuestion> paperQuestions = filterPaperQuestionsByIds(paperQuestionService.getPaperQuestionsByMozipId(mozipId), questionIds);
+        List<String> questionIdList = (questionIds != null && !questionIds.isBlank()) ? Arrays.asList(questionIds.split(",")) : null;
+        List<String> applicantIdList = (applicantIds != null && !applicantIds.isBlank()) ? Arrays.asList(applicantIds.split(",")) : null;
+        List<PaperQuestion> paperQuestions = paperQuestionService.getPaperQuestionsByMozipOrQuestionIds(mozip, questionIdList);
         List<PaperQuestionWithAnswersDto> questionWithAnswersDataList = paperQuestions.stream()
                 .map(question -> {
-                    List<PaperAnswer> paperAnswers = filterPaperAnswersByApplicantIds(paperAnswerService.getPaperAnswersByQuestionId(question.getId()), applicantIds);
+                    List<PaperAnswer> paperAnswers = paperAnswerService.getPaperAnswersByQuestionIdAndApplicantIds(question.getId(), applicantIdList);
                     List<PaperAnswerForApplicantDto> paperAnswerDataList = paperAnswers.stream()
                             .map(answer -> {
                                 Evaluation evaluation = evaluationService.getEvaluationByApplicantAndEvaluator(answer.getApplicant(), evaluator);
@@ -173,10 +151,12 @@ public class ApplicantManager {
     public InterviewAnswersForApplicantResDto getInterviewAnswersByMozipId(User evaluator, String mozipId, String applicantIds, String questionIds) {
         Mozip mozip = mozipService.getMozipById(mozipId);
         checkReadable(evaluator, mozip);
-        List<InterviewQuestion> interviewQuestions = filterInterviewQuestionsByIds(interviewQuestionService.getInterviewQuestionsByMozipId(mozipId), questionIds);
+        List<String> questionIdList = (questionIds != null && !questionIds.isBlank()) ? Arrays.asList(questionIds.split(",")) : null;
+        List<String> applicantIdList = (applicantIds != null && !applicantIds.isBlank()) ? Arrays.asList(applicantIds.split(",")) : null;
+        List<InterviewQuestion> interviewQuestions = interviewQuestionService.getInterviewQuestionsByMozipOrQuestionIds(mozip, questionIdList);
         List<InterviewQuestionWithAnswersDto> questionWithAnswersDataList = interviewQuestions.stream()
                 .map(question -> {
-                    List<InterviewAnswer> interviewAnswers = filterInterviewAnswersByApplicantIds(interviewAnswerService.getInterviewAnswersByQuestionId(question.getId()), applicantIds);
+                    List<InterviewAnswer> interviewAnswers = interviewAnswerService.getInterviewAnswersByQuestionIdAndApplicantIds(question.getId(), applicantIdList);
                     List<InterviewAnswerForApplicantDto> interviewAnswerDataList = interviewAnswers.stream()
                             .map(answer -> {
                                 Evaluation evaluation = evaluationService.getEvaluationByApplicantAndEvaluator(answer.getApplicant(), evaluator);
@@ -201,8 +181,6 @@ public class ApplicantManager {
                     .map(InterviewEvaluationData::from)
                     .toList();
             return InterviewEvaluatedApplicantData.from(applicant, evaluationDataList);
-
-
         });
         return ApplicantListResponse.from(applicantDataList);
     }

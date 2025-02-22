@@ -9,4 +9,5 @@ public interface InterviewAnswerRepository extends JpaRepository<InterviewAnswer
     List<InterviewAnswer> findByApplicantId(String applicantId);
     List<InterviewAnswer> findByInterviewQuestionId(String interviewQuestionId);
     Optional<InterviewAnswer> findByInterviewQuestionIdAndApplicantId(String interviewQuestionId, String applicantId);
+    List<InterviewAnswer> findByInterviewQuestionIdAndApplicantIdIn(String interviewQuestionId, List<String> applicantIds);
 }

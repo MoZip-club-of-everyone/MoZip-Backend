@@ -64,4 +64,8 @@ public class InterviewAnswerService {
         InterviewAnswer existingAnswer = getInterviewAnswerById(answerId);
         interviewAnswerRepository.delete(existingAnswer);
     }
+
+    public List<InterviewAnswer> getInterviewAnswersByQuestionIdAndApplicantIds(String questionId, List<String> applicantIds) {
+        return interviewAnswerRepository.findByInterviewQuestionIdAndApplicantIdIn(questionId, applicantIds);
+    }
 }

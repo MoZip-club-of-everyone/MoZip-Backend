@@ -1,5 +1,6 @@
 package com.mozip.mozip.domain.applicant.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mozip.mozip.domain.applicant.entity.Applicant;
 import com.mozip.mozip.domain.applicant.entity.enums.EvaluationStatus;
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class PaperApplicantData extends ApplicantData {
     }
 
     @Override
+    @JsonIgnore
     public EvaluationStatus getStatus() {
         return this.paperStatus;
     }
@@ -35,6 +37,5 @@ public class PaperApplicantData extends ApplicantData {
                 .phone(applicant.getUser().getPhone())
                 .build()
                 .withStatus(applicant);
-
     }
 }

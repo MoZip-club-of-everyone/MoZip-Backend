@@ -39,6 +39,10 @@ public class EvaluationService {
         return evaluationRepository.countByApplicantAndPaperScoreIsNotNull(applicant);
     }
 
+    public long countEvaluatedInterviewScore(Applicant applicant) {
+        return evaluationRepository.countByApplicantAndInterviewScoreIsNotNull(applicant);
+    }
+
     public Double calculateAveragePaperScore(Applicant applicant) {
         return evaluationRepository.calculateAveragePaperScoreByApplicant(applicant);
     }

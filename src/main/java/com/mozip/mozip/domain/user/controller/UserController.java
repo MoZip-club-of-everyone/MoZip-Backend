@@ -2,6 +2,7 @@ package com.mozip.mozip.domain.user.controller;
 
 import com.mozip.mozip.domain.user.dto.*;
 import com.mozip.mozip.domain.user.entity.User;
+import com.mozip.mozip.domain.user.exception.DuplicateRealNameException;
 import com.mozip.mozip.domain.user.service.SmsService;
 import com.mozip.mozip.domain.user.service.UserService;
 import com.mozip.mozip.global.dto.CustomUserDetails;
@@ -29,7 +30,7 @@ public class UserController {
         try{
             userService.joinProcess(signupRequest);
             return ResponseEntity.ok("회원가입이 완료되었습니다.");
-        } catch(DuplicateRequestException e){
+        } catch(DuplicateRequestException | DuplicateRealNameException e){
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(e.getMessage());

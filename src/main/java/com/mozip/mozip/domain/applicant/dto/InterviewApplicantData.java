@@ -2,6 +2,7 @@ package com.mozip.mozip.domain.applicant.dto;
 
 import com.mozip.mozip.domain.applicant.entity.Applicant;
 import com.mozip.mozip.domain.applicant.entity.enums.EvaluationStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
@@ -13,7 +14,6 @@ public class InterviewApplicantData extends ApplicantData {
     private Double interviewScoreStandardDeviation;
     private EvaluationStatus interviewStatus;
 
-
     @Override
     public InterviewApplicantData withStatus(Applicant applicant) {
         this.interviewStatus = applicant.getInterviewStatus();
@@ -21,6 +21,7 @@ public class InterviewApplicantData extends ApplicantData {
     }
 
     @Override
+    @JsonIgnore
     public EvaluationStatus getStatus() {
         return this.interviewStatus;
     }

@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface InterviewQuestionRepository extends JpaRepository<InterviewQuestion, String> {
     List<InterviewQuestion> findByMozipId(String mozipId);
+    List<InterviewQuestion> findByIdIn(List<String> questionIds);
 }
