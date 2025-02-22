@@ -15,14 +15,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class InterviewQuestionService {
 
-    private final InterviewQuestionRepository InterviewQuestionManager;
+    private final InterviewQuestionRepository interviewQuestionRepository;
 
     public List<InterviewQuestion> getInterviewQuestionsByMozipId(String mozipId) {
-        return InterviewQuestionManager.findByMozipId(mozipId);
+        return interviewQuestionRepository.findByMozipId(mozipId);
     }
 
     public InterviewQuestion getInterviewQuestionById(String questionId) {
-        return InterviewQuestionManager.findById(questionId)
+        return interviewQuestionRepository.findById(questionId)
                 .orElseThrow(() -> new EntityNotFoundException("InterviewQuestion이 없습니다 : " + questionId));
     }
 
@@ -34,20 +34,20 @@ public class InterviewQuestionService {
                 .details(requestDto.getDetails())
                 .isRequired(requestDto.isRequired())
                 .build();
-        return InterviewQuestionManager.save(interviewQuestion);
+        return interviewQuestionRepository.save(interviewQuestion);
     }
 
     @Transactional
     public InterviewQuestion updateInterviewQuestion(String questionId, InterviewQuestionUpdateReqDto requestDto) {
         InterviewQuestion question = getInterviewQuestionById(questionId);
         question.updateQuestion(requestDto.getQuestion(), requestDto.getDetails(), requestDto.isRequired());
-        return InterviewQuestionManager.save(question);
+        return interviewQuestionRepository.save(question);
     }
 
     @Transactional
     public void deleteInterviewQuestion(String questionId) {
         InterviewQuestion existingQuestion = getInterviewQuestionById(questionId);
-        InterviewQuestionManager.delete(existingQuestion);
+        interviewQuestionRepository.delete(existingQuestion);
     }
 
     public InterviewQuestion dtoToEntity(Mozip mozip, InterviewQuestionCreateReqDto requestDto){
@@ -57,5 +57,12 @@ public class InterviewQuestionService {
                 .details(requestDto.getDetails())
                 .isRequired(requestDto.isRequired())
                 .build();
+    }
+
+    public List<InterviewQuestion> getInterviewQuestionsByMozipOrQuestionIds(Mozip mozip, List<String> questionIds) {
+        if (questionIds == null) {
+            return interviewQuestionRepository.findByMozipId(mozip.getId());
+        }
+        return interviewQuestionRepository.findByIdIn(questionIds);
     }
 }

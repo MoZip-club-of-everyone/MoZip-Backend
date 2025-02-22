@@ -14,6 +14,7 @@ public interface EvaluationRepository extends JpaRepository<Evaluation, String> 
     List<Evaluation> findByApplicant(Applicant applicant);
     Optional<Evaluation> findByApplicantAndEvaluator(Applicant applicant, User evaluator);
     long countByApplicantAndPaperScoreIsNotNull(Applicant applicant);
+    long countByApplicantAndInterviewScoreIsNotNull(Applicant applicant);
 
     @Query("SELECT AVG(e.paperScore) FROM Evaluation e WHERE e.applicant = :applicant")
     Double calculateAveragePaperScoreByApplicant(@Param("applicant") Applicant applicant);

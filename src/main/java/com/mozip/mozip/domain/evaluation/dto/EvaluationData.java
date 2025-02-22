@@ -12,15 +12,11 @@ import lombok.experimental.SuperBuilder;
 public class EvaluationData {
     private String evaluationId;
     private String realname;
-    private Integer paperScore;
-    private Integer interviewScore;
 
     public static EvaluationData from(Evaluation evaluation) {
         return EvaluationData.builder()
                 .evaluationId(evaluation.getId())
                 .realname(evaluation.getEvaluator().getRealname())
-                .paperScore(evaluation.getPaperScore())
-                .interviewScore(evaluation.getInterviewScore())
                 .build();
     }
 }

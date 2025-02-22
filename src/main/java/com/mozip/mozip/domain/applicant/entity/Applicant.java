@@ -3,8 +3,6 @@ package com.mozip.mozip.domain.applicant.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mozip.mozip.domain.applicant.entity.enums.EvaluationStatus;
 import com.mozip.mozip.domain.evaluation.entity.Evaluation;
-import com.mozip.mozip.domain.interviewAnswer.entity.InterviewAnswer;
-import com.mozip.mozip.domain.paperAnswer.entity.PaperAnswer;
 import com.mozip.mozip.domain.mozip.entity.Mozip;
 import com.mozip.mozip.domain.user.entity.User;
 import com.mozip.mozip.global.entity.BaseTime;
@@ -36,14 +34,6 @@ public class Applicant extends BaseTime {
     @JsonIgnore
     @OneToMany(mappedBy = "applicant", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Evaluation> evaluations;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "applicant", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<InterviewAnswer> interviewAnswers;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "applicant", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PaperAnswer> paperAnswers;
 
     @Setter
     private Long applicationNumber;

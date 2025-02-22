@@ -12,4 +12,5 @@ public interface PaperAnswerRepository extends JpaRepository<PaperAnswer, String
     List<PaperAnswer> findByPaperQuestionId(String paperQuestionId);
     Optional<PaperAnswer> findByPaperQuestionIdAndApplicantId(String paperQuestionId, String applicantId);
     boolean existsByApplicant(Applicant applicant);
+    List<PaperAnswer> findByPaperQuestionIdAndApplicantIdIn(String paperQuestionId, List<String> applicantIds);
 }

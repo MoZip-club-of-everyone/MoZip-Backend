@@ -60,4 +60,11 @@ public class PaperQuestionService {
                 .isRequired(requestDto.isRequired())
                 .build();
     }
+
+    public List<PaperQuestion> getPaperQuestionsByMozipOrQuestionIds(Mozip mozip, List<String> questionIds) {
+        if (questionIds == null) {
+            return questionRepository.findByMozipId(mozip.getId());
+        }
+        return questionRepository.findByIdIn(questionIds);
+    }
 }
