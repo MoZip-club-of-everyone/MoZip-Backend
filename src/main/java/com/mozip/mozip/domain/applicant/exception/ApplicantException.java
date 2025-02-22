@@ -15,23 +15,15 @@ public class ApplicantException extends RuntimeException {
         return new ApplicantException(applicantId, "Applicant를 찾을 수 없습니다.");
     }
 
-    public static ApplicantException paperEvaluated(Applicant applicant) {
-        return new ApplicantException(applicant, "이미 서류 평가된 Applicant입니다.");
-    }
-
-    public static ApplicantException interviewEvaluated(Applicant applicant) {
-        return new ApplicantException(applicant, "이미 면접 평가된 Applicant입니다.");
-    }
-
-    public static ApplicantException paperNotEvaluated(Applicant applicant) {
-        return new ApplicantException(applicant, "서류 평가가 완료되지 않은 Applicant입니다.");
-    }
-
-    public static ApplicantException interviewNotEvaluated(Applicant applicant) {
-        return new ApplicantException(applicant, "면접 평가가 완료되지 않은 Applicant입니다.");
+    public static ApplicantException notEvaluated(Applicant applicant) {
+        return new ApplicantException(applicant, "EvaluationStatus가 UNEVALUATED 상태입니다.");
     }
 
     public static ApplicantException notRegistered(Applicant applicant) {
         return new ApplicantException(applicant, "등록되지 않은 Applicant입니다.");
+    }
+
+    public static ApplicantException evaluationOnHold(Applicant applicant) {
+        return new ApplicantException(applicant, "평가 제외된 지원자입니다.");
     }
 }
