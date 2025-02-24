@@ -2,6 +2,8 @@ package com.mozip.mozip.domain.mozip.dto;
 
 import com.mozip.mozip.domain.mozip.entity.Mozip;
 import java.time.LocalDateTime;
+
+import com.mozip.mozip.domain.mozip.entity.enums.MozipStatus;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -17,6 +19,7 @@ public class MozipResponseDto {
     private Boolean isEditAvailable;
     private String descriptionBeforeMozip;
     private String descriptionAfterMozip;
+    private MozipStatus status;
 
     public static MozipResponseDto entityToDto(Mozip mozip) {
         return MozipResponseDto.builder()
@@ -29,6 +32,7 @@ public class MozipResponseDto {
                 .isEditAvailable(mozip.isEditAvailable())
                 .descriptionBeforeMozip(mozip.getDescriptionBeforeMozip())
                 .descriptionAfterMozip(mozip.getDescriptionAfterMozip())
+                .status(mozip.getStatus())
                 .build();
     }
 }

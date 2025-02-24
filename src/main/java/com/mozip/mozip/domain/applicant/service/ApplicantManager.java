@@ -30,6 +30,7 @@ import com.mozip.mozip.domain.user.entity.User;
 import com.mozip.mozip.domain.user.exception.PositionException;
 import com.mozip.mozip.domain.user.service.PositionService;
 import com.mozip.mozip.domain.user.service.UserService;
+import com.mozip.mozip.global.entity.enums.EvaluateArea;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -124,7 +125,7 @@ public class ApplicantManager {
         checkReadable(evaluator, mozip);
         List<Applicant> applicants = applicantService.getSortedApplicantsByMozip(mozip, sortBy, order);
         List<PaperEvaluatedApplicantData> applicantDataList = createApplicantDataList(applicants, applicant -> {
-            List<Evaluation> evaluations = evaluationService.getEvaluationsByApplicant(applicant);
+            List<Evaluation> evaluations = evaluationService.getEvaluationsByApplicant(applicant, EvaluateArea.PAPER);
             List<PaperEvaluationData> evaluationDataList = evaluations.stream()
                     .map(PaperEvaluationData::from)
                     .toList();
@@ -176,7 +177,7 @@ public class ApplicantManager {
         checkReadable(evaluator, mozip);
         List<Applicant> applicants = applicantService.getSortedApplicantsByMozip(mozip, sortBy, order);
         List<InterviewEvaluatedApplicantData> applicantDataList = createApplicantDataList(applicants, applicant -> {
-            List<Evaluation> evaluations = evaluationService.getEvaluationsByApplicant(applicant);
+            List<Evaluation> evaluations = evaluationService.getEvaluationsByApplicant(applicant, EvaluateArea.INTERVIEW);
             List<InterviewEvaluationData> evaluationDataList = evaluations.stream()
                     .map(InterviewEvaluationData::from)
                     .toList();
