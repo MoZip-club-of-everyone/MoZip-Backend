@@ -69,6 +69,13 @@ public class MozipService {
     }
 
     @Transactional
+    public Mozip updateMozipStatus(String mozipId, MozipStatus status) {
+        Mozip mozip = getMozipById(mozipId);
+        mozip.setStatus(status);
+        return mozipRepository.save(mozip);
+    }
+
+    @Transactional
     @Scheduled(cron = "0 0 0 * * *")
     public void dailyCheckAndUpdateMozipStatus() {
         LocalDateTime now = LocalDateTime.now();

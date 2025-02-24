@@ -5,6 +5,7 @@ import com.mozip.mozip.domain.club.service.ClubService;
 import com.mozip.mozip.domain.mozip.dto.MozipRequestDto;
 import com.mozip.mozip.domain.mozip.dto.MozipResponseDto;
 import com.mozip.mozip.domain.mozip.entity.Mozip;
+import com.mozip.mozip.domain.mozip.entity.enums.MozipStatus;
 import com.mozip.mozip.domain.paperQuestion.entity.PaperQuestion;
 import com.mozip.mozip.domain.paperQuestion.service.PaperQuestionService;
 import jakarta.transaction.Transactional;
@@ -43,6 +44,12 @@ public class MozipManager {
     @Transactional
     public MozipResponseDto updateMozip(String mozipId, String title, String description) {
         Mozip updatedMozip = mozipService.updateMozip(mozipId, title, description);
+        return MozipResponseDto.entityToDto(updatedMozip);
+    }
+
+    @Transactional
+    public MozipResponseDto updateMozipStatus(String mozipId, MozipStatus status) {
+        Mozip updatedMozip = mozipService.updateMozipStatus(mozipId, status);
         return MozipResponseDto.entityToDto(updatedMozip);
     }
 

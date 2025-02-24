@@ -4,6 +4,7 @@ import com.mozip.mozip.domain.club.entity.Club;
 import com.mozip.mozip.domain.club.service.ClubService;
 import com.mozip.mozip.domain.mozip.dto.MozipRequestDto;
 import com.mozip.mozip.domain.mozip.dto.MozipResponseDto;
+import com.mozip.mozip.domain.mozip.dto.UpdateMozipStatusDto;
 import com.mozip.mozip.domain.mozip.service.MozipManager;
 import com.mozip.mozip.domain.user.entity.User;
 import com.mozip.mozip.domain.user.service.PositionService;
@@ -60,5 +61,12 @@ public class MozipController {
     public ResponseEntity<?> deleteMozip(@PathVariable("mozip_id") String mozipId) {
         mozipManager.deleteMozip(mozipId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{mozip_id}/status")
+    public MozipResponseDto updateMozipStatus(
+            @PathVariable("mozip_id") String mozipId,
+            @RequestBody UpdateMozipStatusDto requestDto) {
+        return mozipManager.updateMozipStatus(mozipId, requestDto.getStatus());
     }
 }
