@@ -57,15 +57,15 @@ public class Applicant extends BaseTime {
     @Setter
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    private EvaluationStatus paperStatus = EvaluationStatus.UNEVALUATED;
+    private EvaluationStatus paperStatus = EvaluationStatus.DEFAULT;
 
     @Setter
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    private EvaluationStatus interviewStatus = EvaluationStatus.UNEVALUATED;
+    private EvaluationStatus interviewStatus = EvaluationStatus.DEFAULT;
 
     @Setter
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    private EvaluationStatus totalStatus = EvaluationStatus.UNEVALUATED;
+    private EvaluationStatus totalStatus = EvaluationStatus.DEFAULT;
 }

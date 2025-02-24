@@ -1,6 +1,7 @@
 package com.mozip.mozip.domain.mozip.entity;
 
 import com.mozip.mozip.domain.club.entity.Club;
+import com.mozip.mozip.domain.mozip.entity.enums.MozipStatus;
 import com.mozip.mozip.domain.paperQuestion.entity.PaperQuestion;
 import com.mozip.mozip.global.entity.BaseTime;
 import de.huxhorn.sulky.ulid.ULID;
@@ -47,10 +48,13 @@ public class Mozip extends BaseTime {
     @Column(nullable = false)
     private String descriptionAfterMozip;
 
+    private boolean isLoginRequired;
+    private boolean isEditAvailable;
+
+    @Setter
     @Builder.Default
-    private boolean isLoginRequired = false;
-    @Builder.Default
-    private boolean isEditAvailable = false;
+    @Enumerated(EnumType.STRING)
+    private MozipStatus status = MozipStatus.BEFORE_MOZIP;
 
     @Setter
     @OneToMany(mappedBy = "mozip", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
