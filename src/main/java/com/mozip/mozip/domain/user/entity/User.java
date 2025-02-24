@@ -19,6 +19,7 @@ public class User extends BaseTime {
     @Builder.Default
     private final String id = new ULID().nextULID();
 
+    @Column(unique = true)
     private String email;
 
     @Setter
@@ -28,6 +29,7 @@ public class User extends BaseTime {
 
     private String image;
 
+    @Column(unique = true)
     private String phone;
 
     @Enumerated(EnumType.STRING)
