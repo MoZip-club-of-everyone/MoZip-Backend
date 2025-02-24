@@ -1,12 +1,16 @@
 package com.mozip.mozip.domain.evaluation.service;
 
 import com.mozip.mozip.domain.applicant.entity.Applicant;
+import com.mozip.mozip.domain.applicant.entity.enums.EvaluationStatus;
 import com.mozip.mozip.domain.evaluation.entity.Evaluation;
 import com.mozip.mozip.domain.evaluation.repository.EvaluationRepository;
 import com.mozip.mozip.domain.user.entity.User;
+import com.mozip.mozip.global.entity.enums.EvaluateArea;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -22,7 +26,11 @@ public class EvaluationService {
         return saveEvaluation(evaluation);
     }
 
-    public List<Evaluation> getEvaluationsByApplicant(Applicant applicant) {
+    public List<Evaluation> getEvaluationsByApplicant(Applicant applicant, EvaluateArea evaluateArea) {
+        if ((evaluateArea == EvaluateArea.PAPER && applicant.getPaperStatus() == EvaluationStatus.HOLD) ||
+            (evaluateArea == EvaluateArea.INTERVIEW && applicant.getInterviewStatus() == EvaluationStatus.HOLD)) {
+            return Collections.emptyList();
+        }
         return evaluationRepository.findByApplicant(applicant);
     }
 

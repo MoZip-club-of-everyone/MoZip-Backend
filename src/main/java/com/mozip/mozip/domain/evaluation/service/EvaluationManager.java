@@ -5,12 +5,11 @@ import com.mozip.mozip.domain.applicant.entity.Applicant;
 import com.mozip.mozip.domain.applicant.entity.enums.EvaluationStatus;
 import com.mozip.mozip.domain.applicant.exception.ApplicantException;
 import com.mozip.mozip.domain.applicant.service.ApplicantService;
-import com.mozip.mozip.domain.club.service.ClubService;
 import com.mozip.mozip.domain.evaluation.dto.CommentData;
 import com.mozip.mozip.domain.evaluation.dto.InterviewEvaluationDetailsResponse;
 import com.mozip.mozip.domain.evaluation.dto.MemoData;
 import com.mozip.mozip.domain.evaluation.dto.PaperEvaluationDetailsResponse;
-import com.mozip.mozip.domain.evaluation.entity.EvaluateArea;
+import com.mozip.mozip.global.entity.enums.EvaluateArea;
 import com.mozip.mozip.domain.evaluation.entity.Evaluation;
 import com.mozip.mozip.domain.interviewAnswer.entity.InterviewAnswer;
 import com.mozip.mozip.domain.interviewAnswer.service.InterviewAnswerService;
@@ -44,7 +43,6 @@ public class EvaluationManager {
     private final ApplicantService applicantService;
     private final CommentService commentService;
     private final MemoService memoService;
-    private final ClubService clubService;
     private final PositionService positionService;
 
     // 서류 합불 상태 수정
@@ -52,7 +50,7 @@ public class EvaluationManager {
     public void updateApplicantPaperStatuses(User evaluator, UpdateApplicantStatusRequest request) {
         request.getApplicants().forEach(each -> {
             Applicant applicant = applicantService.getApplicantById(each.getApplicantId());
-            validateEvaluationStatusUpdatable(evaluator, applicant, EvaluateArea.PAPER);
+            verifyEvaluatorPermission(evaluator, applicant);
             applicant.setPaperStatus(each.getStatus());
             applicantService.saveApplicant(applicant);
         });
@@ -63,7 +61,7 @@ public class EvaluationManager {
     public void updateApplicantInterviewStatuses(User evaluator, UpdateApplicantStatusRequest request) {
         request.getApplicants().forEach(each -> {
             Applicant applicant = applicantService.getApplicantById(each.getApplicantId());
-            validateEvaluationStatusUpdatable(evaluator, applicant, EvaluateArea.INTERVIEW);
+            verifyEvaluatorPermission(evaluator, applicant);
             applicant.setInterviewStatus(each.getStatus());
             applicantService.saveApplicant(applicant);
         });
@@ -79,7 +77,6 @@ public class EvaluationManager {
         evaluation.setPaperScore(score);
         evaluationService.saveEvaluation(evaluation);
         updateAverageAndStandardDeviation(applicant, EvaluateArea.PAPER);
-        checkAllEvaluated(applicant, EvaluateArea.PAPER);
     }
 
     // 면접 점수 입력
@@ -92,7 +89,6 @@ public class EvaluationManager {
         evaluation.setInterviewScore(score);
         evaluationService.saveEvaluation(evaluation);
         updateAverageAndStandardDeviation(applicant, EvaluateArea.INTERVIEW);
-        checkAllEvaluated(applicant, EvaluateArea.INTERVIEW);
     }
 
     // 특정 서류 응답 평가 조회
@@ -119,17 +115,6 @@ public class EvaluationManager {
         List<CommentData> comments = commentService.getCommentsByInterviewAnswer(interviewAnswer);
         List<MemoData> memos = memoService.getMemosByInterviewAnswer(interviewAnswer);
         return InterviewEvaluationDetailsResponse.from(applicant, evaluation.getInterviewScore(), interviewQuestion, interviewAnswer, comments, memos);
-    }
-
-    private void validateEvaluationStatusUpdatable(User evaluator, Applicant applicant, EvaluateArea evaluateArea) {
-        verifyEvaluatorPermission(evaluator, applicant);
-        EvaluationStatus status = switch (evaluateArea) {
-            case PAPER -> applicant.getPaperStatus();
-            case INTERVIEW -> applicant.getInterviewStatus();
-        };
-        if (status == EvaluationStatus.UNEVALUATED) {
-            throw ApplicantException.notEvaluated(applicant);
-        }
     }
 
     private void validateScoreUpdatable(User evaluator, Applicant applicant, EvaluateArea evaluateArea) {
@@ -171,28 +156,5 @@ public class EvaluationManager {
             }
         }
         applicantService.saveApplicant(applicant);
-    }
-
-    public void checkAllEvaluated(Applicant applicant, EvaluateArea evaluateArea) {
-        long totalEvaluatorsCount = clubService.countEvaluatorsByClub(applicant.getMozip().getClub());
-        long evaluatedScoresCount = getEvaluatedScoresCount(applicant, evaluateArea);
-        if (totalEvaluatorsCount == evaluatedScoresCount) {
-            setEvaluationStatus(applicant, evaluateArea, EvaluationStatus.EVALUATED);
-        }
-        applicantService.saveApplicant(applicant);
-    }
-
-    private long getEvaluatedScoresCount(Applicant applicant, EvaluateArea evaluateArea) {
-        return switch (evaluateArea) {
-            case PAPER -> evaluationService.countEvaluatedPaperScore(applicant);
-            case INTERVIEW -> evaluationService.countEvaluatedInterviewScore(applicant);
-        };
-    }
-
-    private void setEvaluationStatus(Applicant applicant, EvaluateArea evaluateArea, EvaluationStatus status) {
-        switch (evaluateArea) {
-            case PAPER -> applicant.setPaperStatus(status);
-            case INTERVIEW -> applicant.setInterviewStatus(status);
-        }
     }
 }

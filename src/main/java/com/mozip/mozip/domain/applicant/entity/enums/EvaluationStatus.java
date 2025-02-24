@@ -10,12 +10,11 @@ import java.util.Arrays;
 @Getter
 @RequiredArgsConstructor
 public enum EvaluationStatus {
-    UNEVALUATED("평가 중"), // 평가 중
-    EVALUATED("평가 완료"), // 평가 완료
     PASSED("합격"), // 합격
     FAILED("불합격"), // 불합격
+    WAITLISTED("예비"), // 예비
     HOLD("평가 제외"), // 보류 -> 평가 제외
-    WAITLISTED("예비"); // 예비
+    DEFAULT("-");
 
     private final String value;
 
