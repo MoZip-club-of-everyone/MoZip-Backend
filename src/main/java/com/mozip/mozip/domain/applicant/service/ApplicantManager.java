@@ -58,7 +58,7 @@ public class ApplicantManager {
         Mozip mozip = mozipService.getMozipById(mozipId);
         User user = userService.getCurrentUser();
         userService.updateApplicantUserInfo(user, request);
-        Applicant applicant = applicantService.createApplicant(user, mozip);
+        Applicant applicant = applicantService.getCurrentApplicant(user, mozip);
         return ApplicantInfoResponse.from(applicant, false);
     }
 
