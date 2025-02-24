@@ -19,7 +19,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Service
@@ -66,12 +70,23 @@ public class ClubService {
     @Transactional
     public List<PositionResDto> getPositionsByClubId(String clubId){
         List<Position> positions = positionRepository.findByClubId(clubId);
-        return positions.stream().map(this::positionResDto).toList();
+
+        List<String> order = List.of("마스터", "관리", "평가", "조회");
+        Map<String, Integer> orderMap = IntStream.range(0, order.size())
+                .boxed()
+                .collect(Collectors.toMap(order::get, i -> i));
+
+        return positions.stream()
+                .filter(position -> position.getPositionName() != null)
+                .map(this::positionResDto)
+                .sorted(Comparator.comparingInt(p -> orderMap.getOrDefault(p.getPositionName(), Integer.MAX_VALUE))) // 정렬 기준 적용
+                .toList();
     }
 
     private PositionResDto positionResDto(Position position){
         User user = position.getUser();
         String lastFourPhone = user.getPhone().substring(user.getPhone().length()-4);
+        PositionType positionType = position.getPositionName();
         return new PositionResDto(
                 user.getId(),
                 user.getRealname() + "(" + lastFourPhone + ")",
