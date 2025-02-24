@@ -107,6 +107,7 @@ public class ClubController {
         Position position = clubService.getPositionByUserIdAndClubId(customUserDetails.getId(), clubId);
         if (position != null && position.getPositionName().isMaster()) {
             clubService.updatePosition(clubId, positionReqDto.getUserId(), positionReqDto.getPositionName());
+            clubService.updatePosition(clubId, customUserDetails.getId(), PositionType.MANAGER);
             return ResponseEntity.ok("권한이 수정되었습니다.");
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("권한이 없습니다.");
